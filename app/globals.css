@@ -9,9 +9,9 @@
 
 /* Header alignment: scale Samson mark and align navigation on desktop */
 @media(min-width:1001px){
-  .header{height:88px;display:grid;grid-template-columns:270px minmax(0,1fr) auto;align-items:center;column-gap:24px;padding-inline:max(28px,calc((100vw - 1180px)/2))}
-  .header .brand{width:255px;min-width:0;max-width:255px;justify-self:start;align-self:center;overflow:hidden}
-  .header .brandLogo{display:block;width:255px;max-width:100%;height:auto;max-height:70px;object-fit:contain}
+  .header{height:104px;display:grid;grid-template-columns:335px minmax(0,1fr) auto;align-items:center;column-gap:24px;padding-inline:max(28px,calc((100vw - 1180px)/2))}
+  .header .brand{width:325px;min-width:0;max-width:325px;justify-self:start;align-self:center;overflow:hidden}
+  .header .brandLogo{display:block;width:325px;max-width:100%;height:auto;max-height:91px;object-fit:contain}
   .header .nav{display:flex;justify-content:center;align-items:center;gap:clamp(15px,2vw,29px);white-space:nowrap;min-width:0}
   .header .nav a{display:inline-flex;align-items:center;line-height:1.2}
   .header .navcta{justify-self:end;align-self:center;white-space:nowrap;padding:13px 16px}
