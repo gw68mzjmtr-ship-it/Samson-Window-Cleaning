@@ -113,7 +113,7 @@
 .mockVideo img{display:block;width:100%;aspect-ratio:1.75;object-fit:cover;border-radius:5px}
 .mockVideo>span{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:flex;align-items:center;justify-content:center;background:#000a;border:1px solid #eee;border-radius:50%;width:35px;height:35px}
 .mockVideoGrid strong{font:800 15px 'Barlow Condensed',Impact,sans-serif;text-transform:uppercase;display:block;margin-top:8px}
-.mockClose{display:flex;align-items:center;justify-content:space-between;gap:28px;min-height:135px;padding:25px max(45px,calc((100vw - 1380px)/2));background:linear-gradient(90deg,rgba(0,0,0,.72),rgba(0,0,0,.83)),url('/images/work.webp') center/cover}
+.mockClose{display:flex;align-items:center;justify-content:space-between;gap:28px;min-height:135px;padding:25px max(45px,calc((100vw - 1380px)/2));background:linear-gradient(90deg,rgba(0,0,0,.72),rgba(0,0,0,.81)),url('/Cinematic%20Squeegee%20Through%20Soapy%20Glass.png') center 46%/cover no-repeat}
 .mockClose h2{font-size:40px}
 .mockClose p{font-size:13px;margin:5px 0 0}
 .mockClose .mockRedBtn{min-width:245px}
