@@ -636,3 +636,45 @@ body{font-family:var(--samson-body-font)}
     margin-top:24px;
   }
 }
+
+/* Real Results: accessible in-page video playback with custom cover photo */
+.mockVideoGrid .mockVideoCard{
+  display:block;
+  appearance:none;
+  background:transparent;
+  color:inherit;
+  border:0;
+  padding:0;
+  margin:0;
+  min-width:0;
+  width:100%;
+  text-align:left;
+  cursor:pointer;
+  font:inherit;
+}
+.mockVideoCard:focus-visible,.mockVideoGrid a:focus-visible{outline:2px solid #f2182b;outline-offset:4px;border-radius:5px}
+.mockVideoCard:hover .mockVideo>span,.mockVideoGrid a:hover .mockVideo>span{
+  background:#f2182b;
+  border-color:#f2182b;
+  transition:background .18s ease,border-color .18s ease;
+}
+.mockVideoCard strong{font:800 15px 'Barlow Condensed',Impact,sans-serif;text-transform:uppercase;display:block;margin-top:8px}
+.mockVideoOverlay{
+  position:fixed;
+  inset:0;
+  z-index:1000;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:clamp(12px,3vw,40px);
+  background:rgba(0,0,0,.92);
+}
+.mockVideoDialog{width:min(1020px,100%);max-height:95vh;min-width:0;overflow:auto;background:#0b0b0c;border:1px solid #333;border-radius:8px;box-shadow:0 20px 70px #000}
+.mockVideoDialogTop{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 20px;color:#fff}
+.mockVideoDialogTop strong{font:800 21px 'Barlow Condensed',Impact,sans-serif;letter-spacing:.5px}
+.mockVideoClose{display:flex;align-items:center;justify-content:center;width:36px;height:36px;flex:0 0 36px;padding:0;background:#232323;border:1px solid #555;border-radius:50%;color:#fff;cursor:pointer}
+.mockVideoClose:hover,.mockVideoClose:focus-visible{background:#b71726}
+.mockVideoFrame{width:100%;aspect-ratio:16/9;background:#000}
+.mockVideoFrame iframe{display:block;width:100%;height:100%;border:0}
+.mockVideoYouTubeLink{display:inline-block;color:#ddd;font-size:12px;margin:12px 20px 16px;text-decoration:underline;text-underline-offset:3px}
+@media(max-width:740px){.mockVideoDialogTop{padding:10px 14px}.mockVideoDialogTop strong{font-size:18px}.mockVideoYouTubeLink{margin:12px 14px 16px}}
