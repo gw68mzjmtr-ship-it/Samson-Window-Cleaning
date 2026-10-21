@@ -285,3 +285,17 @@
   background-size:cover,cover,cover;
   background-repeat:no-repeat;
 }
+
+/* Approved mockup photography: files uploaded to /public */
+.mockInteriorPic{
+  background-image:url('/Cinematic%20Squeegee%20Through%20Soapy%20Glass.png');
+  background-position:center 47%;
+  background-size:cover;
+  background-repeat:no-repeat;
+}
+.mockCommercialPic{
+  background-image:url('/samson-commercial-reference.webp');
+  background-position:center center;
+  background-size:cover;
+  background-repeat:no-repeat;
+}
