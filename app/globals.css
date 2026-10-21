@@ -201,3 +201,79 @@
 .mockFooter .mockFooterBrand span{margin-top:-7px;padding:0;font-size:9px;letter-spacing:.9px;line-height:1.1;text-align:center;white-space:nowrap}
 @media (min-width:741px) and (max-width:1250px){.mockHeader .mockLogoSlogan{margin-top:-7px;font-size:9px}}
 @media (max-width:740px){.mockHeader .mockLogoSlogan{margin-top:-5px;font-size:8px;letter-spacing:.45px}.mockFooter .mockFooterBrand span{margin-top:-5px;font-size:8px}}
+
+/* Commercial Focus: tighter mockup-matched triptych layout and controls */
+.mockCommercial{
+  display:grid;
+  grid-template-columns:27% minmax(0,51%) 22%;
+  min-height:265px;
+  background:#050607;
+  isolation:isolate;
+  border-top:1px solid #333;
+  border-bottom:1px solid #333;
+}
+.mockCommercialIntro{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  justify-content:center;
+  min-width:0;
+  padding:26px 19px 26px max(42px,calc((100vw - 1380px)/2));
+  background:#060708;
+}
+.mockCommercialIntro .mockEyebrow{font-size:11px;letter-spacing:2px;margin:0 0 8px}
+.mockCommercialIntro h2{
+  font:900 clamp(41px,3.55vw,57px)/.86 'Barlow Condensed',Impact,sans-serif;
+  letter-spacing:-.6px;
+  text-transform:uppercase;
+  margin:0 0 10px;
+}
+.mockCommercialIntro>p:not(.mockEyebrow){
+  max-width:280px;
+  margin:0 0 17px;
+  color:#ededed;
+  font-size:12px;
+  line-height:1.4;
+}
+.mockCommercialIntro .mockRedBtn{font-size:15px;min-height:39px;padding:9px 15px}
+.mockCommercialPic{
+  display:block;
+  min-height:265px;
+  background-image:linear-gradient(90deg,rgba(0,0,0,.19),transparent 20%,transparent 85%,rgba(0,0,0,.12)),url('/images/storefront.webp');
+  background-position:center,center 48%;
+  background-size:cover;
+  background-repeat:no-repeat;
+}
+.mockBenefits{
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:stretch;
+  gap:17px;
+  min-width:0;
+  padding:25px 19px;
+  background:#080909;
+}
+.mockBenefits p{display:flex;align-items:center;gap:10px;min-height:20px;margin:0;color:#efefef;font-size:11px;line-height:1.35}
+.mockBenefits svg{
+  flex:0 0 18px;
+  width:18px;height:18px;
+  color:#f2182b;
+  border:1.6px solid #f2182b;
+  border-radius:50%;
+  padding:2px;
+  stroke-width:2.4;
+}
+@media(max-width:1000px){
+  .mockCommercial{grid-template-columns:37% 63%}
+  .mockCommercialIntro{padding:25px}
+  .mockBenefits{grid-column:1/-1;flex-direction:row;flex-wrap:wrap;justify-content:space-around;gap:15px}
+}
+@media(max-width:740px){
+  .mockCommercial{grid-template-columns:1fr}
+  .mockCommercialIntro{padding:30px 24px}
+  .mockCommercialIntro h2{font-size:54px}
+  .mockCommercialPic{min-height:235px}
+  .mockBenefits{grid-column:1;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;padding:24px}
+}
+@media(max-width:430px){.mockBenefits{grid-template-columns:1fr}}
