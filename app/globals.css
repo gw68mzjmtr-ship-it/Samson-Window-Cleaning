@@ -277,3 +277,11 @@
   .mockBenefits{grid-column:1;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;padding:24px}
 }
 @media(max-width:430px){.mockBenefits{grid-template-columns:1fr}}
+
+/* Exact mockup storefront image slot; existing storefront remains fallback until the crop is uploaded. */
+.mockCommercialPic{
+  background-image:url('/images/commercial-mockup.webp'),linear-gradient(90deg,rgba(0,0,0,.18),transparent 28%,transparent 85%,rgba(0,0,0,.12)),url('/images/storefront.webp');
+  background-position:center,center,center 48%;
+  background-size:cover,cover,cover;
+  background-repeat:no-repeat;
+}
