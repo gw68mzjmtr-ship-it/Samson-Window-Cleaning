@@ -617,3 +617,22 @@ body{font-family:var(--samson-body-font)}
     background-repeat:no-repeat;
   }
 }
+
+/* Hero alignment: lift headline, calls to action, and benefit icons away
+   from the services divider, without moving or cropping the photograph. */
+@media (min-width:741px){
+  .mockHeroContent{
+    padding-top:clamp(28px,2.8vw,40px);
+  }
+  .mockTrust{
+    margin-top:20px;
+  }
+}
+@media (max-width:740px){
+  .mockHeroContent{
+    padding-top:65px;
+  }
+  .mockTrust{
+    margin-top:24px;
+  }
+}
