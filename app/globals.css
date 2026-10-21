@@ -451,3 +451,29 @@ html,body{max-width:100%;overflow-x:clip}
 @media(max-width:390px){
   .mockClose .mockRedBtn{width:100%;white-space:normal}
 }
+
+/* Prevent navigation overlap at small laptop and tablet widths. */
+@media(min-width:741px) and (max-width:940px){
+  .mockHeader{display:flex;align-items:center;justify-content:space-between;height:104px}
+  .mockHeader .mockLogo{width:230px;flex:0 0 230px}
+  .mockHeader .mockLogo img{max-height:78px}
+  .mockNav{
+    display:none;
+    position:absolute;
+    top:104px;left:0;right:0;
+    height:auto;
+    z-index:40;
+    padding:14px var(--samson-layout-edge);
+    background:#08090a;
+    border-top:1px solid #303030;
+    flex-direction:column;
+    align-items:flex-start;
+    gap:0;
+    box-shadow:0 12px 20px rgba(0,0,0,.6);
+  }
+  .mockNav.open{display:flex}
+  .mockNav a{height:43px;font-size:18px}
+  .mockNav a.active:after{bottom:3px}
+  .mockHeaderCta{display:inline-flex;margin-left:auto;margin-right:20px}
+  .mockMenu{display:block}
+}
