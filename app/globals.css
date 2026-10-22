@@ -678,28 +678,3 @@ body{font-family:var(--samson-body-font)}
 .mockVideoFrame iframe{display:block;width:100%;height:100%;border:0}
 .mockVideoYouTubeLink{display:inline-block;color:#ddd;font-size:12px;margin:12px 20px 16px;text-decoration:underline;text-underline-offset:3px}
 @media(max-width:740px){.mockVideoDialogTop{padding:10px 14px}.mockVideoDialogTop strong{font-size:18px}.mockVideoYouTubeLink{margin:12px 14px 16px}}
-
-
-/* Isaiah commercial water-fed-pole photo — hero trial.
-   The source is portrait-oriented. Preserve its full height on desktop,
-   anchoring the cleaner to the right beside the headline and CTA. */
-.mockHeroPic{
-  background-image:url('/Issaih%20Commercial.jpeg');
-  background-color:#070b0e;
-  background-position:right center;
-  background-size:auto 100%;
-  background-repeat:no-repeat;
-}
-@media (min-width:741px) {
-  .mockHeroPic{
-    background-position:right bottom;
-    background-size:auto 100%;
-  }
-}
-@media (max-width:740px) {
-  .mockHeroPic{
-    background-image:url('/Issaih%20Commercial.jpeg');
-    background-position:70% center;
-    background-size:cover;
-  }
-}
