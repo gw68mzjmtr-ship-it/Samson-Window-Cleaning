@@ -733,3 +733,135 @@ body{font-family:var(--samson-body-font)}
 @media (prefers-reduced-motion:reduce){
   .mockVideoGrid{scroll-behavior:auto}
 }
+
+
+/* Samson Google reviews section: visually consistent with Real Results. */
+.mockReviews{
+  background:#101112;
+  color:#f5f5f5;
+  padding:40px var(--samson-layout-edge,45px) 43px;
+  border-top:1px solid #232425;
+}
+.mockReviewsHeading{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:24px;
+  margin-bottom:24px;
+}
+.mockReviewsHeading>div{min-width:0}
+.mockReviewsHeading h2{
+  font-family:var(--samson-display-font,Impact,sans-serif);
+  font-size:clamp(32px,3vw,43px);
+  font-weight:400;
+  line-height:1.1;
+  text-transform:uppercase;
+  margin:0;
+}
+.mockReviewsHeading>div>p:last-child{
+  margin:9px 0 0;
+  color:#b9b9b9;
+  font-family:var(--samson-body-font,Inter,sans-serif);
+  font-size:13px;
+  line-height:1.5;
+}
+.mockGoogleRating{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-end;
+  min-width:165px;
+  color:#fff;
+  text-decoration:none;
+}
+.mockGoogleRating>strong{
+  font-family:var(--samson-display-font,Impact,sans-serif);
+  font-weight:400;
+  font-size:37px;
+  line-height:1.1;
+}
+.mockGoogleRating>strong span{
+  font-size:17px;
+  color:#ddd;
+}
+.mockGoogleRatingStars,.mockReviewStars{
+  display:flex;
+  align-items:center;
+  gap:3px;
+  color:#f2ba45;
+}
+.mockGoogleRating small{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  margin-top:6px;
+  font-family:var(--samson-ui-font,Inter,sans-serif);
+  color:#ccc;
+  font-size:11px;
+}
+.mockGoogleRating:hover small,.mockReviewsReadAll:hover{color:#fff}
+.mockReviewsGrid{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:14px;
+}
+.mockReviewCard{
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+  padding:20px 19px 18px;
+  border:1px solid #343536;
+  border-radius:5px;
+  background:#191a1b;
+}
+.mockReviewCard blockquote{
+  flex:1;
+  margin:13px 0 21px;
+  font-family:var(--samson-body-font,Inter,sans-serif);
+  color:#eee;
+  font-size:13px;
+  line-height:1.6;
+}
+.mockReviewCard>p{
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+  margin:0;
+  border-top:1px solid #353637;
+  padding-top:13px;
+}
+.mockReviewCard>p strong{
+  color:#f5f5f5;
+  font-family:var(--samson-ui-font,Inter,sans-serif);
+  font-size:12px;
+}
+.mockReviewCard>p span{
+  color:#aaa;
+  font-family:var(--samson-body-font,Inter,sans-serif);
+  font-size:11px;
+}
+.mockReviewsReadAll{
+  display:inline-flex;
+  align-items:center;
+  gap:9px;
+  margin-top:22px;
+  color:#f2182b;
+  font-family:var(--samson-ui-font,Inter,sans-serif);
+  font-size:13px;
+  font-weight:800;
+  text-decoration:none;
+}
+.mockReviewsReadAll:focus-visible,.mockGoogleRating:focus-visible{
+  outline:2px solid #f2182b;
+  outline-offset:4px;
+}
+@media(max-width:1000px){
+  .mockReviewsGrid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:740px){
+  .mockReviews{padding:30px 18px 34px}
+  .mockReviewsHeading{align-items:flex-start;flex-direction:column;gap:15px}
+  .mockGoogleRating{align-items:flex-start}
+}
+@media(max-width:520px){
+  .mockReviewsGrid{grid-template-columns:1fr}
+}
