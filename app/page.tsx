@@ -5,7 +5,7 @@ import { ArrowRight, Check, Menu, X, Play, Gem, ShieldCheck, CalendarDays, Chevr
 const tiers=[{name:'Essential',range:'Up to 25 windows',price:149},{name:'Standard',range:'26–40 windows',price:249},{name:'Premium',range:'41–60 windows',price:349},{name:'Executive',range:'61–80 windows',price:449},{name:'Elite',range:'81–100 windows',price:549}];
 const plans=[{name:'One-Time',freq:'Single visit',discount:'Standard price'},{name:'Silver',freq:'Every 6 months',discount:'10% off'},{name:'Gold',freq:'Quarterly',discount:'15% off'},{name:'Platinum',freq:'Every 2 months',discount:'15% off'},{name:'Black',freq:'Monthly',discount:'20% off'}];
 const services=[{name:'Residential Homes',img:'/Residential%20Homes.png',desc:'Custom homes, luxury properties, and estate maintenance.'},{name:'Storefronts',img:'/Storefront%20for%20exterior%20window%20cleanng%20section.png',desc:'Retail, restaurants, and small businesses.'},{name:'HOAs & Townhomes',img:'/HOAs%20and%20TownHomes.png',desc:'Keep your community looking its best with scheduled cleanings.'},{name:'Commercial Properties',img:'/Commercial%20Properties.png',desc:'Office buildings, medical, schools, and more.'}];
-const videos: {name:string;img:string;youtubeId?:string}[]=[{name:'CARMEL COUNTRY CLUB',img:'/1021%20(2)-Cover.jpg',youtubeId:'g4onoyqjLv4'},{name:'$14 MILLION MANSION',img:'/Mansion%20POV%20Slattery-Cover.jpg',youtubeId:'W3kXIDsKGtc'},{name:'COMMERCIAL STOREFRONT',img:'/Commercial%20Store%20Front-Cover.jpg',youtubeId:'avdkKhzj1qs'},{name:'$4.7 MILLION HOME — INTERIOR DETAIL',img:'/4.7%20Million%20Dollar%20Home%20Cover.jpg',youtubeId:'9yBsoffK3Nw'},{name:'$4.5 MILLION HOME',img:'/%244.5%20Million%20Home-Cover.jpg',youtubeId:'MAMio9fC26c'},{name:'$3.4 MILLION HOME',img:'/%243.4%20Million%20Home-Cover.jpg',youtubeId:'ugxOxgmcm3g'},{name:'$2.5 MILLION HOME',img:'/%242.5%20Million%20Dollar%20Home-Cover.jpg',youtubeId:'bQy_nXQYnSo'},{name:'$1.7 MILLION HOME',img:'/%241.7%20Million%20Home-Cover.jpg',youtubeId:'k2gaQRM7In4'},{name:'$1.5 MILLION HOME',img:'/%241.5%20Million%20Dollar%20Home-Cover.jpg',youtubeId:'yaf29e2TusM'},{name:'$1.3 MILLION HOME',img:'/%241.3%20Million%20Home-Cover.jpg',youtubeId:'YzOJTUiOkQ4'},{name:'$1 MILLION HOME',img:'/%241%20Million%20Home-Cover.jpg',youtubeId:'QWvdpQKI2dk'}];
+const videos: {name:string;img:string;youtubeId?:string}[]=[{name:'CARMEL COUNTRY CLUB',img:'/1021%20(2)-Cover.jpg',youtubeId:'g4onoyqjLv4'},{name:'$14 MILLION MANSION',img:'/Mansion%20POV%20Slattery-Cover.jpg',youtubeId:'W3kXIDsKGtc'},{name:'COMMERCIAL STOREFRONT',img:'/Commercial%20Store%20Front-Cover.jpg',youtubeId:'avdkKhzj1qs'},{name:'$4.7 MILLION HOME — INTERIOR DETAIL',img:'/4.7%20Million%20Dollar%20Home%20Cover.jpg',youtubeId:'9yBsoffK3Nw'},{name:'$4.5 MILLION HOME',img:'/%244.5%20Million%20Home-Cover.jpg',youtubeId:'MAMio9fC26c'},{name:'$3.4 MILLION HOME',img:'/%243.4%20Million%20Home-Cover.jpg',youtubeId:'ugxOxgmcm3g'},{name:'$2.8 MILLION HOME',img:'/%242.8%20Million%20Home-Cover.jpg',youtubeId:'ZJkllNbgvAc'},{name:'$2.5 MILLION HOME',img:'/%242.5%20Million%20Dollar%20Home-Cover.jpg',youtubeId:'bQy_nXQYnSo'},{name:'$1.7 MILLION HOME',img:'/%241.7%20Million%20Home-Cover.jpg',youtubeId:'k2gaQRM7In4'},{name:'$1.5 MILLION HOME',img:'/%241.5%20Million%20Dollar%20Home-Cover.jpg',youtubeId:'yaf29e2TusM'},{name:'$1.3 MILLION HOME',img:'/%241.3%20Million%20Home-Cover.jpg',youtubeId:'YzOJTUiOkQ4'},{name:'$1 MILLION HOME',img:'/%241%20Million%20Home-Cover.jpg',youtubeId:'QWvdpQKI2dk'}];
 const googleReviewsUrl='https://maps.google.com/maps?cid=1169625489972585955';
 const customerReviews=[
   {
@@ -170,12 +170,8 @@ useEffect(()=>{if(!activeVideo)return;const previous=document.body.style.overflo
   </div>
   <div className="mockAboutMedia">
     <figure className="mockAboutCommercial">
-      <img src="/Issaih%20Commercial.jpeg" alt="Samson window cleaning work on exterior commercial glass using a water-fed pole" loading="lazy"/>
+      <img src="/Issaih%20Commercial.jpeg" alt="Samson technician cleaning exterior commercial glass with a water-fed pole" loading="lazy"/>
       <figcaption>COMMERCIAL EXTERIOR WINDOW CLEANING</figcaption>
-    </figure>
-    <figure className="mockAboutHistory">
-      <div className="mockAboutHistoryBrand" role="img" aria-label="The Samson logo on the company's branded trailer from its early years"/>
-      <figcaption>OUR ROOTS <span>— 15 YEARS IN BUSINESS</span></figcaption>
     </figure>
   </div>
 </section>
