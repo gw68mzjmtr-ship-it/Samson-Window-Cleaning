@@ -157,8 +157,9 @@ useEffect(()=>{if(!activeVideo)return;const previous=document.body.style.overflo
   <div className="mockAboutCopy">
     <p className="mockEyebrow">Meet the Owner</p>
     <h2 id="samson-about-heading">THE MAN<br/>BEHIND <span>SAMSON.</span></h2>
+    <div className="mockAboutExperience" aria-label="15 years in business"><strong>15</strong><span>YEARS IN<br/>BUSINESS</span></div>
     <p className="mockAboutIntro">I'm Zach — the owner behind Samson Professional Window Cleaning.</p>
-    <p>I built Samson around a simple standard: show up prepared, respect the property, and take pride in the finished work. Whether it's a storefront or a standout home, the details matter.</p>
+    <p>For 15 years, I've built Samson around a simple standard: show up prepared, respect the property, and take pride in the finished work. Whether it's a storefront or a standout home, the details matter.</p>
     <p>Today, my focus is dependable exterior window cleaning for businesses, property managers, and homeowners who value quality — with convenient recurring service and premium interior cleaning available when needed.</p>
     <div className="mockAboutPrinciples">
       <span><Check size={16}/> Owner-led accountability</span>
