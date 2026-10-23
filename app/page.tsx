@@ -165,6 +165,7 @@ useEffect(()=>{if(!activeVideo)return;const previous=document.body.style.overflo
       <span><Check size={16}/> Reliable, professional service</span>
       <span><Check size={16}/> Built for long-term relationships</span>
     </div>
+    <div className="mockAboutSignature"><img src="/Handwritten%20Sig.jpg" alt="Zach's handwritten signature" loading="lazy" decoding="async"/></div>
     <a className="mockRedBtn mockAboutCta" href="#contact">Work With Samson <ArrowRight size={17}/></a>
   </div>
   <div className="mockAboutMedia">
