@@ -8,15 +8,80 @@ const services=[{name:'Residential Homes',img:'/Residential%20Homes.png',desc:'C
 const videos: {name:string;img:string;youtubeId?:string}[]=[{name:'CARMEL COUNTRY CLUB',img:'/1021%20(2)-Cover.jpg',youtubeId:'g4onoyqjLv4'},{name:'$14 MILLION MANSION',img:'/Mansion%20POV%20Slattery-Cover.jpg',youtubeId:'W3kXIDsKGtc'},{name:'COMMERCIAL STOREFRONT',img:'/Commercial%20Store%20Front-Cover.jpg',youtubeId:'avdkKhzj1qs'},{name:'$4.7 MILLION HOME — INTERIOR DETAIL',img:'/4.7%20Million%20Dollar%20Home%20Cover.jpg',youtubeId:'9yBsoffK3Nw'},{name:'$4.5 MILLION HOME',img:'/%244.5%20Million%20Home-Cover.jpg',youtubeId:'MAMio9fC26c'},{name:'$3.4 MILLION HOME',img:'/%243.4%20Million%20Home-Cover.jpg',youtubeId:'ugxOxgmcm3g'},{name:'$2.5 MILLION HOME',img:'/%242.5%20Million%20Dollar%20Home-Cover.jpg',youtubeId:'bQy_nXQYnSo'},{name:'$1.7 MILLION HOME',img:'/%241.7%20Million%20Home-Cover.jpg',youtubeId:'k2gaQRM7In4'},{name:'$1.5 MILLION HOME',img:'/%241.5%20Million%20Dollar%20Home-Cover.jpg',youtubeId:'yaf29e2TusM'},{name:'$1.3 MILLION HOME',img:'/%241.3%20Million%20Home-Cover.jpg',youtubeId:'YzOJTUiOkQ4'},{name:'$1 MILLION HOME',img:'/%241%20Million%20Home-Cover.jpg',youtubeId:'QWvdpQKI2dk'}];
 const googleReviewsUrl='https://maps.google.com/maps?cid=1169625489972585955';
 const customerReviews=[
-  {name:'Philip Stokes',text:'I recently hired Samson to clean the windows at both my home and office, and I couldn’t be more impressed.'},
-  {name:'Don Stamas',text:'Since our initial experience, we have continued to hire them for our office as well as our home and referred them to friends.'},
-  {name:'Sonia Cleven',text:'I cannot recommend Samson Window Cleaning enough. Zach and his team are thorough, clean, neat, polite and professional!'},
-  {name:'Grace Jackson',text:'I schedule with him every year and am always impressed when he is finished.'}
+  {
+    "name": "Don Stamas",
+    "text": "…The communication was on point from scheduling to reminders to invoicing. Since our initial experience, we have continued to hire them for our office as well as our home and referred them to friends.…"
+  },
+  {
+    "name": "Philip Stokes",
+    "text": "I recently hired Samson to clean the windows at both my home and office, and I couldn’t be more impressed.…"
+  },
+  {
+    "name": "Kamaro Man",
+    "text": "Great group to use for window cleaning. They cleaned my storefront on a local business in Charlotte NC and i would recommend them to everyone."
+  },
+  {
+    "name": "Mindy Sypher",
+    "text": "…He was at my clients home for about 5 hours and got every window inside and outside.…"
+  },
+  {
+    "name": "Heather King",
+    "text": "Great company, from start to finish. Very responsive, shows up when they say they will, stick to the estimate and do an excellent job. My windows have never looked better. Couldn’t recommend them any more highly."
+  },
+  {
+    "name": "Grace Jackson",
+    "text": "I highly recommend Zach. He is professional, punctual and is meticulous with his work. I schedule with him every year and am always impressed when he is finished."
+  },
+  {
+    "name": "Patrick Wilson",
+    "text": "…We are on his regular schedule, coming twice/yr and he even gives a discount for that!…"
+  },
+  {
+    "name": "Eli Walker",
+    "text": "…Zach was incredibly prompt, arriving exactly when he said he would, and he carried himself with the utmost professionalism throughout the entire job. The windows looked flawless when he was done, crystal clear and streak-free.…"
+  },
+  {
+    "name": "Sonia Cleven",
+    "text": "I cannot recommend Samson Window Cleaning enough. Zach and his team are thorough, clean, neat, polite and professional!"
+  },
+  {
+    "name": "Scott Lowe (Scott and Lee Ann)",
+    "text": "Couldn’t ask for a more professional group of guys. Zach and crew did an amazing job on our windows and exterior trim. Very punctual and communication was off the charts."
+  },
+  {
+    "name": "Sandy Andrews",
+    "text": "…They are thorough, use clean tools, and leave the windows sparkling clean.…"
+  },
+  {
+    "name": "Marc Rinaldi",
+    "text": "Very professional highly satisfied with the service provided. Samson was easy to work with and conducted his business efficiently and effectively. Will definitely be a repeat customer."
+  }
 ];
 const email=process.env.NEXT_PUBLIC_CONTACT_EMAIL || 'zach@samsonwindowcleaning.com';
 const contact=(subject='Window cleaning service')=>{window.location.href='mailto:'+email+'?subject='+encodeURIComponent('Samson — '+subject)+'&body='+encodeURIComponent('Hello Samson,\n\nI would like to request service.\nProperty address:\nWindow count:\nService frequency:\nPhone:\n')};
 export default function Home(){const [open,setOpen]=useState(false);const [activeVideo,setActiveVideo]=useState<string|null>(null);
 const videoRailRef=useRef<HTMLDivElement>(null);
+const reviewRailRef=useRef<HTMLDivElement>(null);
+const [reviewScroll,setReviewScroll]=useState({left:false,right:true});
+const syncReviewScroll=()=>{
+  const rail=reviewRailRef.current;
+  if(!rail)return;
+  setReviewScroll({left:rail.scrollLeft>3,right:rail.scrollLeft+rail.clientWidth<rail.scrollWidth-3});
+};
+useEffect(()=>{
+  syncReviewScroll();
+  window.addEventListener('resize',syncReviewScroll);
+  return()=>window.removeEventListener('resize',syncReviewScroll);
+},[]);
+const scrollReviews=(direction:-1|1)=>{
+  const rail=reviewRailRef.current;
+  if(!rail)return;
+  const card=rail.querySelector<HTMLElement>('.mockReviewCard');
+  const gap=Number.parseFloat(window.getComputedStyle(rail).columnGap)||14;
+  const distance=(card?.offsetWidth ?? rail.clientWidth*.8)+gap;
+  rail.scrollBy({left:direction*distance,behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});
+};
+
 const [videoScroll,setVideoScroll]=useState({left:false,right:true});
 const syncVideoScroll=()=>{
   const rail=videoRailRef.current;
@@ -72,7 +137,14 @@ useEffect(()=>{if(!activeVideo)return;const previous=document.body.style.overflo
       <small>178 Google reviews <ArrowRight size={13}/></small>
     </a>
   </div>
-  <div className="mockReviewsGrid">
+  <div className="mockVideoToolbar mockReviewsToolbar">
+    <span>Scroll to read more customer reviews</span>
+    <div className="mockVideoArrows">
+      <button type="button" aria-label="Scroll reviews left" aria-controls="samson-review-strip" onClick={()=>scrollReviews(-1)} disabled={!reviewScroll.left}><ChevronLeft size={19}/></button>
+      <button type="button" aria-label="Scroll reviews right" aria-controls="samson-review-strip" onClick={()=>scrollReviews(1)} disabled={!reviewScroll.right}><ChevronRight size={19}/></button>
+    </div>
+  </div>
+  <div id="samson-review-strip" className="mockReviewsGrid" role="region" aria-label="Google customer review carousel" tabIndex={0} ref={reviewRailRef} onScroll={syncReviewScroll}>
     {customerReviews.map(review=><article key={review.name} className="mockReviewCard">
       <div className="mockReviewStars" aria-label="5 out of 5 stars">{Array.from({length:5},(_,i)=><Star key={i} size={14} fill="currentColor"/>)}</div>
       <blockquote>“{review.text}”</blockquote>
