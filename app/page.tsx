@@ -1,11 +1,18 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
-import { ArrowRight, Check, Menu, X, Play, Gem, ShieldCheck, CalendarDays, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ArrowRight, Check, Menu, X, Play, Gem, ShieldCheck, CalendarDays, ChevronLeft, ChevronRight, Star } from 'lucide-react';
 
 const tiers=[{name:'Essential',range:'Up to 25 windows',price:149},{name:'Standard',range:'26–40 windows',price:249},{name:'Premium',range:'41–60 windows',price:349},{name:'Executive',range:'61–80 windows',price:449},{name:'Elite',range:'81–100 windows',price:549}];
 const plans=[{name:'One-Time',freq:'Single visit',discount:'Standard price'},{name:'Silver',freq:'Every 6 months',discount:'10% off'},{name:'Gold',freq:'Quarterly',discount:'15% off'},{name:'Platinum',freq:'Every 2 months',discount:'15% off'},{name:'Black',freq:'Monthly',discount:'20% off'}];
 const services=[{name:'Residential Homes',img:'/Residential%20Homes.png',desc:'Custom homes, luxury properties, and estate maintenance.'},{name:'Storefronts',img:'/Storefront%20for%20exterior%20window%20cleanng%20section.png',desc:'Retail, restaurants, and small businesses.'},{name:'HOAs & Townhomes',img:'/HOAs%20and%20TownHomes.png',desc:'Keep your community looking its best with scheduled cleanings.'},{name:'Commercial Properties',img:'/Commercial%20Properties.png',desc:'Office buildings, medical, schools, and more.'}];
 const videos: {name:string;img:string;youtubeId?:string}[]=[{name:'CARMEL COUNTRY CLUB',img:'/1021%20(2)-Cover.jpg',youtubeId:'g4onoyqjLv4'},{name:'$14 MILLION MANSION',img:'/Mansion%20POV%20Slattery-Cover.jpg',youtubeId:'W3kXIDsKGtc'},{name:'COMMERCIAL STOREFRONT',img:'/Commercial%20Store%20Front-Cover.jpg',youtubeId:'avdkKhzj1qs'},{name:'$4.7 MILLION HOME — INTERIOR DETAIL',img:'/4.7%20Million%20Dollar%20Home%20Cover.jpg',youtubeId:'9yBsoffK3Nw'},{name:'$4.5 MILLION HOME',img:'/%244.5%20Million%20Home-Cover.jpg',youtubeId:'MAMio9fC26c'},{name:'$3.4 MILLION HOME',img:'/%243.4%20Million%20Home-Cover.jpg',youtubeId:'ugxOxgmcm3g'},{name:'$2.5 MILLION HOME',img:'/%242.5%20Million%20Dollar%20Home-Cover.jpg',youtubeId:'bQy_nXQYnSo'},{name:'$1.7 MILLION HOME',img:'/%241.7%20Million%20Home-Cover.jpg',youtubeId:'k2gaQRM7In4'},{name:'$1.5 MILLION HOME',img:'/%241.5%20Million%20Dollar%20Home-Cover.jpg',youtubeId:'yaf29e2TusM'},{name:'$1.3 MILLION HOME',img:'/%241.3%20Million%20Home-Cover.jpg',youtubeId:'YzOJTUiOkQ4'},{name:'$1 MILLION HOME',img:'/%241%20Million%20Home-Cover.jpg',youtubeId:'QWvdpQKI2dk'}];
+const googleReviewsUrl='https://maps.google.com/maps?cid=1169625489972585955';
+const customerReviews=[
+  {name:'Philip Stokes',text:'I recently hired Samson to clean the windows at both my home and office, and I couldn’t be more impressed.'},
+  {name:'Don Stamas',text:'Since our initial experience, we have continued to hire them for our office as well as our home and referred them to friends.'},
+  {name:'Sonia Cleven',text:'I cannot recommend Samson Window Cleaning enough. Zach and his team are thorough, clean, neat, polite and professional!'},
+  {name:'Grace Jackson',text:'I schedule with him every year and am always impressed when he is finished.'}
+];
 const email=process.env.NEXT_PUBLIC_CONTACT_EMAIL || 'zach@samsonwindowcleaning.com';
 const contact=(subject='Window cleaning service')=>{window.location.href='mailto:'+email+'?subject='+encodeURIComponent('Samson — '+subject)+'&body='+encodeURIComponent('Hello Samson,\n\nI would like to request service.\nProperty address:\nWindow count:\nService frequency:\nPhone:\n')};
 export default function Home(){const [open,setOpen]=useState(false);const [activeVideo,setActiveVideo]=useState<string|null>(null);
@@ -52,6 +59,28 @@ useEffect(()=>{if(!activeVideo)return;const previous=document.body.style.overflo
   </div>
 </section>
 {activeVideo&&<div className="mockVideoOverlay" role="presentation" onClick={()=>setActiveVideo(null)}><div className="mockVideoDialog" role="dialog" aria-modal="true" aria-label="Samson window cleaning video" onClick={event=>event.stopPropagation()}><div className="mockVideoDialogTop"><strong>{videos.find(v=>v.youtubeId===activeVideo)?.name ?? 'SAMSON REAL RESULTS'}</strong><button type="button" className="mockVideoClose" onClick={()=>setActiveVideo(null)} aria-label="Close video"><X size={24}/></button></div><div className="mockVideoFrame"><iframe title={(videos.find(v=>v.youtubeId===activeVideo)?.name ?? 'Real Results')+' | Samson Professional Window Cleaning'} src={'https://www.youtube-nocookie.com/embed/'+activeVideo+'?autoplay=1&rel=0'} allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen/></div><a href={'https://www.youtube.com/watch?v='+activeVideo} target="_blank" rel="noopener noreferrer" className="mockVideoYouTubeLink">Watch on YouTube if playback is unavailable</a></div></div>}
+<section className="mockReviews" id="reviews" aria-labelledby="samson-reviews-title">
+  <div className="mockReviewsHeading">
+    <div>
+      <p className="mockEyebrow">Google Reviews</p>
+      <h2 id="samson-reviews-title">Trusted by Our Customers</h2>
+      <p>Real feedback from homeowners and businesses we've served.</p>
+    </div>
+    <a href={googleReviewsUrl} target="_blank" rel="noopener noreferrer" className="mockGoogleRating" aria-label="Read all Samson Google reviews, rated 4.9 out of 5">
+      <strong>4.9 <span>/ 5</span></strong>
+      <span className="mockGoogleRatingStars" aria-hidden="true">{Array.from({length:5},(_,i)=><Star key={i} size={14} fill="currentColor"/>)}</span>
+      <small>178 Google reviews <ArrowRight size={13}/></small>
+    </a>
+  </div>
+  <div className="mockReviewsGrid">
+    {customerReviews.map(review=><article key={review.name} className="mockReviewCard">
+      <div className="mockReviewStars" aria-label="5 out of 5 stars">{Array.from({length:5},(_,i)=><Star key={i} size={14} fill="currentColor"/>)}</div>
+      <blockquote>“{review.text}”</blockquote>
+      <p><strong>{review.name}</strong><span>Google review</span></p>
+    </article>)}
+  </div>
+  <a className="mockReviewsReadAll" href={googleReviewsUrl} target="_blank" rel="noopener noreferrer">Read more customer reviews on Google <ArrowRight size={16}/></a>
+</section>
 <section className="mockClose" id="contact"><div><h2>Ready for Cleaner Windows?</h2><p>Professional. Reliable. High-End Results.</p></div><button className="mockRedBtn" onClick={()=>contact()}>Book Your Service <ArrowRight size={19}/></button></section>
 </main><footer className="mockFooter" id="about"><div className="mockFooterBrand"><img src="/Samson%20Professional%20Window%20Cleaning%20Logo.png" alt="Samson Professional Window Cleaning"/><span>“Where Strength Meets Shine”</span></div><div><a href="https://www.instagram.com/samsoncleans/" target="_blank" rel="noopener noreferrer">Instagram</a><a href="https://www.youtube.com/@samsoncleans" target="_blank" rel="noopener noreferrer">YouTube</a><a href={'mailto:'+email}>Contact</a></div></footer>
 </>}
