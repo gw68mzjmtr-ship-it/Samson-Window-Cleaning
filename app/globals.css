@@ -1044,3 +1044,64 @@ body{font-family:var(--samson-body-font)}
   .mockAboutPrinciples{gap:11px 17px}
   .mockAboutCommercial{width:min(100%,275px)}
 }
+
+
+/* Samson new commercial hero asset.
+   Its mockup text/logo are baked into the PNG. Darken the left image area
+   so all readable headline text, logo, and CTAs come from the actual page. */
+.mockHeroPic{
+  inset:0;
+  background-image:url('/Hero%20Commercial.png');
+  background-size:cover;
+  background-position:right center;
+  background-repeat:no-repeat;
+  opacity:1;
+}
+.mockHeroShade{
+  background:linear-gradient(90deg,
+    #030405 0%,
+    #030405 42%,
+    rgba(3,4,5,.985) 56%,
+    rgba(3,4,5,.78) 68%,
+    rgba(3,4,5,.06) 89%);
+}
+.mockHero .mockEyebrow.white{
+  font-size:11px;
+  letter-spacing:2.3px;
+  line-height:1.5;
+  max-width:565px;
+}
+.mockHeroContent>p:not(.mockEyebrow){
+  max-width:515px;
+}
+@media(max-width:1050px) and (min-width:741px){
+  .mockHeroPic{
+    background-size:cover;
+    background-position:right center;
+  }
+  .mockHeroShade{
+    background:linear-gradient(90deg,
+      #030405 0%,
+      rgba(3,4,5,.97) 49%,
+      rgba(3,4,5,.55) 75%,
+      rgba(3,4,5,.14) 100%);
+  }
+}
+@media(max-width:740px){
+  .mockHeroPic{
+    inset:0;
+    background-size:cover;
+    background-position:right center;
+    opacity:1;
+  }
+  .mockHeroShade{
+    background:linear-gradient(90deg,rgba(3,4,5,.94) 0%,rgba(3,4,5,.78) 58%,rgba(3,4,5,.61) 100%);
+  }
+  .mockHero .mockEyebrow.white{
+    font-size:10px;
+    letter-spacing:1.4px;
+  }
+  .mockHeroContent>p:not(.mockEyebrow){
+    max-width:490px;
+  }
+}
