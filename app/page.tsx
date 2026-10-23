@@ -155,30 +155,28 @@ useEffect(()=>{if(!activeVideo)return;const previous=document.body.style.overflo
 </section>
 <section className="mockAbout" id="about" aria-labelledby="samson-about-heading">
   <div className="mockAboutCopy">
-    <p className="mockEyebrow">Meet the Owner</p>
-    <h2 id="samson-about-heading">THE MAN<br/>BEHIND <span>SAMSON.</span></h2>
+    <p className="mockEyebrow">About Samson</p>
+    <h2 id="samson-about-heading">THE SAMSON <span>STANDARD.</span></h2>
     <div className="mockAboutExperience" aria-label="15 years in business"><strong>15</strong><span>YEARS IN<br/>BUSINESS</span></div>
-    <p className="mockAboutIntro">I'm Zach — the owner behind Samson Professional Window Cleaning.</p>
-    <p>For 15 years, I've built Samson around a simple standard: show up prepared, respect the property, and take pride in the finished work. Whether it's a storefront or a standout home, the details matter.</p>
-    <p>Today, my focus is dependable exterior window cleaning for businesses, property managers, and homeowners who value quality — with convenient recurring service and premium interior cleaning available when needed.</p>
+    <p className="mockAboutIntro">Built on experience. Driven by higher standards.</p>
+    <p>For 15 years, Samson Professional Window Cleaning has built its reputation on dependable service, attention to detail, and professional results.</p>
+    <p>From commercial storefronts and managed properties to exceptional residential homes, our focus is consistent exterior window cleaning, clear communication, and service you can count on. Scheduled maintenance keeps your property looking its best, with premium interior cleaning available as an add-on.</p>
     <div className="mockAboutPrinciples">
-      <span><Check size={16}/> Owner-led accountability</span>
-      <span><Check size={16}/> Reliable, professional service</span>
-      <span><Check size={16}/> Built for long-term relationships</span>
+      <span><Check size={16}/> Consistent standards</span>
+      <span><Check size={16}/> Dependable scheduling</span>
+      <span><Check size={16}/> Long-term relationships</span>
     </div>
-    <div className="mockAboutSignature"><img src="/Handwritten%20Sig.jpg" alt="Zach's handwritten signature" loading="lazy" decoding="async"/></div>
     <a className="mockRedBtn mockAboutCta" href="#contact">Work With Samson <ArrowRight size={17}/></a>
   </div>
   <div className="mockAboutMedia">
+    <figure className="mockAboutCommercial">
+      <img src="/Issaih%20Commercial.jpeg" alt="Samson window cleaning work on exterior commercial glass using a water-fed pole" loading="lazy"/>
+      <figcaption>COMMERCIAL EXTERIOR WINDOW CLEANING</figcaption>
+    </figure>
     <figure className="mockAboutHistory">
-      <img src="/Trailer.jpeg" alt="Zach and Pat standing beside Samson's branded window-cleaning trailer in an earlier chapter of the business" loading="lazy"/>
-      <figcaption>FROM THE EARLY DAYS <span>— ZACH &amp; PAT</span></figcaption>
+      <div className="mockAboutHistoryBrand" role="img" aria-label="The Samson logo on the company's branded trailer from its early years"/>
+      <figcaption>OUR ROOTS <span>— 15 YEARS IN BUSINESS</span></figcaption>
     </figure>
-    <figure className="mockAboutPortrait">
-      <img src="/samson-window-cleaning-team-member-Zach.jpg" alt="Zach, owner of Samson Professional Window Cleaning, in his Samson polo and cap" loading="lazy"/>
-      <figcaption>ZACH <span>OWNER · SAMSON PROFESSIONAL</span></figcaption>
-    </figure>
-    <p className="mockAboutPhotoNote">Real people. Real work. A reputation built in the field.</p>
   </div>
 </section>
 <section className="mockClose" id="contact"><div><h2>Ready for Cleaner Windows?</h2><p>Professional. Reliable. High-End Results.</p></div><button className="mockRedBtn" onClick={()=>contact()}>Book Your Service <ArrowRight size={19}/></button></section>
