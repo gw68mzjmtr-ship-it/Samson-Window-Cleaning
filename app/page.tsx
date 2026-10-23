@@ -103,26 +103,21 @@ const scrollVideos=(direction:-1|1)=>{
 useEffect(()=>{if(!activeVideo)return;const previous=document.body.style.overflow;document.body.style.overflow='hidden';const onEscape=(event:KeyboardEvent)=>{if(event.key==='Escape')setActiveVideo(null)};window.addEventListener('keydown',onEscape);return()=>{document.body.style.overflow=previous;window.removeEventListener('keydown',onEscape)}},[activeVideo]);return <>
 <header className="mockHeader"><a className="mockLogo" href="#home"><img src="/Samson%20Professional%20Window%20Cleaning%20Logo.png" alt="Samson Professional Window Cleaning"/><span className="mockLogoSlogan">“Where Strength Meets Shine”</span></a><nav className={open?'mockNav open':'mockNav'}><a className="active" href="#home" onClick={()=>setOpen(false)}>Home</a><a href="#services" onClick={()=>setOpen(false)}>Services</a><a href="#pricing" onClick={()=>setOpen(false)}>Pricing</a><a href="#commercial" onClick={()=>setOpen(false)}>Commercial</a><a href="#work" onClick={()=>setOpen(false)}>Our Work</a><a href="#about" onClick={()=>setOpen(false)}>About</a></nav><a href="#contact" className="mockRedBtn mockHeaderCta">Book Service <ArrowRight size={18}/></a><button aria-label="Toggle menu" className="mockMenu" onClick={()=>setOpen(!open)}>{open?<X/>:<Menu/>}</button></header>
 <main id="home">
-<section className="mockHero mockHeroArtwork">
-  <img className="mockHeroArtworkImage" src="/Hero%20Commercial.png" alt="Samson Professional Window Cleaning. Residential and commercial exterior window cleaning. Clean Windows. Higher Standards." fetchPriority="high"/>
-  <div className="mockHeroArtworkHotspots" aria-label="Homepage quick links">
-    <a className="mockHeroArtworkBook" href="#contact" aria-label="Book Samson window cleaning service"><span className="mockHeroVisuallyHidden">Book Service</span></a>
-    <a className="mockHeroArtworkWork" href="#work" aria-label="View Samson project videos"><span className="mockHeroVisuallyHidden">View Our Work</span></a>
-  </div>
-  <div className="mockHeroPic" aria-hidden="true"/>
-  <div className="mockHeroShade" aria-hidden="true"/>
+<section className="mockHero mockHeroPhoto">
+  <img className="mockHeroPhotoImage" src="/Professional%20Window%20Cleaner%20at%20Work.png" alt="Samson technician cleaning commercial glass with a water-fed pole" fetchPriority="high" />
+  <div className="mockHeroPhotoShade" aria-hidden="true"/>
   <div className="mockHeroContent">
     <p className="mockEyebrow white">Residential &amp; Commercial Window Cleaning</p>
-    <h1>Clean Windows<br/><em>Higher Standards</em></h1>
+    <h1>Clean Windows.<br/><em>Higher Standards.</em></h1>
     <p>Professional exterior window cleaning for residential homes, storefronts, HOAs, townhomes, and commercial properties throughout the Concord and Lake Norman area.</p>
+    <div className="mockTrust">
+      <span><ShieldCheck/>15 Years<br/>In Business</span>
+      <span><Gem/>Residential &amp;<br/>Commercial Experts</span>
+      <span><Star/>4.9-Star<br/>Google Rating</span>
+    </div>
     <div className="mockButtons">
       <a href="#contact" className="mockRedBtn">Book Service <ArrowRight size={19}/></a>
       <a href="#work" className="mockOutlineBtn">View Our Work <Play size={17} fill="currentColor"/></a>
-    </div>
-    <div className="mockTrust">
-      <span><ShieldCheck/>15 Years<br/>In Business</span>
-      <span><Gem/>Residential &amp;<br/>Commercial</span>
-      <span><Star/>4.9-Star<br/>Google Rating</span>
     </div>
   </div>
 </section>
