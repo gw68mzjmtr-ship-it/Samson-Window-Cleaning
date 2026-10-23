@@ -1211,30 +1211,104 @@ body{font-family:var(--samson-body-font)}
 }
 
 
-/* Samson hero framing pass — more visible pole and glass, tighter header-to-headline
-   spacing, and genuine text-over-photo treatment at narrower window widths. */
-@media(min-width:901px){
+/* Samson hero alignment: less empty space beneath the booking buttons,
+   with the technician's right hip near the right edge and the entire pole visible.
+   Keep the real headline and calls to action overlaid on the photo. */
+@media(min-width:521px){
+  .mockHero.mockHeroPhoto{
+    display:block;
+    position:relative;
+    height:clamp(510px,43vw,625px);
+    min-height:0;
+    overflow:hidden;
+    isolation:isolate;
+    background:#030405;
+  }
   .mockHeroPhotoImage{
-    width:96%;
+    position:absolute;
+    top:0;
+    right:-4.5%;
+    left:auto;
+    bottom:auto;
+    width:auto;
     max-width:none;
-    margin-left:auto;
-    height:auto;
+    height:100%;
+    margin:0;
     object-fit:contain;
+    object-position:center;
+  }
+  .mockHeroPhotoShade{
+    display:block;
+    position:absolute;
+    inset:0;
+    z-index:1;
+    background:linear-gradient(90deg,
+      rgba(2,4,7,.97) 0%,
+      rgba(2,4,7,.93) 22%,
+      rgba(2,4,7,.79) 43%,
+      rgba(2,4,7,.39) 65%,
+      rgba(2,4,7,.05) 89%);
   }
   .mockHeroPhoto .mockHeroContent{
+    position:absolute;
+    inset:0;
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
     justify-content:flex-start;
-    padding-top:clamp(30px,3vw,60px);
-    padding-bottom:24px;
+    width:100%;
+    max-width:none;
+    min-height:0;
+    margin:0;
+    padding:clamp(22px,2.7vw,38px) var(--samson-layout-edge,45px) 12px;
+    z-index:2;
+    background:transparent;
+  }
+  .mockHeroPhoto .mockHeroContent h1{
+    font-size:clamp(49px,5.75vw,91px);
+    line-height:1.04;
+  }
+  .mockHeroPhoto .mockHeroContent>p:not(.mockEyebrow){
+    max-width:min(600px,62vw);
+    margin-bottom:14px;
+  }
+  .mockHeroPhoto .mockTrust{
+    max-width:700px;
+    margin-top:4px;
+    gap:clamp(12px,1.6vw,23px);
+  }
+  .mockHeroPhoto .mockButtons{
+    margin-top:19px;
   }
 }
-@media(max-width:900px){
+@media(min-width:521px) and (max-width:900px){
+  .mockHero.mockHeroPhoto{
+    height:clamp(505px,62vw,565px);
+    min-height:0;
+  }
+  .mockHeroPhoto .mockHeroContent{
+    padding-top:24px;
+    padding-bottom:10px;
+  }
+  .mockHeroPhoto .mockHeroContent h1{
+    font-size:clamp(44px,6.9vw,62px);
+  }
+  .mockHeroPhoto .mockHeroContent>p:not(.mockEyebrow){
+    max-width:min(485px,72vw);
+    font-size:13px;
+  }
+  .mockHeroPhoto .mockTrust span{font-size:10px}
+  .mockHeroPhoto .mockButtons a{min-width:175px}
+}
+@media(max-width:520px){
   .mockHero.mockHeroPhoto{
     position:relative;
     display:flex;
     flex-direction:column;
-    min-height:clamp(570px,78vw,680px);
     height:auto;
+    min-height:655px;
     isolation:isolate;
+    background:#030405;
   }
   .mockHeroPhotoImage{
     position:absolute;
@@ -1244,57 +1318,52 @@ body{font-family:var(--samson-body-font)}
     height:100%;
     margin:0;
     object-fit:cover;
-    object-position:61% center;
+    object-position:66% center;
   }
   .mockHeroPhotoShade{
     display:block;
     position:absolute;
     inset:0;
     z-index:1;
-    background:linear-gradient(90deg,
-      rgba(2,4,7,.95) 0%,
-      rgba(2,4,7,.83) 38%,
-      rgba(2,4,7,.58) 67%,
-      rgba(2,4,7,.22) 100%);
+    background:
+      linear-gradient(0deg,rgba(2,4,7,.75),rgba(2,4,7,.08) 60%,rgba(2,4,7,.28)),
+      linear-gradient(90deg,rgba(2,4,7,.9),rgba(2,4,7,.68) 65%,rgba(2,4,7,.35));
   }
   .mockHeroPhoto .mockHeroContent{
     position:relative;
     inset:auto;
     z-index:2;
     flex:1;
-    width:100%;
-    min-height:0;
     display:flex;
+    flex-direction:column;
     align-items:flex-start;
     justify-content:flex-start;
-    padding:clamp(27px,3.8vw,42px) var(--samson-layout-edge,22px) 35px;
+    width:100%;
+    max-width:none;
+    margin:0;
+    padding:22px 18px 25px;
     background:transparent;
-  }
-  .mockHeroPhoto .mockHeroContent h1{
-    font-size:clamp(43px,7.1vw,66px);
-  }
-  .mockHeroPhoto .mockHeroContent>p:not(.mockEyebrow){
-    max-width:min(485px,76vw);
-  }
-  .mockHeroPhoto .mockTrust{
-    max-width:530px;
-  }
-}
-@media(max-width:520px){
-  .mockHero.mockHeroPhoto{min-height:690px}
-  .mockHeroPhotoImage{object-position:59% center}
-  .mockHeroPhotoShade{
-    background:
-      linear-gradient(0deg,rgba(2,4,7,.85) 0%,rgba(2,4,7,.08) 60%,rgba(2,4,7,.32) 100%),
-      linear-gradient(90deg,rgba(2,4,7,.87) 0%,rgba(2,4,7,.66) 63%,rgba(2,4,7,.38) 100%);
-  }
-  .mockHeroPhoto .mockHeroContent{
-    padding:24px 18px 34px;
   }
   .mockHeroPhoto .mockHeroContent h1{
     font-size:clamp(39px,10.25vw,53px);
   }
   .mockHeroPhoto .mockHeroContent>p:not(.mockEyebrow){
     max-width:100%;
+    margin-bottom:13px;
+  }
+  .mockHeroPhoto .mockTrust{
+    max-width:100%;
+    gap:12px;
+    margin-top:3px;
+  }
+  .mockHeroPhoto .mockTrust span{font-size:10px}
+  .mockHeroPhoto .mockButtons{
+    width:100%;
+    margin-top:18px;
+    gap:10px;
+  }
+  .mockHeroPhoto .mockButtons a{
+    flex:1 1 160px;
+    min-width:0;
   }
 }
