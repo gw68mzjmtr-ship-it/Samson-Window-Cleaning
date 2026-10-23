@@ -153,6 +153,32 @@ useEffect(()=>{if(!activeVideo)return;const previous=document.body.style.overflo
   </div>
   <a className="mockReviewsReadAll" href={googleReviewsUrl} target="_blank" rel="noopener noreferrer">Read more customer reviews on Google <ArrowRight size={16}/></a>
 </section>
+<section className="mockAbout" id="about" aria-labelledby="samson-about-heading">
+  <div className="mockAboutCopy">
+    <p className="mockEyebrow">Meet the Owner</p>
+    <h2 id="samson-about-heading">THE MAN<br/>BEHIND <span>SAMSON.</span></h2>
+    <p className="mockAboutIntro">I'm Zach — the owner behind Samson Professional Window Cleaning.</p>
+    <p>I built Samson around a simple standard: show up prepared, respect the property, and take pride in the finished work. Whether it's a storefront or a standout home, the details matter.</p>
+    <p>Today, my focus is dependable exterior window cleaning for businesses, property managers, and homeowners who value quality — with convenient recurring service and premium interior cleaning available when needed.</p>
+    <div className="mockAboutPrinciples">
+      <span><Check size={16}/> Owner-led accountability</span>
+      <span><Check size={16}/> Reliable, professional service</span>
+      <span><Check size={16}/> Built for long-term relationships</span>
+    </div>
+    <a className="mockRedBtn mockAboutCta" href="#contact">Work With Samson <ArrowRight size={17}/></a>
+  </div>
+  <div className="mockAboutMedia">
+    <figure className="mockAboutHistory">
+      <img src="/Trailer.jpeg" alt="Zach and Pat standing beside Samson's branded window-cleaning trailer in an earlier chapter of the business" loading="lazy"/>
+      <figcaption>FROM THE EARLY DAYS <span>— ZACH &amp; PAT</span></figcaption>
+    </figure>
+    <figure className="mockAboutPortrait">
+      <img src="/samson-window-cleaning-team-member-Zach.jpg" alt="Zach, owner of Samson Professional Window Cleaning, in his Samson polo and cap" loading="lazy"/>
+      <figcaption>ZACH <span>OWNER · SAMSON PROFESSIONAL</span></figcaption>
+    </figure>
+    <p className="mockAboutPhotoNote">Real people. Real work. A reputation built in the field.</p>
+  </div>
+</section>
 <section className="mockClose" id="contact"><div><h2>Ready for Cleaner Windows?</h2><p>Professional. Reliable. High-End Results.</p></div><button className="mockRedBtn" onClick={()=>contact()}>Book Your Service <ArrowRight size={19}/></button></section>
-</main><footer className="mockFooter" id="about"><div className="mockFooterBrand"><img src="/Samson%20Professional%20Window%20Cleaning%20Logo.png" alt="Samson Professional Window Cleaning"/><span>“Where Strength Meets Shine”</span></div><div><a href="https://www.instagram.com/samsoncleans/" target="_blank" rel="noopener noreferrer">Instagram</a><a href="https://www.youtube.com/@samsoncleans" target="_blank" rel="noopener noreferrer">YouTube</a><a href={'mailto:'+email}>Contact</a></div></footer>
+</main><footer className="mockFooter"><div className="mockFooterBrand"><img src="/Samson%20Professional%20Window%20Cleaning%20Logo.png" alt="Samson Professional Window Cleaning"/><span>“Where Strength Meets Shine”</span></div><div><a href="https://www.instagram.com/samsoncleans/" target="_blank" rel="noopener noreferrer">Instagram</a><a href="https://www.youtube.com/@samsoncleans" target="_blank" rel="noopener noreferrer">YouTube</a><a href={'mailto:'+email}>Contact</a></div></footer>
 </>}
