@@ -1209,3 +1209,92 @@ body{font-family:var(--samson-body-font)}
   .mockHeroPhoto .mockTrust{gap:13px}
   .mockHeroPhoto .mockTrust span{font-size:10px}
 }
+
+
+/* Samson hero framing pass — more visible pole and glass, tighter header-to-headline
+   spacing, and genuine text-over-photo treatment at narrower window widths. */
+@media(min-width:901px){
+  .mockHeroPhotoImage{
+    width:96%;
+    max-width:none;
+    margin-left:auto;
+    height:auto;
+    object-fit:contain;
+  }
+  .mockHeroPhoto .mockHeroContent{
+    justify-content:flex-start;
+    padding-top:clamp(30px,3vw,60px);
+    padding-bottom:24px;
+  }
+}
+@media(max-width:900px){
+  .mockHero.mockHeroPhoto{
+    position:relative;
+    display:flex;
+    flex-direction:column;
+    min-height:clamp(570px,78vw,680px);
+    height:auto;
+    isolation:isolate;
+  }
+  .mockHeroPhotoImage{
+    position:absolute;
+    inset:0;
+    width:100%;
+    max-width:100%;
+    height:100%;
+    margin:0;
+    object-fit:cover;
+    object-position:61% center;
+  }
+  .mockHeroPhotoShade{
+    display:block;
+    position:absolute;
+    inset:0;
+    z-index:1;
+    background:linear-gradient(90deg,
+      rgba(2,4,7,.95) 0%,
+      rgba(2,4,7,.83) 38%,
+      rgba(2,4,7,.58) 67%,
+      rgba(2,4,7,.22) 100%);
+  }
+  .mockHeroPhoto .mockHeroContent{
+    position:relative;
+    inset:auto;
+    z-index:2;
+    flex:1;
+    width:100%;
+    min-height:0;
+    display:flex;
+    align-items:flex-start;
+    justify-content:flex-start;
+    padding:clamp(27px,3.8vw,42px) var(--samson-layout-edge,22px) 35px;
+    background:transparent;
+  }
+  .mockHeroPhoto .mockHeroContent h1{
+    font-size:clamp(43px,7.1vw,66px);
+  }
+  .mockHeroPhoto .mockHeroContent>p:not(.mockEyebrow){
+    max-width:min(485px,76vw);
+  }
+  .mockHeroPhoto .mockTrust{
+    max-width:530px;
+  }
+}
+@media(max-width:520px){
+  .mockHero.mockHeroPhoto{min-height:690px}
+  .mockHeroPhotoImage{object-position:59% center}
+  .mockHeroPhotoShade{
+    background:
+      linear-gradient(0deg,rgba(2,4,7,.85) 0%,rgba(2,4,7,.08) 60%,rgba(2,4,7,.32) 100%),
+      linear-gradient(90deg,rgba(2,4,7,.87) 0%,rgba(2,4,7,.66) 63%,rgba(2,4,7,.38) 100%);
+  }
+  .mockHeroPhoto .mockHeroContent{
+    padding:24px 18px 34px;
+  }
+  .mockHeroPhoto .mockHeroContent h1{
+    font-size:clamp(39px,10.25vw,53px);
+  }
+  .mockHeroPhoto .mockHeroContent>p:not(.mockEyebrow){
+    max-width:100%;
+  }
+}
