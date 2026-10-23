@@ -956,6 +956,24 @@ body{font-family:var(--samson-body-font)}
 }
 .mockAboutPrinciples>span{display:inline-flex;align-items:center;gap:6px}
 .mockAboutPrinciples svg{color:#f2182b;flex-shrink:0}
+/* Keep Zach's original blue-ink handwriting intact, visually drop the white paper,
+   and let the signature blend into the dark About background without a new asset. */
+.mockAboutSignature{
+  width:min(340px,85%);
+  margin:12px 0 17px;
+  line-height:0;
+}
+.mockAboutSignature img{
+  display:block;
+  width:100%;
+  height:auto;
+  filter:grayscale(1) invert(1) contrast(1.18);
+  mix-blend-mode:screen;
+  opacity:.79;
+}
+@media(max-width:740px){
+  .mockAboutSignature{width:min(295px,87%);margin:9px 0 14px}
+}
 .mockAboutCta{
   display:inline-flex;
   align-items:center;
