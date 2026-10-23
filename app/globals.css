@@ -912,10 +912,10 @@ body{font-family:var(--samson-body-font)}
 }
 
 
-/* Samson owner-led About section — real founder portrait + historic trailer photo. */
+/* The Samson Standard — company-focused About section. */
 .mockAbout{
   display:grid;
-  grid-template-columns:minmax(0,1.03fr) minmax(0,.97fr);
+  grid-template-columns:minmax(0,1.04fr) minmax(0,.96fr);
   align-items:center;
   gap:clamp(30px,5.5vw,82px);
   padding:62px var(--samson-layout-edge) 57px;
@@ -925,9 +925,9 @@ body{font-family:var(--samson-body-font)}
 }
 .mockAboutCopy{min-width:0;max-width:685px}
 .mockAboutCopy h2{
-  font:400 clamp(44px,4.65vw,75px)/1.12 var(--samson-display-font,Impact,sans-serif);
+  font:400 clamp(43px,4.6vw,74px)/1.12 var(--samson-display-font,Impact,sans-serif);
   text-transform:uppercase;
-  margin:0 0 21px;
+  margin:0 0 23px;
   letter-spacing:.15px;
 }
 .mockAboutCopy h2 span{color:#f2182b}
@@ -973,24 +973,6 @@ body{font-family:var(--samson-body-font)}
 }
 .mockAboutPrinciples>span{display:inline-flex;align-items:center;gap:6px}
 .mockAboutPrinciples svg{color:#f2182b;flex-shrink:0}
-/* Keep Zach's original blue-ink handwriting intact, visually drop the white paper,
-   and let the signature blend into the dark About background without a new asset. */
-.mockAboutSignature{
-  width:min(340px,85%);
-  margin:12px 0 17px;
-  line-height:0;
-}
-.mockAboutSignature img{
-  display:block;
-  width:100%;
-  height:auto;
-  filter:grayscale(1) invert(1) contrast(1.18);
-  mix-blend-mode:screen;
-  opacity:.79;
-}
-@media(max-width:740px){
-  .mockAboutSignature{width:min(295px,87%);margin:9px 0 14px}
-}
 .mockAboutCta{
   display:inline-flex;
   align-items:center;
@@ -1000,16 +982,16 @@ body{font-family:var(--samson-body-font)}
   text-decoration:none;
 }
 .mockAboutMedia{
-  display:flex;
-  flex-direction:column;
-  align-items:stretch;
   position:relative;
   min-width:0;
-  min-height:430px;
+  display:flex;
+  align-items:flex-start;
+  flex-direction:column;
+  padding-bottom:8px;
 }
-.mockAboutHistory{
+.mockAboutCommercial{
   width:100%;
-  aspect-ratio:1.65/1;
+  height:clamp(320px,34vw,465px);
   position:relative;
   overflow:hidden;
   border:1px solid #404142;
@@ -1017,67 +999,56 @@ body{font-family:var(--samson-body-font)}
   background:#1a1a1a;
   margin:0;
 }
+.mockAboutCommercial::after,
 .mockAboutHistory::after{
   content:'';
   position:absolute;
   inset:auto 0 0;
-  height:32%;
-  background:linear-gradient(transparent,rgba(0,0,0,.9));
+  height:31%;
+  background:linear-gradient(transparent,rgba(0,0,0,.85));
   pointer-events:none;
 }
-.mockAboutHistory img{
+.mockAboutCommercial img{
+  display:block;
   width:100%;
   height:100%;
-  display:block;
   object-fit:cover;
-  object-position:center 58%;
+  object-position:center 66%;
 }
+.mockAboutCommercial figcaption,
 .mockAboutHistory figcaption{
   position:absolute;
   z-index:1;
   bottom:12px;
-  left:16px;
-  right:14px;
-  font:800 10px/1.35 var(--samson-ui-font,Inter,Arial,sans-serif);
-  letter-spacing:1.2px;
+  left:15px;
+  right:12px;
+  font:800 10px/1.4 var(--samson-ui-font,Inter,Arial,sans-serif);
+  letter-spacing:1.05px;
   color:#fff;
+  text-shadow:0 1px 3px #000;
 }
-.mockAboutHistory figcaption span{color:#c7c7c7}
-.mockAboutPortrait{
+.mockAboutHistory{
   position:relative;
   z-index:2;
-  width:clamp(168px,16vw,205px);
-  margin:-37px 22px 0 auto;
-  overflow:hidden;
+  align-self:flex-end;
+  width:59%;
+  height:clamp(130px,13vw,166px);
+  margin:-66px 18px 0 0;
   border:3px solid #101112;
   border-radius:5px;
   box-shadow:0 12px 30px rgba(0,0,0,.55);
-  background:#18191a;
+  background:#191a1b;
+  overflow:hidden;
 }
-.mockAboutPortrait img{display:block;width:100%;aspect-ratio:1;object-fit:cover}
-.mockAboutPortrait figcaption{
-  display:flex;
-  flex-direction:column;
-  gap:3px;
-  padding:10px 12px 12px;
-  color:#fff;
-  font:400 21px/1.15 var(--samson-display-font,Impact,sans-serif);
-  background:#1a1b1b;
-}
-.mockAboutPortrait figcaption span{
-  font:800 9px/1.4 var(--samson-ui-font,Inter,Arial,sans-serif);
-  color:#bdbdbd;
-  letter-spacing:.6px;
-}
-.mockAboutPhotoNote{
+.mockAboutHistoryBrand{
   position:absolute;
-  left:0;
-  bottom:17px;
-  max-width:calc(100% - 235px);
-  margin:0;
-  font:600 12px/1.7 var(--samson-body-font,Inter,Arial,sans-serif);
-  color:#bcbcbc;
+  inset:0;
+  background-image:url('/Trailer.jpeg');
+  background-repeat:no-repeat;
+  background-size:205% auto;
+  background-position:center 36%;
 }
+.mockAboutHistory figcaption span{color:#d1d1d1}
 @media(max-width:1000px){
   .mockAbout{
     grid-template-columns:1fr;
@@ -1085,8 +1056,10 @@ body{font-family:var(--samson-body-font)}
     padding-top:42px;
     padding-bottom:40px;
   }
-  .mockAboutMedia{width:100%;max-width:650px;min-height:410px}
   .mockAboutCopy{max-width:730px}
+  .mockAboutMedia{width:100%;max-width:650px}
+  .mockAboutCommercial{height:clamp(340px,53vw,465px)}
+  .mockAboutHistory{height:clamp(130px,24vw,166px)}
 }
 @media(max-width:740px){
   .mockAbout{padding:36px var(--samson-layout-edge) 28px}
@@ -1094,14 +1067,11 @@ body{font-family:var(--samson-body-font)}
   .mockAboutCopy>p:not(.mockEyebrow){font-size:13px}
   .mockAboutCopy>.mockAboutIntro{font-size:15px !important}
   .mockAboutPrinciples{gap:11px 17px}
-  .mockAboutMedia{min-height:360px}
-  .mockAboutPortrait{width:155px;margin:-28px 10px 0 auto}
-  .mockAboutPhotoNote{bottom:7px;max-width:calc(100% - 180px);font-size:11px}
+  .mockAboutCommercial{height:clamp(295px,85vw,435px)}
+  .mockAboutHistory{width:64%;height:clamp(125px,32vw,165px);margin:-42px 11px 0 0}
+  .mockAboutHistory figcaption{left:10px;bottom:8px;letter-spacing:.45px;font-size:9px}
 }
 @media(max-width:430px){
-  .mockAboutMedia{min-height:320px}
-  .mockAboutHistory figcaption{font-size:9px;letter-spacing:.5px;bottom:9px;left:10px}
-  .mockAboutPortrait{width:137px;margin:-20px 8px 0 auto}
-  .mockAboutPortrait figcaption{padding:8px}
-  .mockAboutPhotoNote{max-width:calc(100% - 152px);bottom:7px;font-size:10px}
+  .mockAboutHistory{width:72%;height:121px}
+  .mockAboutHistory figcaption{font-size:8px}
 }
