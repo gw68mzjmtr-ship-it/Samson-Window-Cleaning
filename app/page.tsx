@@ -185,12 +185,6 @@ useEffect(()=>{if(!activeVideo)return;const previous=document.body.style.overflo
     </div>
     <a className="mockRedBtn mockAboutCta" href="#contact">Work With Samson <ArrowRight size={17}/></a>
   </div>
-  <div className="mockAboutMedia">
-    <figure className="mockAboutCommercial">
-      <img src="/Elijah%20AI%20redone.png" alt="Samson technician cleaning exterior commercial glass with a water-fed pole" loading="lazy"/>
-      <figcaption>COMMERCIAL EXTERIOR WINDOW CLEANING</figcaption>
-    </figure>
-  </div>
 </section>
 <section className="mockClose" id="contact"><div><h2>Ready for Cleaner Windows?</h2><p>Professional. Reliable. High-End Results.</p></div><button className="mockRedBtn" onClick={()=>contact()}>Book Your Service <ArrowRight size={19}/></button></section>
 </main><footer className="mockFooter"><div className="mockFooterBrand"><img src="/Samson%20Professional%20Window%20Cleaning%20Logo.png" alt="Samson Professional Window Cleaning"/><span>“Where Strength Meets Shine”</span></div><div><a href="https://www.instagram.com/samsoncleans/" target="_blank" rel="noopener noreferrer">Instagram</a><a href="https://www.youtube.com/@samsoncleans" target="_blank" rel="noopener noreferrer">YouTube</a><a href={'mailto:'+email}>Contact</a></div></footer>
