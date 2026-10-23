@@ -910,3 +910,163 @@ body{font-family:var(--samson-body-font)}
 @media(prefers-reduced-motion:reduce){
   .mockReviewsGrid{scroll-behavior:auto}
 }
+
+
+/* Samson owner-led About section — real founder portrait + historic trailer photo. */
+.mockAbout{
+  display:grid;
+  grid-template-columns:minmax(0,1.03fr) minmax(0,.97fr);
+  align-items:center;
+  gap:clamp(30px,5.5vw,82px);
+  padding:62px var(--samson-layout-edge) 57px;
+  background:linear-gradient(120deg,#080909 0%,#101112 60%,#0c0d0e 100%);
+  border-top:1px solid #292a2b;
+  color:#f6f6f6;
+}
+.mockAboutCopy{min-width:0;max-width:685px}
+.mockAboutCopy h2{
+  font:400 clamp(44px,4.65vw,75px)/1.12 var(--samson-display-font,Impact,sans-serif);
+  text-transform:uppercase;
+  margin:0 0 21px;
+  letter-spacing:.15px;
+}
+.mockAboutCopy h2 span{color:#f2182b}
+.mockAboutCopy>p:not(.mockEyebrow){
+  font:400 14px/1.75 var(--samson-body-font,Inter,Arial,sans-serif);
+  color:#c8c8c8;
+  margin:0 0 15px;
+  max-width:645px;
+}
+.mockAboutCopy>.mockAboutIntro{
+  color:#fff !important;
+  font-size:17px !important;
+  line-height:1.6 !important;
+  font-weight:700 !important;
+  margin-bottom:15px !important;
+}
+.mockAboutPrinciples{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px 19px;
+  padding:17px 0 20px;
+  margin-top:13px;
+  border-top:1px solid #303233;
+  font:700 11px/1.4 var(--samson-ui-font,Inter,Arial,sans-serif);
+  color:#ededed;
+}
+.mockAboutPrinciples>span{display:inline-flex;align-items:center;gap:6px}
+.mockAboutPrinciples svg{color:#f2182b;flex-shrink:0}
+.mockAboutCta{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:max-content;
+  margin-top:3px;
+  text-decoration:none;
+}
+.mockAboutMedia{
+  display:flex;
+  flex-direction:column;
+  align-items:stretch;
+  position:relative;
+  min-width:0;
+  min-height:430px;
+}
+.mockAboutHistory{
+  width:100%;
+  aspect-ratio:2.2/1;
+  position:relative;
+  overflow:hidden;
+  border:1px solid #404142;
+  border-radius:5px;
+  background:#1a1a1a;
+  margin:0;
+}
+.mockAboutHistory::after{
+  content:'';
+  position:absolute;
+  inset:auto 0 0;
+  height:32%;
+  background:linear-gradient(transparent,rgba(0,0,0,.9));
+  pointer-events:none;
+}
+.mockAboutHistory img{
+  width:100%;
+  height:100%;
+  display:block;
+  object-fit:cover;
+  object-position:center top;
+}
+.mockAboutHistory figcaption{
+  position:absolute;
+  z-index:1;
+  bottom:12px;
+  left:16px;
+  right:14px;
+  font:800 10px/1.35 var(--samson-ui-font,Inter,Arial,sans-serif);
+  letter-spacing:1.2px;
+  color:#fff;
+}
+.mockAboutHistory figcaption span{color:#c7c7c7}
+.mockAboutPortrait{
+  position:relative;
+  z-index:2;
+  width:clamp(168px,16vw,205px);
+  margin:-37px 22px 0 auto;
+  overflow:hidden;
+  border:3px solid #101112;
+  border-radius:5px;
+  box-shadow:0 12px 30px rgba(0,0,0,.55);
+  background:#18191a;
+}
+.mockAboutPortrait img{display:block;width:100%;aspect-ratio:1;object-fit:cover}
+.mockAboutPortrait figcaption{
+  display:flex;
+  flex-direction:column;
+  gap:3px;
+  padding:10px 12px 12px;
+  color:#fff;
+  font:400 21px/1.15 var(--samson-display-font,Impact,sans-serif);
+  background:#1a1b1b;
+}
+.mockAboutPortrait figcaption span{
+  font:800 9px/1.4 var(--samson-ui-font,Inter,Arial,sans-serif);
+  color:#bdbdbd;
+  letter-spacing:.6px;
+}
+.mockAboutPhotoNote{
+  position:absolute;
+  left:0;
+  bottom:17px;
+  max-width:calc(100% - 235px);
+  margin:0;
+  font:600 12px/1.7 var(--samson-body-font,Inter,Arial,sans-serif);
+  color:#bcbcbc;
+}
+@media(max-width:1000px){
+  .mockAbout{
+    grid-template-columns:1fr;
+    gap:28px;
+    padding-top:42px;
+    padding-bottom:40px;
+  }
+  .mockAboutMedia{width:100%;max-width:650px;min-height:410px}
+  .mockAboutCopy{max-width:730px}
+}
+@media(max-width:740px){
+  .mockAbout{padding:36px var(--samson-layout-edge) 28px}
+  .mockAboutCopy h2{font-size:clamp(40px,9vw,57px)}
+  .mockAboutCopy>p:not(.mockEyebrow){font-size:13px}
+  .mockAboutCopy>.mockAboutIntro{font-size:15px !important}
+  .mockAboutPrinciples{gap:11px 17px}
+  .mockAboutMedia{min-height:360px}
+  .mockAboutPortrait{width:155px;margin:-28px 10px 0 auto}
+  .mockAboutPhotoNote{bottom:7px;max-width:calc(100% - 180px);font-size:11px}
+}
+@media(max-width:430px){
+  .mockAboutMedia{min-height:320px}
+  .mockAboutHistory figcaption{font-size:9px;letter-spacing:.5px;bottom:9px;left:10px}
+  .mockAboutPortrait{width:137px;margin:-20px 8px 0 auto}
+  .mockAboutPortrait figcaption{padding:8px}
+  .mockAboutPhotoNote{max-width:calc(100% - 152px);bottom:7px;font-size:10px}
+}
