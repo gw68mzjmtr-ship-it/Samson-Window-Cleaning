@@ -1046,200 +1046,166 @@ body{font-family:var(--samson-body-font)}
 }
 
 
-/* Samson new commercial hero asset.
-   Its mockup text/logo are baked into the PNG. Darken the left image area
-   so all readable headline text, logo, and CTAs come from the actual page. */
-.mockHeroPic{
-  inset:0;
-  background-image:url('/Hero%20Commercial.png');
-  background-size:cover;
-  background-position:right center;
-  background-repeat:no-repeat;
-  opacity:1;
-}
-.mockHeroShade{
-  background:linear-gradient(90deg,
-    #030405 0%,
-    #030405 42%,
-    rgba(3,4,5,.985) 56%,
-    rgba(3,4,5,.78) 68%,
-    rgba(3,4,5,.06) 89%);
-}
-.mockHero .mockEyebrow.white{
-  font-size:11px;
-  letter-spacing:2.3px;
-  line-height:1.5;
-  max-width:565px;
-}
-.mockHeroContent>p:not(.mockEyebrow){
-  max-width:515px;
-}
-@media(max-width:1050px) and (min-width:741px){
-  .mockHeroPic{
-    background-size:cover;
-    background-position:right center;
-  }
-  .mockHeroShade{
-    background:linear-gradient(90deg,
-      #030405 0%,
-      rgba(3,4,5,.97) 49%,
-      rgba(3,4,5,.55) 75%,
-      rgba(3,4,5,.14) 100%);
-  }
-}
-@media(max-width:740px){
-  .mockHeroPic{
-    inset:0;
-    background-size:cover;
-    background-position:right center;
-    opacity:1;
-  }
-  .mockHeroShade{
-    background:linear-gradient(90deg,rgba(3,4,5,.94) 0%,rgba(3,4,5,.78) 58%,rgba(3,4,5,.61) 100%);
-  }
-  .mockHero .mockEyebrow.white{
-    font-size:10px;
-    letter-spacing:1.4px;
-  }
-  .mockHeroContent>p:not(.mockEyebrow){
-    max-width:490px;
-  }
-}
-
-
-/* Full-bleed commercial mockup hero: preserve complete image (1672 x 941)
-   instead of cropping it with background-size:cover and a short fixed height.
-   The mockup already includes its logo/copy/buttons, so only invisible
-   clickable hotspots are overlaid on desktop. Mobile uses genuine HTML. */
-.mockHero.mockHeroArtwork{
+/* Samson commercial hero — exact uploaded photo, mockup-style live content.
+   The source is a clean photograph without baked-on words. The image retains
+   its natural dimensions, keeping the entire windows/pole/technician scene. */
+.mockHero.mockHeroPhoto{
+  width:100%;
   height:auto;
   min-height:0;
-  overflow:hidden;
-  background:#030405;
   padding:0;
+  overflow:hidden;
   position:relative;
+  background:#030405;
+  box-sizing:border-box;
 }
-.mockHeroArtworkImage{
+.mockHeroPhotoImage{
   display:block;
   width:100%;
-  max-width:100%;
   height:auto;
+  max-width:100%;
   object-fit:contain;
+  object-position:center;
 }
-.mockHeroArtwork .mockHeroPic,
-.mockHeroArtwork .mockHeroShade,
-.mockHeroArtwork .mockHeroContent{display:none}
-.mockHeroArtworkHotspots{
+.mockHeroPhotoShade{
+  pointer-events:none;
+  position:absolute;
+  z-index:1;
+  inset:0;
+  background:linear-gradient(90deg,
+    rgba(2,4,7,.98) 0%,
+    rgba(2,4,7,.94) 21%,
+    rgba(2,4,7,.79) 39%,
+    rgba(2,4,7,.43) 56%,
+    rgba(2,4,7,.07) 76%,
+    rgba(2,4,7,0) 100%);
+}
+.mockHeroPhoto .mockHeroContent{
   position:absolute;
   inset:0;
-  z-index:5;
+  z-index:2;
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  justify-content:center;
+  box-sizing:border-box;
+  width:100%;
+  max-width:none;
+  margin:0;
+  padding:24px var(--samson-layout-edge,45px);
 }
-.mockHeroArtworkHotspots a{
-  position:absolute;
-  display:block;
-  border-radius:5px;
-  cursor:pointer;
-  text-decoration:none;
+.mockHeroPhoto .mockEyebrow.white{
+  font-size:clamp(10px,.9vw,14px);
+  line-height:1.3;
+  letter-spacing:clamp(1.1px,.21vw,3.2px);
+  margin:0 0 15px;
+  color:#fff;
 }
-.mockHeroArtworkBook{
-  left:4.65%;
-  top:80.25%;
-  width:21.3%;
-  height:8.15%;
+.mockHeroPhoto .mockHeroContent h1{
+  font-size:clamp(52px,5.8vw,112px);
+  line-height:1.04;
+  letter-spacing:-.3px;
+  margin:0 0 18px;
+  max-width:980px;
 }
-.mockHeroArtworkWork{
-  left:26.85%;
-  top:80.25%;
-  width:17.55%;
-  height:8.15%;
+.mockHeroPhoto .mockHeroContent h1 em{color:#f2182b}
+.mockHeroPhoto .mockHeroContent>p:not(.mockEyebrow){
+  margin:0 0 20px;
+  max-width:min(630px,49vw);
+  color:#f6f6f6;
+  font-size:clamp(13px,1.12vw,18px);
+  line-height:1.48;
 }
-.mockHeroArtworkHotspots a:hover{
-  outline:2px solid rgba(255,255,255,.32);
-  outline-offset:1px;
+.mockHeroPhoto .mockTrust{
+  display:flex;
+  flex-wrap:wrap;
+  gap:clamp(14px,2vw,30px);
+  margin:8px 0 0;
 }
-.mockHeroArtworkHotspots a:focus-visible{
-  outline:3px solid #fff;
-  outline-offset:3px;
+.mockHeroPhoto .mockTrust span{
+  display:flex;
+  gap:8px;
+  align-items:center;
+  color:#fff;
+  font-size:clamp(10px,.92vw,13px);
+  line-height:1.4;
 }
-.mockHeroVisuallyHidden{
-  position:absolute;
-  width:1px;
-  height:1px;
-  padding:0;
-  margin:-1px;
-  overflow:hidden;
-  clip:rect(0,0,0,0);
-  white-space:nowrap;
-  border:0;
+.mockHeroPhoto .mockTrust svg{
+  color:#f2182b;
+  width:clamp(24px,2.5vw,36px);
+  height:clamp(24px,2.5vw,36px);
 }
-@media(max-width:850px){
-  .mockHero.mockHeroArtwork{
+.mockHeroPhoto .mockButtons{
+  display:flex;
+  flex-wrap:wrap;
+  gap:14px;
+  margin-top:27px;
+}
+.mockHeroPhoto .mockButtons a{
+  min-width:180px;
+}
+@media(max-width:1150px) and (min-width:901px){
+  .mockHeroPhoto .mockHeroContent h1{font-size:clamp(51px,5.65vw,70px)}
+  .mockHeroPhoto .mockHeroContent>p:not(.mockEyebrow){
+    max-width:52vw;
+    font-size:13px;
+    margin-bottom:12px;
+  }
+  .mockHeroPhoto .mockTrust{gap:12px;margin-top:4px}
+  .mockHeroPhoto .mockTrust span{font-size:10px}
+  .mockHeroPhoto .mockButtons{margin-top:19px}
+  .mockHeroPhoto .mockButtons a{min-width:165px}
+}
+@media(max-width:900px){
+  .mockHero.mockHeroPhoto{
+    min-height:0;
     height:auto;
-    min-height:610px;
-    padding:0;
+    display:flex;
+    flex-direction:column;
   }
-  .mockHeroArtworkImage,
-  .mockHeroArtworkHotspots{display:none}
-  .mockHeroArtwork .mockHeroPic{
+  .mockHeroPhotoImage{
     display:block;
-    position:absolute;
-    inset:0;
-    background-image:url('/Hero%20Commercial.png');
-    background-repeat:no-repeat;
-    background-size:auto 100%;
-    background-position:75% center;
-    opacity:.90;
-  }
-  .mockHeroArtwork .mockHeroShade{
-    display:block;
-    position:absolute;
-    inset:0;
-    background:linear-gradient(90deg,
-      rgba(3,4,5,.97) 0%,
-      rgba(3,4,5,.90) 44%,
-      rgba(3,4,5,.65) 78%,
-      rgba(3,4,5,.45) 100%);
-  }
-  .mockHeroArtwork .mockHeroContent{
-    display:block;
-    position:relative;
-    z-index:2;
     width:100%;
-    max-width:100%;
-    margin:0;
-    padding:58px var(--samson-layout-edge,18px) 46px;
+    height:auto;
+    object-fit:contain;
   }
-  .mockHeroArtwork .mockHeroContent h1{
-    font-size:clamp(43px,8vw,68px);
+  .mockHeroPhotoShade{display:none}
+  .mockHeroPhoto .mockHeroContent{
+    position:relative;
+    inset:auto;
+    width:100%;
+    max-width:none;
+    display:flex;
+    align-items:flex-start;
+    padding:32px var(--samson-layout-edge,22px) 42px;
+    background:#050607;
+  }
+  .mockHeroPhoto .mockHeroContent h1{
+    font-size:clamp(45px,7.8vw,75px);
     line-height:1.08;
   }
-  .mockHeroArtwork .mockHeroContent>p:not(.mockEyebrow){
-    max-width:485px;
-    line-height:1.55;
+  .mockHeroPhoto .mockHeroContent>p:not(.mockEyebrow){
+    max-width:610px;
+    font-size:14px;
+    margin-bottom:18px;
   }
-  .mockHeroArtwork .mockTrust{
-    max-width:530px;
-    flex-wrap:wrap;
-    gap:16px;
-    margin-top:23px;
+  .mockHeroPhoto .mockTrust{
+    gap:15px;
+    margin-top:4px;
   }
+  .mockHeroPhoto .mockTrust span{font-size:11px}
+  .mockHeroPhoto .mockButtons{margin-top:24px}
 }
 @media(max-width:520px){
-  .mockHero.mockHeroArtwork{min-height:640px}
-  .mockHeroArtwork .mockHeroPic{background-position:76% center}
-  .mockHeroArtwork .mockHeroShade{
-    background:linear-gradient(90deg,
-      rgba(3,4,5,.96) 0%,
-      rgba(3,4,5,.85) 63%,
-      rgba(3,4,5,.58) 100%);
-  }
-  .mockHeroArtwork .mockHeroContent{padding-top:56px}
-  .mockHeroArtwork .mockHeroContent h1{
-    font-size:clamp(41px,10.5vw,53px);
-  }
-  .mockHeroArtwork .mockButtons{flex-wrap:wrap}
-  .mockHeroArtwork .mockButtons a{
+  .mockHeroPhoto .mockHeroContent{padding:26px 18px 34px}
+  .mockHeroPhoto .mockHeroContent h1{font-size:clamp(40px,10.25vw,54px)}
+  .mockHeroPhoto .mockEyebrow.white{font-size:10px;letter-spacing:1.3px}
+  .mockHeroPhoto .mockButtons{width:100%;gap:10px}
+  .mockHeroPhoto .mockButtons a{
+    flex:1 1 160px;
     min-width:0;
-    flex:1 1 180px;
+    font-size:15px;
   }
+  .mockHeroPhoto .mockTrust{gap:13px}
+  .mockHeroPhoto .mockTrust span{font-size:10px}
 }
