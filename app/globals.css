@@ -915,9 +915,9 @@ body{font-family:var(--samson-body-font)}
 /* The Samson Standard — company-focused About section. */
 .mockAbout{
   display:grid;
-  grid-template-columns:minmax(0,1.04fr) minmax(0,.96fr);
+  grid-template-columns:minmax(0,1fr) minmax(0,360px);
   align-items:center;
-  gap:clamp(30px,5.5vw,82px);
+  gap:clamp(30px,5vw,78px);
   padding:62px var(--samson-layout-edge) 57px;
   background:linear-gradient(120deg,#080909 0%,#101112 60%,#0c0d0e 100%);
   border-top:1px solid #292a2b;
@@ -982,41 +982,39 @@ body{font-family:var(--samson-body-font)}
   text-decoration:none;
 }
 .mockAboutMedia{
-  position:relative;
-  min-width:0;
   display:flex;
-  align-items:flex-start;
-  flex-direction:column;
-  padding-bottom:8px;
+  justify-content:center;
+  align-items:center;
+  min-width:0;
+  width:100%;
 }
 .mockAboutCommercial{
-  width:100%;
-  height:clamp(320px,34vw,465px);
   position:relative;
+  width:min(100%,330px);
+  aspect-ratio:3/4;
+  margin:0;
   overflow:hidden;
   border:1px solid #404142;
   border-radius:5px;
-  background:#1a1a1a;
-  margin:0;
+  background:#171819;
+  box-shadow:0 15px 32px rgba(0,0,0,.22);
 }
-.mockAboutCommercial::after,
-.mockAboutHistory::after{
+.mockAboutCommercial::after{
   content:'';
   position:absolute;
   inset:auto 0 0;
-  height:31%;
-  background:linear-gradient(transparent,rgba(0,0,0,.85));
+  height:30%;
+  background:linear-gradient(transparent,rgba(0,0,0,.78));
   pointer-events:none;
 }
 .mockAboutCommercial img{
   display:block;
   width:100%;
   height:100%;
-  object-fit:cover;
-  object-position:center 66%;
+  object-fit:contain;
+  object-position:center center;
 }
-.mockAboutCommercial figcaption,
-.mockAboutHistory figcaption{
+.mockAboutCommercial figcaption{
   position:absolute;
   z-index:1;
   bottom:12px;
@@ -1027,39 +1025,16 @@ body{font-family:var(--samson-body-font)}
   color:#fff;
   text-shadow:0 1px 3px #000;
 }
-.mockAboutHistory{
-  position:relative;
-  z-index:2;
-  align-self:flex-end;
-  width:59%;
-  height:clamp(130px,13vw,166px);
-  margin:-66px 18px 0 0;
-  border:3px solid #101112;
-  border-radius:5px;
-  box-shadow:0 12px 30px rgba(0,0,0,.55);
-  background:#191a1b;
-  overflow:hidden;
-}
-.mockAboutHistoryBrand{
-  position:absolute;
-  inset:0;
-  background-image:url('/Trailer.jpeg');
-  background-repeat:no-repeat;
-  background-size:205% auto;
-  background-position:center 36%;
-}
-.mockAboutHistory figcaption span{color:#d1d1d1}
 @media(max-width:1000px){
   .mockAbout{
     grid-template-columns:1fr;
-    gap:28px;
+    gap:25px;
     padding-top:42px;
     padding-bottom:40px;
   }
   .mockAboutCopy{max-width:730px}
-  .mockAboutMedia{width:100%;max-width:650px}
-  .mockAboutCommercial{height:clamp(340px,53vw,465px)}
-  .mockAboutHistory{height:clamp(130px,24vw,166px)}
+  .mockAboutMedia{justify-content:flex-start}
+  .mockAboutCommercial{width:min(100%,300px)}
 }
 @media(max-width:740px){
   .mockAbout{padding:36px var(--samson-layout-edge) 28px}
@@ -1067,11 +1042,5 @@ body{font-family:var(--samson-body-font)}
   .mockAboutCopy>p:not(.mockEyebrow){font-size:13px}
   .mockAboutCopy>.mockAboutIntro{font-size:15px !important}
   .mockAboutPrinciples{gap:11px 17px}
-  .mockAboutCommercial{height:clamp(295px,85vw,435px)}
-  .mockAboutHistory{width:64%;height:clamp(125px,32vw,165px);margin:-42px 11px 0 0}
-  .mockAboutHistory figcaption{left:10px;bottom:8px;letter-spacing:.45px;font-size:9px}
-}
-@media(max-width:430px){
-  .mockAboutHistory{width:72%;height:121px}
-  .mockAboutHistory figcaption{font-size:8px}
+  .mockAboutCommercial{width:min(100%,275px)}
 }
