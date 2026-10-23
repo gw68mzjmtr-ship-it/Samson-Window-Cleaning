@@ -931,6 +931,23 @@ body{font-family:var(--samson-body-font)}
   letter-spacing:.15px;
 }
 .mockAboutCopy h2 span{color:#f2182b}
+.mockAboutExperience{
+  display:inline-flex;
+  align-items:center;
+  gap:12px;
+  margin:2px 0 18px;
+  border-left:3px solid #f2182b;
+  padding:3px 0 3px 14px;
+}
+.mockAboutExperience strong{
+  font:400 clamp(43px,4vw,56px)/1 var(--samson-display-font,Impact,sans-serif);
+  color:#fff;
+}
+.mockAboutExperience span{
+  font:800 11px/1.4 var(--samson-ui-font,Inter,Arial,sans-serif);
+  letter-spacing:1.35px;
+  color:#e5e5e5;
+}
 .mockAboutCopy>p:not(.mockEyebrow){
   font:400 14px/1.75 var(--samson-body-font,Inter,Arial,sans-serif);
   color:#c8c8c8;
@@ -992,7 +1009,7 @@ body{font-family:var(--samson-body-font)}
 }
 .mockAboutHistory{
   width:100%;
-  aspect-ratio:2.2/1;
+  aspect-ratio:1.65/1;
   position:relative;
   overflow:hidden;
   border:1px solid #404142;
@@ -1013,7 +1030,7 @@ body{font-family:var(--samson-body-font)}
   height:100%;
   display:block;
   object-fit:cover;
-  object-position:center top;
+  object-position:center 58%;
 }
 .mockAboutHistory figcaption{
   position:absolute;
