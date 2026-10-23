@@ -170,7 +170,7 @@ useEffect(()=>{if(!activeVideo)return;const previous=document.body.style.overflo
   </div>
   <div className="mockAboutMedia">
     <figure className="mockAboutCommercial">
-      <img src="/Issaih%20Commercial.jpeg" alt="Samson technician cleaning exterior commercial glass with a water-fed pole" loading="lazy"/>
+      <img src="/Elijah%20AI%20redone.png" alt="Samson technician cleaning exterior commercial glass with a water-fed pole" loading="lazy"/>
       <figcaption>COMMERCIAL EXTERIOR WINDOW CLEANING</figcaption>
     </figure>
   </div>
