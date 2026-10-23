@@ -103,7 +103,29 @@ const scrollVideos=(direction:-1|1)=>{
 useEffect(()=>{if(!activeVideo)return;const previous=document.body.style.overflow;document.body.style.overflow='hidden';const onEscape=(event:KeyboardEvent)=>{if(event.key==='Escape')setActiveVideo(null)};window.addEventListener('keydown',onEscape);return()=>{document.body.style.overflow=previous;window.removeEventListener('keydown',onEscape)}},[activeVideo]);return <>
 <header className="mockHeader"><a className="mockLogo" href="#home"><img src="/Samson%20Professional%20Window%20Cleaning%20Logo.png" alt="Samson Professional Window Cleaning"/><span className="mockLogoSlogan">“Where Strength Meets Shine”</span></a><nav className={open?'mockNav open':'mockNav'}><a className="active" href="#home" onClick={()=>setOpen(false)}>Home</a><a href="#services" onClick={()=>setOpen(false)}>Services</a><a href="#pricing" onClick={()=>setOpen(false)}>Pricing</a><a href="#commercial" onClick={()=>setOpen(false)}>Commercial</a><a href="#work" onClick={()=>setOpen(false)}>Our Work</a><a href="#about" onClick={()=>setOpen(false)}>About</a></nav><a href="#contact" className="mockRedBtn mockHeaderCta">Book Service <ArrowRight size={18}/></a><button aria-label="Toggle menu" className="mockMenu" onClick={()=>setOpen(!open)}>{open?<X/>:<Menu/>}</button></header>
 <main id="home">
-<section className="mockHero"><div className="mockHeroPic"/><div className="mockHeroShade"/><div className="mockHeroContent"><p className="mockEyebrow white">Residential &amp; Commercial Window Cleaning</p><h1>Clean Windows<br/><em>Higher Standards</em></h1><p>Professional exterior window cleaning for storefronts, commercial properties, HOAs, townhomes, and residential homes throughout the Concord and Lake Norman area.</p><div className="mockButtons"><a href="#contact" className="mockRedBtn">Book Service <ArrowRight size={19}/></a><a href="#work" className="mockOutlineBtn">View Our Work <Play size={17} fill="currentColor"/></a></div><div className="mockTrust"><span><ShieldCheck/>15 Years<br/>In Business</span><span><Gem/>Residential &amp;<br/>Commercial</span><span><Star/>4.9-Star<br/>Google Rating</span></div></div></section>
+<section className="mockHero mockHeroArtwork">
+  <img className="mockHeroArtworkImage" src="/Hero%20Commercial.png" alt="Samson Professional Window Cleaning. Residential and commercial exterior window cleaning. Clean Windows. Higher Standards." fetchPriority="high"/>
+  <div className="mockHeroArtworkHotspots" aria-label="Homepage quick links">
+    <a className="mockHeroArtworkBook" href="#contact" aria-label="Book Samson window cleaning service"><span className="mockHeroVisuallyHidden">Book Service</span></a>
+    <a className="mockHeroArtworkWork" href="#work" aria-label="View Samson project videos"><span className="mockHeroVisuallyHidden">View Our Work</span></a>
+  </div>
+  <div className="mockHeroPic" aria-hidden="true"/>
+  <div className="mockHeroShade" aria-hidden="true"/>
+  <div className="mockHeroContent">
+    <p className="mockEyebrow white">Residential &amp; Commercial Window Cleaning</p>
+    <h1>Clean Windows<br/><em>Higher Standards</em></h1>
+    <p>Professional exterior window cleaning for residential homes, storefronts, HOAs, townhomes, and commercial properties throughout the Concord and Lake Norman area.</p>
+    <div className="mockButtons">
+      <a href="#contact" className="mockRedBtn">Book Service <ArrowRight size={19}/></a>
+      <a href="#work" className="mockOutlineBtn">View Our Work <Play size={17} fill="currentColor"/></a>
+    </div>
+    <div className="mockTrust">
+      <span><ShieldCheck/>15 Years<br/>In Business</span>
+      <span><Gem/>Residential &amp;<br/>Commercial</span>
+      <span><Star/>4.9-Star<br/>Google Rating</span>
+    </div>
+  </div>
+</section>
 <section id="services" className="mockServices"><div className="mockHeading"><div><p className="mockEyebrow">Our Services</p><h2>Exterior Window Cleaning</h2></div><p>Streak-free results using professional water-fed pole systems.<br/>Fast, safe, and effective for residential and commercial properties.</p></div><div className="mockServiceGrid">{services.map(s=><article key={s.name}><img src={s.img} alt={s.name}/><h3>{s.name}</h3><p>{s.desc}</p></article>)}</div></section>
 <section className="mockPricingWrap" id="pricing"><div className="mockPricing"><p className="mockEyebrow">Simple Pricing</p><h2>Exterior Window Cleaning</h2><p className="mockLead">Transparent pricing. No surprises. Built for repeat service.</p><div className="mockTiers">{tiers.map(t=><article key={t.name}><h3>{t.name}</h3><div><strong>${t.price}</strong><p>{t.range}</p><small>Exterior glass cleaning<br/>Streak-free results<br/>Interior priced separately</small><button onClick={()=>contact(t.name+' exterior cleaning')}>Book Now</button></div></article>)}</div><p className="mockFine">Pricing based on exact exterior window count. Second-story ladder setup $75; third-story $100 when required. Applicable taxes quoted before service.</p></div><aside className="mockPlans" id="plans"><p className="mockEyebrow">Stay on Schedule</p><h3>Maintenance Plans</h3><p>Keep your property looking its best year-round with scheduled service.</p><div>{plans.map((p,i)=><section key={p.name}><span className="mockPlanSymbol">{i===0?'✦':'✧'}</span><strong>{p.name}</strong><span>{p.freq}</span><b>{p.discount}</b></section>)}</div><a href="#contact" className="mockRedBtn">View Plans <ArrowRight size={17}/></a><small>Gold, Platinum and Black include unlimited rain touch-ups and priority scheduling. Cancel anytime.</small></aside></section>
 <section className="mockInterior"><div className="mockInteriorPic"/><div><p className="mockEyebrow">Premium Add-On</p><h2>Interior Window Cleaning</h2><p>Interior glass available at a premium rate.<br/>Perfect for homes, offices, and storefronts.</p></div><button className="mockOutlineBtn" onClick={()=>contact('Interior window cleaning add-on')}>Add Interior to Your Service</button></section>
