@@ -134,7 +134,11 @@ useEffect(()=>{if(!activeVideo)return;const previous=document.body.style.overflo
     <a href="#work" className="mockFleetLink">See Our Work <ArrowRight size={17}/></a>
   </div>
   <figure className="mockFleetArt">
-    <img src="/Samson%20Professional%20Window%20Cleaning%20Van.png" alt="Concept rendering of a black Samson-branded service van with red graphics, white SAMSON lettering, and a gold figure" loading="lazy" decoding="async"/>
+    <div className="mockFleetVisual">
+      <img src="/Samson%20Professional%20Window%20Cleaning%20Van.png" alt="Black Samson-branded service van with white SAMSON lettering, gold figure and underline, red accents, and commercial window-cleaning equipment" loading="lazy" decoding="async"/>
+      <span className="mockVanGoldLine mockVanGoldLineSide" aria-hidden="true"/>
+      <span className="mockVanGoldLine mockVanGoldLineHood" aria-hidden="true"/>
+    </div>
   </figure>
 </section>
 <section className="mockWork" id="work">
