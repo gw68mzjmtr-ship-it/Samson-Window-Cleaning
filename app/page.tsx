@@ -125,6 +125,18 @@ useEffect(()=>{if(!activeVideo)return;const previous=document.body.style.overflo
 <section className="mockPricingWrap" id="pricing"><div className="mockPricing"><p className="mockEyebrow">Simple Pricing</p><h2>Exterior Window Cleaning</h2><p className="mockLead">Transparent pricing. No surprises. Built for repeat service.</p><div className="mockTiers">{tiers.map(t=><article key={t.name}><h3>{t.name}</h3><div><strong>${t.price}</strong><p>{t.range}</p><small>Exterior glass cleaning<br/>Streak-free results<br/>Interior priced separately</small><button onClick={()=>contact(t.name+' exterior cleaning')}>Book Now</button></div></article>)}</div><p className="mockFine">Pricing based on exact exterior window count. Second-story ladder setup $75; third-story $100 when required. Applicable taxes quoted before service.</p></div><aside className="mockPlans" id="plans"><p className="mockEyebrow">Stay on Schedule</p><h3>Maintenance Plans</h3><p>Keep your property looking its best year-round with scheduled service.</p><div>{plans.map((p,i)=><section key={p.name}><span className="mockPlanSymbol">{i===0?'✦':'✧'}</span><strong>{p.name}</strong><span>{p.freq}</span><b>{p.discount}</b></section>)}</div><a href="#contact" className="mockRedBtn">View Plans <ArrowRight size={17}/></a><small>Gold, Platinum and Black include unlimited rain touch-ups and priority scheduling. Cancel anytime.</small></aside></section>
 <section className="mockInterior"><div className="mockInteriorPic"/><div><p className="mockEyebrow">Premium Add-On</p><h2>Interior Window Cleaning</h2><p>Interior glass available at a premium rate.<br/>Perfect for homes, offices, and storefronts.</p></div><button className="mockOutlineBtn" onClick={()=>contact('Interior window cleaning add-on')}>Add Interior to Your Service</button></section>
 <section id="commercial" className="mockCommercial"><div className="mockCommercialIntro"><p className="mockEyebrow">Commercial Focus</p><h2>Built for<br/>Business</h2><p>Fast, reliable exterior window cleaning for storefronts, property managers, HOAs, and commercial accounts.</p><a href="#contact" className="mockRedBtn">Commercial Services <ArrowRight size={17}/></a></div><div className="mockCommercialPic"/><div className="mockBenefits">{['Recurring service schedules','Competitive commercial pricing','Minimal disruption to your business','Professional and insured','Lake Norman / Concord area'].map(s=><p key={s}><Check size={17}/>{s}</p>)}</div></section>
+<section className="mockFleet" aria-labelledby="samson-fleet-heading">
+  <div className="mockFleetCopy">
+    <p className="mockEyebrow">The Samson Vision</p>
+    <h2 id="samson-fleet-heading">BUILT FOR <span>THE JOB.</span></h2>
+    <p>We're building Samson around organized equipment, efficient service, and consistently high standards — whether we're caring for storefronts, commercial properties, or residential homes.</p>
+    <p className="mockFleetQualifier">SAMSON VEHICLE DESIGN CONCEPT</p>
+    <a href="#work" className="mockFleetLink">See Our Work <ArrowRight size={17}/></a>
+  </div>
+  <figure className="mockFleetArt">
+    <img src="/Samson%20Professional%20Window%20Cleaning%20Van.png" alt="Concept rendering of a black Samson-branded service van with red graphics, white SAMSON lettering, and a gold figure" loading="lazy" decoding="async"/>
+  </figure>
+</section>
 <section className="mockWork" id="work">
   <div><p className="mockEyebrow">Our Work</p><h2>Real Results</h2></div>
   <div className="mockVideoCarousel">
