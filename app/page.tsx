@@ -130,7 +130,7 @@ useEffect(()=>{if(!activeVideo)return;const previous=document.body.style.overflo
     <p className="mockEyebrow">The Samson Vision</p>
     <h2 id="samson-fleet-heading">BUILT FOR <span>THE JOB.</span></h2>
     <p>We're building Samson around organized equipment, efficient service, and consistently high standards — whether we're caring for storefronts, commercial properties, or residential homes.</p>
-    <p className="mockFleetQualifier">SAMSON VEHICLE DESIGN CONCEPT</p>
+    
     <a href="#work" className="mockFleetLink">See Our Work <ArrowRight size={17}/></a>
   </div>
   <figure className="mockFleetArt">
