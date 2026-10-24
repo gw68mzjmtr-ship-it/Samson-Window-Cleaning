@@ -1395,22 +1395,6 @@ body{font-family:var(--samson-body-font)}
   max-width:445px;
   margin:0 0 18px;
 }
-.mockFleetCopy .mockFleetQualifier{
-  display:flex;
-  align-items:center;
-  gap:9px;
-  margin:0 0 19px;
-  color:#aaa;
-  font:800 10px/1.5 var(--samson-ui-font,Inter,Arial,sans-serif);
-  letter-spacing:1.25px;
-}
-.mockFleetQualifier::before{
-  content:'';
-  width:23px;
-  height:2px;
-  flex:0 0 23px;
-  background:#f2182b;
-}
 .mockFleetLink{
   display:inline-flex;
   align-items:center;
