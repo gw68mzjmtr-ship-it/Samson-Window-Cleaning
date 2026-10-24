@@ -2,6 +2,8 @@ import { ImageResponse } from 'next/og';
 
 // Samson's approved logo lockup: white SAMSON, gold athlete and underline,
 // red PROFESSIONAL WINDOW CLEANING. Keep the existing source artwork unchanged.
+// Keep a visible gap below the white wordmark: the underline is at y=457,
+// never touching the white SAMSON letters. Preserve the red subtitle artwork.
 // This endpoint delivers a true PNG for both website use and Google Business Profile.
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -27,8 +29,8 @@ export async function GET(request: Request) {
           height={logoHeight}
           style={{ width: logoWidth, height: logoHeight, objectFit: 'contain' }}
         />
-        <div style={{ position: 'absolute', display: 'flex', left: 153 * scale, top: 432 * scale, width: 943 * scale, height: 10 * scale, backgroundColor: '#F9B719' }} />
-        <div style={{ position: 'absolute', display: 'flex', left: 1162 * scale, top: 432 * scale, width: 730 * scale, height: 10 * scale, backgroundColor: '#F9B719' }} />
+        <div style={{ position: 'absolute', display: 'flex', left: 153 * scale, top: 457 * scale, width: 943 * scale, height: 8 * scale, backgroundColor: '#F9B719' }} />
+        <div style={{ position: 'absolute', display: 'flex', left: 1162 * scale, top: 457 * scale, width: 730 * scale, height: 8 * scale, backgroundColor: '#F9B719' }} />
       </div>
     </div>,
     {
