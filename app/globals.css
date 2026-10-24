@@ -1439,3 +1439,44 @@ body{font-family:var(--samson-body-font)}
   .mockFleetCopy>p:not(.mockEyebrow):not(.mockFleetQualifier){font-size:13px}
   .mockFleetArt{padding:8px}
 }
+
+
+/* Approved gold underline on the two SAMSON van lockups.
+   Percent-based positions stay registered to the full 1672:941 artwork
+   at desktop and mobile sizes; do not alter the van image/crop. */
+.mockFleetVisual{
+  position:relative;
+  width:100%;
+  aspect-ratio:1672 / 941;
+  border-radius:4px;
+  overflow:hidden;
+}
+.mockFleetVisual img{
+  display:block;
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  border-radius:4px;
+}
+.mockVanGoldLine{
+  position:absolute;
+  z-index:1;
+  pointer-events:none;
+  display:block;
+  background:#f9bc20;
+  box-shadow:0 0 1px rgba(250,186,32,.36);
+}
+.mockVanGoldLineSide{
+  left:51.5%;
+  top:40.06%;
+  width:37.56%;
+  height:.64%;
+}
+.mockVanGoldLineHood{
+  left:7.54%;
+  top:52.07%;
+  width:9.63%;
+  height:.32%;
+}
