@@ -101,7 +101,7 @@ const scrollVideos=(direction:-1|1)=>{
   rail.scrollBy({left:direction*distance,behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});
 };
 useEffect(()=>{if(!activeVideo)return;const previous=document.body.style.overflow;document.body.style.overflow='hidden';const onEscape=(event:KeyboardEvent)=>{if(event.key==='Escape')setActiveVideo(null)};window.addEventListener('keydown',onEscape);return()=>{document.body.style.overflow=previous;window.removeEventListener('keydown',onEscape)}},[activeVideo]);return <>
-<header className="mockHeader"><a className="mockLogo" href="#home"><img src="/samson-logo.png" alt="Samson Professional Window Cleaning"/><span className="mockLogoSlogan">“Where Strength Meets Shine”</span></a><nav className={open?'mockNav open':'mockNav'}><a className="active" href="#home" onClick={()=>setOpen(false)}>Home</a><a href="#services" onClick={()=>setOpen(false)}>Services</a><a href="#pricing" onClick={()=>setOpen(false)}>Pricing</a><a href="#commercial" onClick={()=>setOpen(false)}>Commercial</a><a href="#work" onClick={()=>setOpen(false)}>Our Work</a><a href="#about" onClick={()=>setOpen(false)}>About</a></nav><a href="#contact" className="mockRedBtn mockHeaderCta">Book Service <ArrowRight size={18}/></a><button aria-label="Toggle menu" className="mockMenu" onClick={()=>setOpen(!open)}>{open?<X/>:<Menu/>}</button></header>
+<header className="mockHeader"><a className="mockLogo" href="#home"><img src="/FINAL%20LOGO.png" alt="Samson Professional Window Cleaning"/><span className="mockLogoSlogan">“Where Strength Meets Shine”</span></a><nav className={open?'mockNav open':'mockNav'}><a className="active" href="#home" onClick={()=>setOpen(false)}>Home</a><a href="#services" onClick={()=>setOpen(false)}>Services</a><a href="#pricing" onClick={()=>setOpen(false)}>Pricing</a><a href="#commercial" onClick={()=>setOpen(false)}>Commercial</a><a href="#work" onClick={()=>setOpen(false)}>Our Work</a><a href="#about" onClick={()=>setOpen(false)}>About</a></nav><a href="#contact" className="mockRedBtn mockHeaderCta">Book Service <ArrowRight size={18}/></a><button aria-label="Toggle menu" className="mockMenu" onClick={()=>setOpen(!open)}>{open?<X/>:<Menu/>}</button></header>
 <main id="home">
 <section className="mockHero mockHeroPhoto">
   <img className="mockHeroPhotoImage" src="/Professional%20Window%20Cleaner%20at%20Work.png" alt="Samson technician cleaning commercial glass with a water-fed pole" fetchPriority="high" />
@@ -134,11 +134,7 @@ useEffect(()=>{if(!activeVideo)return;const previous=document.body.style.overflo
     <a href="#work" className="mockFleetLink">See Our Work <ArrowRight size={17}/></a>
   </div>
   <figure className="mockFleetArt">
-    <div className="mockFleetVisual">
-      <img src="/Samson%20Professional%20Window%20Cleaning%20Van.png" alt="Black Samson-branded service van with white SAMSON lettering, gold figure and underline, red accents, and commercial window-cleaning equipment" loading="lazy" decoding="async"/>
-      <span className="mockVanGoldLine mockVanGoldLineSide" aria-hidden="true"/>
-      <span className="mockVanGoldLine mockVanGoldLineHood" aria-hidden="true"/>
-    </div>
+    <img src="/FINAL%20SAMSON%20VAN.png" alt="Black SAMSON window cleaning van with the approved white, gold and red branding" loading="lazy" decoding="async"/>
   </figure>
 </section>
 <section className="mockWork" id="work">
@@ -203,5 +199,5 @@ useEffect(()=>{if(!activeVideo)return;const previous=document.body.style.overflo
   </div>
 </section>
 <section className="mockClose" id="contact"><div><h2>Ready for Cleaner Windows?</h2><p>Professional. Reliable. High-End Results.</p></div><button className="mockRedBtn" onClick={()=>contact()}>Book Your Service <ArrowRight size={19}/></button></section>
-</main><footer className="mockFooter"><div className="mockFooterBrand"><img src="/samson-logo.png" alt="Samson Professional Window Cleaning"/><span>“Where Strength Meets Shine”</span></div><div><a href="https://www.instagram.com/samsoncleans/" target="_blank" rel="noopener noreferrer">Instagram</a><a href="https://www.youtube.com/@samsoncleans" target="_blank" rel="noopener noreferrer">YouTube</a><a href={'mailto:'+email}>Contact</a></div></footer>
+</main><footer className="mockFooter"><div className="mockFooterBrand"><img src="/FINAL%20LOGO.png" alt="Samson Professional Window Cleaning"/><span>“Where Strength Meets Shine”</span></div><div><a href="https://www.instagram.com/samsoncleans/" target="_blank" rel="noopener noreferrer">Instagram</a><a href="https://www.youtube.com/@samsoncleans" target="_blank" rel="noopener noreferrer">YouTube</a><a href={'mailto:'+email}>Contact</a></div></footer>
 </>}
