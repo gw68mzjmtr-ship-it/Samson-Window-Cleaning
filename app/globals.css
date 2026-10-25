@@ -1440,43 +1440,30 @@ body{font-family:var(--samson-body-font)}
   .mockFleetArt{padding:8px}
 }
 
-
-/* Approved gold underline on the two SAMSON van lockups.
-   Percent-based positions stay registered to the full 1672:941 artwork
-   at desktop and mobile sizes; do not alter the van image/crop. */
-.mockFleetVisual{
-  position:relative;
-  width:100%;
-  aspect-ratio:1672 / 941;
-  border-radius:4px;
-  overflow:hidden;
-}
-.mockFleetVisual img{
+/* Final static artwork from public/FINAL LOGO.png.
+   Center-crop only the empty black margins of its 2:1 canvas
+   so the logo stays legible in the existing brand lockups.
+   Keep the header/footer taglines and layout unchanged. */
+.mockHeader .mockLogo img{
   display:block;
-  position:absolute;
-  inset:0;
   width:100%;
-  height:100%;
-  object-fit:contain;
-  border-radius:4px;
+  height:95px;
+  max-height:none;
+  object-fit:cover;
+  object-position:center;
 }
-.mockVanGoldLine{
-  position:absolute;
-  z-index:1;
-  pointer-events:none;
+.mockFooter .mockFooterBrand img{
   display:block;
-  background:#f9bc20;
-  box-shadow:0 0 1px rgba(250,186,32,.36);
+  width:100%;
+  height:85px;
+  max-height:none;
+  object-fit:cover;
+  object-position:center;
 }
-.mockVanGoldLineSide{
-  left:51.5%;
-  top:40.06%;
-  width:37.56%;
-  height:.64%;
+@media (min-width:741px) and (max-width:1250px){
+  .mockHeader .mockLogo img{height:86px;max-height:none}
 }
-.mockVanGoldLineHood{
-  left:7.54%;
-  top:52.07%;
-  width:9.63%;
-  height:.32%;
+@media (max-width:740px){
+  .mockHeader .mockLogo img{height:63px;max-height:none}
+  .mockFooter .mockFooterBrand img{height:73px;max-height:none}
 }
