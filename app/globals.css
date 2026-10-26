@@ -1440,10 +1440,9 @@ body{font-family:var(--samson-body-font)}
   .mockFleetArt{padding:8px}
 }
 
-/* Final static artwork from public/FINAL LOGO.png.
-   Center-crop only the empty black margins of its 2:1 canvas
-   so the logo stays legible in the existing brand lockups.
-   Keep the header/footer taglines and layout unchanged. */
+/* Approved square artwork includes the tagline and white side lines.
+   Crop only empty black canvas using the existing brand lockup sizes.
+   The complete lettering, athlete and tagline remain visible. */
 .mockHeader .mockLogo img{
   display:block;
   width:100%;
