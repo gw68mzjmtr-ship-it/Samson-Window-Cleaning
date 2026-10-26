@@ -134,7 +134,7 @@ useEffect(()=>{if(!activeVideo)return;const previous=document.body.style.overflo
     <a href="#work" className="mockFleetLink">See Our Work <ArrowRight size={17}/></a>
   </div>
   <figure className="mockFleetArt">
-    <img src="/FINAL%20SAMSON%20VAN.png" alt="Black SAMSON window cleaning van with the approved white, gold and red branding" loading="lazy" decoding="async"/>
+    <img src="/samson-van-white-tagline.png" alt="Black SAMSON window cleaning van with the approved white, gold and red branding" loading="lazy" decoding="async"/>
   </figure>
 </section>
 <section className="mockWork" id="work">
