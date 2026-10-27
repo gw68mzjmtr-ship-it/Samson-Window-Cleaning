@@ -199,5 +199,5 @@ useEffect(()=>{if(!activeVideo)return;const previous=document.body.style.overflo
   </div>
 </section>
 <section className="mockClose" id="contact"><div><h2>Ready for Cleaner Windows?</h2><p>Professional. Reliable. High-End Results.</p></div><button className="mockRedBtn" onClick={()=>contact()}>Book Your Service <ArrowRight size={19}/></button></section>
-</main><footer className="mockFooter"><div className="mockFooterBrand"><img src="/samson-approved-logo.png" alt="Samson Professional Window Cleaning"/></div><div><a href="https://www.instagram.com/samsoncleans/" target="_blank" rel="noopener noreferrer">Instagram</a><a href="https://www.youtube.com/@samsoncleans" target="_blank" rel="noopener noreferrer">YouTube</a><a href={'mailto:'+email}>Contact</a></div></footer>
+</main><footer className="mockFooter"><div className="mockFooterBrand"><img src="/samson-approved-logo.png" alt="Samson Professional Window Cleaning"/></div><div><a href="https://www.instagram.com/samsonwindowcleaning/" target="_blank" rel="noopener noreferrer">Instagram</a><a href="https://www.youtube.com/@samsoncleans" target="_blank" rel="noopener noreferrer">YouTube</a><a href={'mailto:'+email}>Contact</a></div></footer>
 </>}
