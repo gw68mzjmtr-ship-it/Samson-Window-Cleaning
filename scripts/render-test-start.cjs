@@ -2,6 +2,7 @@
 const fs=require('node:fs'),path=require('node:path'),postgres=require('postgres'),{spawn}=require('node:child_process');
 (async()=>{
  if(process.env.SAMSON_HOSTED_TEST!=='1'||!/^[-A-Za-z0-9_]{43,128}$/.test(process.env.SAMSON_TEST_ACCESS_KEY||''))throw Error('Private hosted test access is not configured');
+ process.env.SAMSON_TEST_ORIGIN=process.env.SAMSON_TEST_ORIGIN||(process.env.RENDER==='true'?process.env.RENDER_EXTERNAL_URL:'');
  const origin=new URL(process.env.SAMSON_TEST_ORIGIN||'');
  if(origin.protocol!=='https:'||origin.username||origin.password||origin.pathname!=='/'||origin.search||origin.hash)throw Error('Exact HTTPS test origin required');
  const url=new URL(process.env.SAMSON_BOOKING_DATABASE_URL||'');

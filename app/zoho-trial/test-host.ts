@@ -2,7 +2,7 @@
 // locked until an exact HTTPS origin and a private access key are configured.
 export function hostedTestOrigin(){
  if(process.env.SAMSON_HOSTED_TEST!=='1')return null;
- try{const u=new URL(process.env.SAMSON_TEST_ORIGIN||'');
+ try{const u=new URL(process.env.SAMSON_TEST_ORIGIN||(process.env.RENDER==='true'?process.env.RENDER_EXTERNAL_URL:'')||'');
   if(u.protocol!=='https:'||u.username||u.password||u.pathname!=='/'||u.search||u.hash||!/^[-A-Za-z0-9_]{43,128}$/.test(process.env.SAMSON_TEST_ACCESS_KEY||''))return null;
   return u.origin;
  }catch{return null}
