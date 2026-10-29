@@ -6,7 +6,8 @@ import {validateVisitSeries,type ResidentialVisit} from '../residential/resident
 import type {BookingStore} from './booking-store';
 
 export type BookingCustomer={name:string;email:string;phone:string;street:string;city:string;state:string;zip:string};
-export type Booking={id:string;requestKey:string;fingerprint:string;createdAt:string;updatedAt:string;phase:'reserved'|'invoice_pending'|'awaiting_payment'|'payment_verified'|'sync_pending'|'confirmed'|'review_required';customer:BookingCustomer;snapshot:ReturnType<typeof residentialOrderSnapshot>;visits:ResidentialVisit[];invoice?:{id:string;number:string;url:string};appointments:{index:number;orderId:string;appointmentId:string}[];pendingVisit?:number;error?:string;paymentEnvironment?:'sandbox'};
+export type BookingContext={purpose:'customer'|'owner-verification';termsVersion:string};
+export type Booking={context?:BookingContext;acceptedAt?:string;id:string;requestKey:string;fingerprint:string;createdAt:string;updatedAt:string;phase:'reserved'|'invoice_pending'|'awaiting_payment'|'payment_verified'|'sync_pending'|'confirmed'|'review_required';customer:BookingCustomer;snapshot:ReturnType<typeof residentialOrderSnapshot>;visits:ResidentialVisit[];invoice?:{id:string;number:string;url:string};appointments:{index:number;orderId:string;appointmentId:string}[];pendingVisit?:number;error?:string;paymentEnvironment?:'sandbox'|'production'};
 export type PaymentEvidence={id:string;customerEmail:string;currency:string;totalCents:number;balanceCents:number;status:string;paymentIds:string[];receivedCents:number};
 export type BookingAdapter={available:(visits:ResidentialVisit[])=>Promise<boolean>;createInvoice:(booking:Booking)=>Promise<NonNullable<Booking['invoice']>>;readPayment:(booking:Booking)=>Promise<PaymentEvidence>;createAppointment:(booking:Booking,index:number)=>Promise<{orderId:string;appointmentId:string}>};
 export function parseCustomer(input:unknown):BookingCustomer{
@@ -23,7 +24,7 @@ export function paymentMatches(booking:Booking,evidence:PaymentEvidence){
 // One local process/host only. An interrupted mutation is held for review, never replayed.
 // Public hosting must replace this file ledger with a transactional shared store.
 export class BookingWorkflow{
- constructor(private folder:string,private adapter:BookingAdapter,private sharedStore?:BookingStore){}
+ constructor(private folder:string,private adapter:BookingAdapter,private sharedStore?:BookingStore,private options?:{context:BookingContext;prepareSnapshot?:(snapshot:ReturnType<typeof residentialOrderSnapshot>)=>ReturnType<typeof residentialOrderSnapshot>}){}
  private async save(b:Booking){b.updatedAt=new Date().toISOString();if(this.sharedStore)return this.sharedStore.save(b);const file=path.join(this.folder,b.id+'.json'),temp=file+'.'+randomBytes(6).toString('hex')+'.tmp';await writeFile(temp,JSON.stringify(b),{mode:0o600});await rename(temp,file)}
  async records():Promise<Booking[]>{if(this.sharedStore)return this.sharedStore.records();const {readdir}=await import('node:fs/promises');await mkdir(this.folder,{recursive:true});const names=await readdir(this.folder);return Promise.all(names.filter(n=>/^[a-f0-9]{48}\.json$/.test(n)).map(async name=>JSON.parse(await readFile(path.join(this.folder,name),'utf8'))))}
  async read(id:string):Promise<Booking>{if(!/^[a-f0-9]{48}$/.test(id))throw Error('Invalid booking reference.');if(this.sharedStore)return this.sharedStore.read(id);return JSON.parse(await readFile(path.join(this.folder,id+'.json'),'utf8'))}
@@ -31,17 +32,17 @@ export class BookingWorkflow{
  private async locked<T>(fn:()=>Promise<T>){if(this.sharedStore)return this.sharedStore.locked(fn);await mkdir(this.folder,{recursive:true});const file=path.join(this.folder,'workflow.lock');let lock;try{lock=await open(file,'wx',0o600)}catch{throw Error('Another booking is being checked. Please try again shortly.')}try{return await fn()}finally{await lock.close();await unlink(file)}}
  async create(input:{requestKey:string;customer:unknown;selection:ResidentialSelection;visits:ResidentialVisit[]},today:string){return this.locked(async()=>{
   if(!/^[a-f0-9-]{20,64}$/.test(input.requestKey))throw Error('Refresh this booking form before trying again.');
-  const customer=parseCustomer(input.customer),snapshot=residentialOrderSnapshot(input.selection,true);
+  const customer=parseCustomer(input.customer),base=residentialOrderSnapshot(input.selection,true),snapshot=this.options?.prepareSnapshot?this.options.prepareSnapshot(base):base;
   if(!Array.isArray(input.visits)||!validateVisitSeries(snapshot.maintenance.id,input.visits,today,snapshot.selection.billingMode))throw Error('Choose all required dates and service windows.');
   const visits=input.visits.map(v=>({date:v.date,period:v.period}));
-  const fingerprint=createHash('sha256').update(JSON.stringify({customer,snapshot,visits})).digest('hex');
+  const fingerprint=createHash('sha256').update(JSON.stringify({customer,snapshot,visits,...(this.options?{context:this.options.context}:{})})).digest('hex');
   const existing=await this.records(),sameKey=existing.find(b=>b.requestKey===input.requestKey);
   if(sameKey){if(sameKey.fingerprint!==fingerprint)throw Error('This request belongs to an earlier selection. Start a new booking.');return sameKey}
   const same=existing.find(b=>b.fingerprint===fingerprint);if(same)return same;
   // No automatic expiry while a payable invoice exists: a late payment must never buy a released slot.
   if(existing.some(b=>b.phase!=='confirmed'&&b.visits.some(v=>visits.some(next=>v.date===next.date&&v.period===next.period))))throw Error('A selected service window is held by another booking. Choose another time.');
   if(!await this.adapter.available(visits))throw Error('A selected date is no longer available. Choose another time.');
-  const b:Booking={id:randomBytes(24).toString('hex'),requestKey:input.requestKey,fingerprint,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString(),phase:'reserved',customer,snapshot,visits,appointments:[]};await this.save(b);
+  const b:Booking={id:randomBytes(24).toString('hex'),requestKey:input.requestKey,fingerprint,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString(),phase:'reserved',customer,snapshot,visits,appointments:[],...(this.options?{context:this.options.context,acceptedAt:new Date().toISOString(),paymentEnvironment:'production' as const}:{})};await this.save(b);
   try{b.phase='invoice_pending';await this.save(b);b.invoice=await this.adapter.createInvoice(b);b.phase='awaiting_payment';await this.save(b)}catch{b.phase='review_required';b.error='Invoice creation needs review. Do not create another invoice or release these dates.';await this.save(b)}
   return b;
  })}

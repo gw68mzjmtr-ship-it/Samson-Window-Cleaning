@@ -6,7 +6,9 @@ export async function register(){
  let running=false;const lastChecked=new Map<string,number>();
  const timer=setInterval(async()=>{
   if(running)return;running=true;
-  try{const workflow=bookingWorkflow();for(const b of await workflow.records()){
+  try{
+   if(process.env.SAMSON_LIVE_CHECKOUT_MODE){const {processLivePaymentEvents}=await import('./app/checkout/engine');await processLivePaymentEvents()}
+   const workflow=bookingWorkflow();for(const b of await workflow.records()){
    if(b.phase==='confirmed'||b.phase==='review_required')continue;
    // Older payable invoices still need reconciliation. Check them less frequently,
    // rather than silently abandoning them after the first hour.
@@ -14,6 +16,7 @@ export async function register(){
    if(Date.now()-(lastChecked.get(b.id)||0)<interval)continue;
    lastChecked.set(b.id,Date.now());
    try{
+    if(b.paymentEnvironment==='production'){const {livePaymentService}=await import('./app/checkout/engine');const {readSquareState}=await import('./app/zoho-trial/runtime-store');const state=await readSquareState<{paymentId?:string}>(b.id,'production');if(state?.paymentId)await livePaymentService().synchronize(b.id);continue}
     if(process.env.SAMSON_HOSTED_TEST==='1'){
      const {sandboxPaymentResult}=await import('./app/zoho-trial/square-sandbox');
      const proof=await sandboxPaymentResult(b.id);

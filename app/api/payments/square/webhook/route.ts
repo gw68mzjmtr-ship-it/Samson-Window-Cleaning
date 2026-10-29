@@ -9,7 +9,7 @@ export async function POST(request:Request){
  try{
   const base=new URL(process.env.SAMSON_CHECKOUT_ORIGIN||'');
   if(base.protocol!=='https:'||base.username||base.password||base.pathname!=='/'||base.search||base.hash)throw Error();
-  const config={key:process.env.SAMSON_SQUARE_WEBHOOK_KEY||'',merchantId:process.env.SAMSON_SQUARE_MERCHANT_ID||'',notificationUrl:base.origin+'/api/payments/square/webhook'};
+  const config={key:process.env.SAMSON_SQUARE_WEBHOOK_KEY||'',merchantId:process.env.SAMSON_SQUARE_LIVE_MERCHANT_ID||'',notificationUrl:base.origin+'/api/payments/square/webhook'};
   if(config.key.length<16||!config.merchantId||!process.env.SAMSON_BOOKING_DATABASE_URL)throw Error();
   store??=new PostgresBookingStore(bookingDatabaseConnection(process.env.SAMSON_BOOKING_DATABASE_URL));
   return receiveSquareWebhook(request,config,event=>store!.queueSquareEvent(event));
