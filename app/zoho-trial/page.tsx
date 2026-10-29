@@ -1,0 +1,25 @@
+import {headers} from 'next/headers';
+import {notFound} from 'next/navigation';
+import {connectionStatus,localTrialAllowed} from './server';
+import TrialChecks from './trial-checks';
+import TrialBooking from './trial-booking';
+import TrialControls from './trial-controls';
+import '../booking/walkthrough/walkthrough.css';
+export const dynamic='force-dynamic';
+export const metadata={title:'Private Zoho Connection Test | Samson',robots:{index:false,follow:false}};
+export default async function Page(){
+ if(!localTrialAllowed((await headers()).get('host')))notFound();
+ const status=await connectionStatus();
+ return <div className="bw"><main><div className="bwBanner"><strong>PRIVATE LOCAL TEST · NO CUSTOMER CHECKOUT</strong><span>Only available on this computer while trial mode is enabled. Your customer calculator is unchanged.</span></div><h1>Test the Zoho connection.</h1>
+ <section className="bwPanel"><h2>{status.connected?(status.bookingApproved?'Connected for the controlled booking test':'Connected for read-only checks'):status.configured?'Ready for your permission':'Private client setup pending'}</h2>
+ <p>The availability check reads prices, test work orders, appointments and your service resource. Credentials stay in a private local folder and are never included in the customer website or shared in chat.</p>
+ {!status.connected&&<form action="/api/zoho/connect" method="post"><button className="bwPrimary" disabled={!status.configured}>Review permissions in Zoho →</button></form>}
+ {status.connected&&<TrialChecks/>}</section>
+ <section className="bwPanel"><h2>Square sandbox receipt and booking test</h2><p>This separate connection can read and create payment records in Zoho Invoice. The test will create a clearly labelled fictional sandbox receipt against the matching test invoice, then verify its dates and jobs. No actual funds are received.</p><p>Zoho uses the same permission for recording payments and refunds. The private website permits only the test receipt operation; it does not implement refunds or live card charges.</p><form action="/api/zoho/connect?mode=payment-records" method="post"><button className="bwPrimary">Review test bookkeeping permissions in Zoho →</button></form></section>
+ <section className="bwPanel"><h2>Calculator to Zoho Invoice</h2><p>Create itemized fictional draft invoices and read payment status. This private test cannot charge cards, refund payments, send invoices or delete records.</p>{status.invoiceApproved?<p>Invoice connection approved. <a href="/zoho-trial/calculator">Test calculator invoice transfer →</a></p>:<form action="/api/zoho/connect?mode=invoice" method="post"><button className="bwPrimary">Review invoice connection permissions →</button></form>}</section>{status.connected&&<TrialBooking approved={status.bookingApproved}/>}
+ <section className="bwPanel" style={{marginTop:24}}><h3>Website maintenance and cancellation permissions</h3><p>Professional scheduling, maintenance generation and pause tests passed. The controlled website tests can create fictional service items and maintenance plans, pause plans, and cancel fictional appointments. No invoicing, charging or deletion access is requested.</p>{!status.validationApproved&&<form action="/api/zoho/connect?mode=validation" method="post"><button className="bwPrimary">Review maintenance &amp; cancellation permissions →</button></form>}{status.validationApproved&&<TrialControls/>}<p><a href="/zoho-trial/calculator">Try the live calculator validation →</a></p><h3>What remains to prove</h3><p>Remaining launch work: production reservation protection across simultaneous customers, initial payment and receipts, recurring charging, accepted cancellation terms and fee handling, and production synchronization. A fictional booking, itemized calculator transfer, maintenance creation/pause and appointment cancellation have been tested; customer checkout is not active.</p><a href="/residential">Return to the visual calculator →</a></section>
+ </main></div>
+}
+
+
+

@@ -1,0 +1,26 @@
+{
+  "status": "interactive-preview-only",
+  "prices": "Residential exterior base: $599 for homes up to 2,500 sq ft, plus $0.10 per square foot above 2,500. Premium up to 2,500; Executive 2,501–4,500; Elite 4,501–10,000. Over 6,500 requires scope assessment before booking.",
+  "purchase": "Pay-per-cleaning total minimum $599 after discounts. Annual maintenance 3%, six-month 5%, quarterly 10% on eligible exterior cleaning. Yearly prepayment stacks an extra 5% on discounted exterior cleaning and may reduce the effective visit price below $599. Add-ons are undiscounted. Private testing only; live renewal, cancellation and refund terms remain to be finalized.",
+  "payment": "Simulated locally. No card collection, payment API call, emailed receipt or actual booking.",
+  "availability": "Sample weekdays, initial visit 2–60 days ahead; no weekends or U.S. federal holidays including observed dates. Repeat dates selected in due months across the following 12 months. Two arrival windows: morning 8–11 a.m. or afternoon 1–4 p.m.; no exact start-time selection. Not connected to Housecall Pro availability.",
+  "liveRequirements": [
+    "Confirm final residential prices, unit-count rules, access extras, service durations and coverage before charging.",
+    "Activate the chosen payment provider and verify Housecall Pro connection capabilities.",
+    "Validate price and all visit selections server-side; allow calendar selection before payment, then require verified successful payment to confirm the booking.",
+    "Load real capacity using job duration, travel, employee calendars, existing work and blocked dates.",
+    "Recheck and reserve a slot atomically at confirmation to avoid double booking.",
+    "Handle paid-but-unscheduled customers, unavailable dates, failed payments, refunds and retries.",
+    "Persist customer, address, payment reference and appointment with authenticated access and idempotent events.",
+    "Send payment receipt and appointment confirmation separately after verified provider events.",
+    "Test iPad and phone flows, cancellation and price-adjustment approval before launch."
+  ],
+  "residentialAccessRules": "Customer removes exterior screens or selects screen removal and replacement at $10 per screen per visit. Screen cleaning excluded. Screen service is not discounted. Interior step ladder $50 once per interior visit; exterior two-story ladder $100 once per visit. Interior quantities priced separately by approved type rates. Minimum total $599. Extensive exterior TDLs, specialty glass and high/difficult access require a scope quote.",
+  "approvedInteriorRates": "October 27: transom/small fixed $5/pane; standard single/double-hung $10/complete window; casement $20/panel; picture $40/pane; oversized picture $75/pane; sliding door $35/panel; true French $5/small pane with no per-window or per-door minimum; standard interior skylight $75 each.",
+  "imageAssets": "Eight AI-generated illustrative window examples saved in public/residential-windows; not customer project photography.",
+  "homeSizeBands": "Current bands retained: Premium up to 2500 sq ft; Executive 2501–4500; Elite 4501–6500. All homes above Elite require a custom estate assessment.",
+  "maintenanceRules": "Intervals: 12, 6 or 3 months; 1, 2 or 4 visits per year. Initial cleaning full price. Repeat discount excludes ladder fees, interior work and restoration. Future interior work is requested/quoted separately. Exterior ladder charge continues per repeat visit if access is still required.",
+  "taxTreatment": "Verified October 27, 2026: NCDOR Services to Real Property Taxability Chart lists Window washing as Exempt under Cleaning Real Property. Preview wording applies to ordinary NC window washing; other services, mixed transactions and locations require review. Not a global tax exemption for the business. Source https://www.ncdor.gov/taxes-forms/sales-and-use-tax/taxable-items/real-property-contracts/services-real-property-taxability-chart",
+  "processingCosts": "Internal conservative planning assumption: HCP saved-card rate 3.49%, fees rounded to cents. Net is before labor, supplies, overhead and software allocation, not profit. Confirm account rate and allocate actual software cost using real volume. No customer surcharge is added.",
+  "housecallAudit": "Service Plans activated at $40/month with Basic retained. Eight templates and hidden residential pricing form created. Live checkout and payment remain gated; see housecall-integration-audit.json."
+}
