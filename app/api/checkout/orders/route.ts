@@ -10,7 +10,7 @@ export async function POST(req:Request){
  else{
   if(input.acceptedTerms!==true||!approvedResidentialTerms()||input.termsVersion!==approvedResidentialTerms())throw Error('Customer terms not approved');
   if(!['NC','North Carolina'].includes(input.customer?.state)||input.customer?.email?.endsWith('@example.invalid'))throw Error('Service area or contact requires review');
-  const zips=(process.env.SAMSON_SERVICE_ZIPS||'').split(',').map(value=>value.trim());if(!zips.includes(input.customer?.zip))throw Error('Address needs service-area review');
+  const zips=(process.env.SAMSON_SERVICE_ZIPS||'').split(',').map(value=>value.trim());if(typeof input.customer?.zip!=='string'||!/^\d{5}(?:-\d{4})?$/.test(input.customer.zip.trim())||!zips.includes(input.customer.zip.trim().slice(0,5)))throw Error('Address needs service-area review');
  }
  await confirmLiveLocation();const today=new Intl.DateTimeFormat('en-CA',{timeZone:'America/New_York',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
  const booking=await(owner?ownerWorkflow():customerWorkflow()).create(input,today);return Response.json({...await publicLiveOrder(booking),access:bookingAccess(booking.id)},{headers:privateHeaders});

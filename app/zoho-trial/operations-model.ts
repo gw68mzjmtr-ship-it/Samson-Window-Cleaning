@@ -34,7 +34,7 @@ export function operationsSnapshot(bookings:Booking[],appointments:Appointment[]
    const prepaid=b.snapshot.selection.billingMode==='annual-prepay';
    const paid=prepaid||index===0;
    const payment=b.paymentEnvironment==='sandbox'?'This is a fictional sandbox demonstration. No real payment or service.':paid?'Payment for this cleaning has been verified.':'This is a scheduled maintenance visit; no automatic card charge is authorized.';
-   const scope=b.snapshot.visitOrders[index].lines.map(l=>l.label+' × '+l.quantity).join('; ');
+   const scope=b.snapshot.visitOrders[index].lines.map(l=>l.label+' × '+l.quantity).concat(b.snapshot.visitOrders[index].serviceNotes||[]).join('; ');
    const body=`Your Samson window cleaning is scheduled for ${dateLabel(visit.date)}, ${arrivalWindow(visit.period)}.\n\n${payment}\nInvoice reference: ${reference}.\nSelected services: ${scope}.\n\nPlease provide safe access and secure pets. Remove any exterior screens you will handle yourself. Samson handles only the screens selected for paid removal and replacement. You can discuss changes to selected add-ons on service day; any price change needs your approval before work.\n\nQuestions or a change request? Contact zach@samsonwindowcleaning.com. Schedule changes require confirmation; no new date is promised by this message.`;
    // Preview only. Native Zoho reminder rules handle delivery; there is no second sender here.
    const key=hash(b.id+'|'+index+'|'+start+'|'+end+'|reminder-v1');
