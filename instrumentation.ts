@@ -7,9 +7,9 @@ export async function register(){
  const timer=setInterval(async()=>{
   if(running)return;running=true;
   try{
-   if(process.env.SAMSON_LIVE_CHECKOUT_MODE){const {processLivePaymentEvents}=await import('./app/checkout/engine');await processLivePaymentEvents()}
+   if(process.env.SAMSON_LIVE_CHECKOUT_MODE){const {processLivePaymentEvents,expireLiveOrders,emailConfirmedOrder}=await import('./app/checkout/engine');await processLivePaymentEvents();await expireLiveOrders();const {sharedBookings}=await import('./app/zoho-trial/runtime-store');for(const booking of await sharedBookings().records())if(booking.paymentEnvironment==='production'&&booking.phase==='confirmed')try{await emailConfirmedOrder(booking.id)}catch{console.warn('A booking confirmation email needs review.')}}
    const workflow=bookingWorkflow();for(const b of await workflow.records()){
-   if(b.phase==='confirmed'||b.phase==='review_required')continue;
+   if(['confirmed','review_required','expired'].includes(b.phase))continue;
    // Older payable invoices still need reconciliation. Check them less frequently,
    // rather than silently abandoning them after the first hour.
    const interval=Date.now()-Date.parse(b.createdAt)<3600000?60000:300000;

@@ -1,6 +1,14 @@
 # Samson live checkout preparation — October 29, 2026
 
-Status: implementation prepared; customer access CLOSED. No production Square credential is installed and no real charge was submitted during this work. The existing hosted sandbox test remains available.
+Status updated October 30: customer access CLOSED. Approved live Square credentials and signed notifications are installed. The owner personally completed a real $1 verification: invoice INV-000009 (1611011000000140001), receipt #5, and its exact clearly labelled test booking all matched. No agent charge or refund was made.
+
+The customer confirmation flow has now delivered the paid invoice PDF and test schedule to the owner's business inbox (Gmail message 1a18a8cfe6478384). The one-page invoice visually includes the full approved logo, yellow line and tagline, $1 payment, and $0 balance. Durable claims prevent duplicate or ambiguous email retries. The sender is Zoho's authenticated message service with the business address as Reply-To.
+
+New customer orders hold dates for 30 minutes. Expiration takes the global booking lock and payment lock, requires no attempted payment, independently confirms a fully unpaid invoice without another gateway, voids and verifies that invoice, then releases the claims. Any payment attempt or ambiguity retains dates for review. Unit and real PostgreSQL checks passed. Existing old test orders without an expiration are preserved for manual review.
+
+Public page routing, privacy copy, email status, and customer-facing calculator wording are prepared in source; public launch is not enabled. The owner approved Charlotte, Concord and Lake Norman. Wix controls samsonwindowcleaning.com; no DNS records were changed. Permanent hosting approval is pending: $7 website + $6 database + current 1 GB storage at $0.30/GB/month, approximately $13.30/month before taxes and other usage. No paid hosting was purchased.
+
+The current service-terms review version is residential-live-2026-10-30-v2. Unused prepaid visits are refunded at their prepaid values, less applicable disclosed appointment fees; completed visits keep their agreed prepaid rate. This version is not approved or activated. Remaining launch details are recorded in ../launch-readiness-20261030.json. The historical preparation checklist below is retained as implementation context; its production-key and owner-payment steps are complete.
 
 ## Flow prepared
 
@@ -27,7 +35,7 @@ Production payment records and locks are isolated from sandbox records. No refun
 
 ## Required before public customer access
 
-- Review and approve the exact registered service-terms version residential-live-2026-10-29-v1, including cancellation, initial savings and prepaid refund treatment. The old pricing-folder draft is superseded for preview purposes and remains unapproved. No automatic penalty charge is implemented.
+- Review and approve the exact registered service-terms version residential-live-2026-10-30-v2, including cancellation, initial savings and prepaid refund treatment. The old pricing-folder draft is superseded for preview purposes and remains unapproved. No automatic penalty charge is implemented.
 - Set the approved service ZIP list and actual residential service resource/crew. Current fallback is the owner's resource; do not promise a two-technician crew from that configuration.
 - Review existing fictional appointments and imported November capacity. Housecall Pro was imported once; it is not continuously synchronized.
 - Resolve abandoned unpaid holds safely before public traffic. Current design deliberately retains any payable/ambiguous order for review rather than releasing a date that might still be paid. Public launch needs a documented release/reconciliation process and bot protection.

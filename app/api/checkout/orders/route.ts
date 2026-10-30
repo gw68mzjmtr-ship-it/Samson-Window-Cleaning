@@ -5,7 +5,7 @@ import {approvedResidentialTerms} from '../../../checkout/service-terms';
 export const runtime='nodejs';
 export async function GET(req:Request){try{await guardCheckout(req);const id=new URL(req.url).searchParams.get('id')||'';if(!validBookingAccess(id,req.headers.get('x-samson-booking-access')))throw Error();return Response.json(await publicLiveOrder(await readLiveBooking(id)),{headers:privateHeaders})}catch{return Response.json({error:'This order could not be opened. Use the same browser or contact Samson.'},{status:404,headers:privateHeaders})}}
 export async function POST(req:Request){
- try{await guardCheckout(req,true);await limitCheckout(req,'create');const input=await checkoutJson(req),owner=input.purpose==='owner-verification';
+ try{await guardCheckout(req,true);await limitCheckout(req,'create');const input=await checkoutJson(req),owner=input.purpose==='owner-verification';if(input.website)throw Error('Checkout could not be accepted');
  if(owner){await guardCheckout(req,true,true);if(input.acceptedTerms!==true||liveMode()!=='owner-test'||input.confirm!=='OWNER_REAL_ONE_DOLLAR'||input.customer?.email?.toLowerCase()!=='zach@samsonwindowcleaning.com'||input.selection?.maintenanceId!=='once'||input.selection?.billingMode==='annual-prepay'||input.visits?.length!==1)throw Error('Owner verification only')}
  else{
   if(input.acceptedTerms!==true||!approvedResidentialTerms()||input.termsVersion!==approvedResidentialTerms())throw Error('Customer terms not approved');

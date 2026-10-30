@@ -7,7 +7,7 @@ import type {BookingStore} from './booking-store';
 
 export type BookingCustomer={name:string;email:string;phone:string;street:string;city:string;state:string;zip:string};
 export type BookingContext={purpose:'customer'|'owner-verification';termsVersion:string};
-export type Booking={context?:BookingContext;acceptedAt?:string;id:string;requestKey:string;fingerprint:string;createdAt:string;updatedAt:string;phase:'reserved'|'invoice_pending'|'awaiting_payment'|'payment_verified'|'sync_pending'|'confirmed'|'review_required';customer:BookingCustomer;snapshot:ReturnType<typeof residentialOrderSnapshot>;visits:ResidentialVisit[];invoice?:{id:string;number:string;url:string};appointments:{index:number;orderId:string;appointmentId:string}[];pendingVisit?:number;error?:string;paymentEnvironment?:'sandbox'|'production'};
+export type Booking={context?:BookingContext;acceptedAt?:string;expiresAt?:string;id:string;requestKey:string;fingerprint:string;createdAt:string;updatedAt:string;phase:'reserved'|'invoice_pending'|'awaiting_payment'|'payment_verified'|'sync_pending'|'confirmed'|'review_required'|'expired';customer:BookingCustomer;snapshot:ReturnType<typeof residentialOrderSnapshot>;visits:ResidentialVisit[];invoice?:{id:string;number:string;url:string};appointments:{index:number;orderId:string;appointmentId:string}[];pendingVisit?:number;error?:string;paymentEnvironment?:'sandbox'|'production'};
 export type PaymentEvidence={id:string;customerEmail:string;currency:string;totalCents:number;balanceCents:number;status:string;paymentIds:string[];receivedCents:number};
 export type BookingAdapter={available:(visits:ResidentialVisit[])=>Promise<boolean>;createInvoice:(booking:Booking)=>Promise<NonNullable<Booking['invoice']>>;readPayment:(booking:Booking)=>Promise<PaymentEvidence>;createAppointment:(booking:Booking,index:number)=>Promise<{orderId:string;appointmentId:string}>};
 export function parseCustomer(input:unknown):BookingCustomer{
@@ -35,19 +35,19 @@ export class BookingWorkflow{
   const customer=parseCustomer(input.customer),base=residentialOrderSnapshot(input.selection,true),snapshot=this.options?.prepareSnapshot?this.options.prepareSnapshot(base):base;
   if(!Array.isArray(input.visits)||!validateVisitSeries(snapshot.maintenance.id,input.visits,today,snapshot.selection.billingMode))throw Error('Choose all required dates and service windows.');
   const visits=input.visits.map(v=>({date:v.date,period:v.period}));
-  const fingerprint=createHash('sha256').update(JSON.stringify({customer,snapshot,visits,...(this.options?{context:this.options.context}:{})})).digest('hex');
+  const fingerprint=createHash('sha256').update(JSON.stringify({customer,snapshot,visits,...(this.options?{context:this.options.context,...(this.options.context.purpose==='customer'?{requestKey:input.requestKey}:{})}:{})})).digest('hex');
   const existing=await this.records(),sameKey=existing.find(b=>b.requestKey===input.requestKey);
   if(sameKey){if(sameKey.fingerprint!==fingerprint)throw Error('This request belongs to an earlier selection. Start a new booking.');return sameKey}
   const same=existing.find(b=>b.fingerprint===fingerprint);if(same)return same;
   // No automatic expiry while a payable invoice exists: a late payment must never buy a released slot.
-  if(existing.some(b=>b.phase!=='confirmed'&&b.visits.some(v=>visits.some(next=>v.date===next.date&&v.period===next.period))))throw Error('A selected service window is held by another booking. Choose another time.');
+  if(existing.some(b=>!['confirmed','expired'].includes(b.phase)&&b.visits.some(v=>visits.some(next=>v.date===next.date&&v.period===next.period))))throw Error('A selected service window is held by another booking. Choose another time.');
   if(!await this.adapter.available(visits))throw Error('A selected date is no longer available. Choose another time.');
   const b:Booking={id:randomBytes(24).toString('hex'),requestKey:input.requestKey,fingerprint,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString(),phase:'reserved',customer,snapshot,visits,appointments:[],...(this.options?{context:this.options.context,acceptedAt:new Date().toISOString(),paymentEnvironment:'production' as const}:{})};await this.save(b);
-  try{b.phase='invoice_pending';await this.save(b);b.invoice=await this.adapter.createInvoice(b);b.phase='awaiting_payment';await this.save(b)}catch{b.phase='review_required';b.error='Invoice creation needs review. Do not create another invoice or release these dates.';await this.save(b)}
+  try{b.phase='invoice_pending';await this.save(b);b.invoice=await this.adapter.createInvoice(b);b.phase='awaiting_payment';if(b.context?.purpose==='customer')b.expiresAt=new Date(Date.now()+30*60000).toISOString();await this.save(b)}catch{b.phase='review_required';b.error='Invoice creation needs review. Do not create another invoice or release these dates.';await this.save(b)}
   return b;
  })}
  async reconcile(id:string){return this.locked(async()=>{
-  const b=await this.read(id);if(b.phase==='confirmed'||b.phase==='review_required')return b;
+  const b=await this.read(id);if(['confirmed','review_required','expired'].includes(b.phase))return b;
   if(b.phase!=='awaiting_payment'&&b.phase!=='payment_verified'){b.phase='review_required';b.error='An earlier update stopped before confirmation. Review existing Zoho records; do not repeat the invoice or appointment creation.';await this.save(b);return b}
   if(!paymentMatches(b,await this.adapter.readPayment(b)))return b;
   b.phase='payment_verified';await this.save(b);

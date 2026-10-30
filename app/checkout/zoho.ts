@@ -4,11 +4,18 @@ import {importedWindowBlocked} from '../residential/imported-capacity';
 import type {Booking} from '../zoho-trial/booking-workflow';
 import type {LivePaymentState} from './payment-service';
 export async function invoiceApi(endpoint:string,method:'GET'|'POST'='GET',body?:object){
- const allowed=method==='GET'&&/^(?:contacts\?email=[^&]+&per_page=200|contacts\/[0-9]+|invoices\/[0-9]+(?:\/payments)?|customerpayments\/[0-9]+)$/.test(endpoint)||method==='POST'&&/^(?:contacts|invoices|customerpayments|invoices\/[0-9]+\/status\/sent)$/.test(endpoint);
+ const allowed=method==='GET'&&/^(?:contacts\?email=[^&]+&per_page=200|contacts\/[0-9]+|invoices\/[0-9]+(?:\/payments|\/email)?|customerpayments\/[0-9]+)$/.test(endpoint)||method==='POST'&&/^(?:contacts|invoices|customerpayments|invoices\/[0-9]+\/(?:status\/sent|status\/void|email))$/.test(endpoint);
  if(!allowed)throw Error('Invoice operation not allowed');
  if(endpoint==='customerpayments'&&!await paymentRecordAccessApproved())throw Error('Payment recording permission is not approved');
  const response=await fetch('https://www.zohoapis.com/invoice/v3/'+endpoint,{method,headers:{Authorization:'Zoho-oauthtoken '+await accessToken(),'X-com-zoho-invoice-organizationid':'944362366','Content-Type':'application/json'},body:body?JSON.stringify(body):undefined,cache:'no-store',signal:AbortSignal.timeout(25000)});
  const value=await response.json();if(!response.ok||value.code!==0)throw Error('Zoho invoice update could not be confirmed');return value;
+}
+export async function voidUnpaidLiveInvoice(booking:Booking){
+ if(!booking.invoice||booking.context?.purpose!=='customer'||booking.appointments.length)throw Error('Only an unpaid customer checkout may expire');
+ const invoice=(await invoiceApi('invoices/'+booking.invoice.id)).invoice,payments=(await invoiceApi('invoices/'+booking.invoice.id+'/payments')).payments||[];
+ if(invoice.reference_number!=='SAMSON-LIVE-'+booking.id||invoice.status!=='sent'||invoice.currency_code!=='USD'||Math.round(Number(invoice.total)*100)!==booking.snapshot.initialTotalCents||Math.round(Number(invoice.balance)*100)!==booking.snapshot.initialTotalCents||payments.length||invoice.payment_options?.payment_gateways?.some((gateway:{configured?:boolean})=>gateway.configured))throw Error('Invoice cannot be safely expired');
+ await invoiceApi('invoices/'+booking.invoice.id+'/status/void','POST');
+ if((await invoiceApi('invoices/'+booking.invoice.id)).invoice.status!=='void')throw Error('Invoice expiration not verified');
 }
 const resource=()=>process.env.SAMSON_LIVE_RESOURCE_ID||'44386000000385209';
 async function territory(){const result=await trialRecord('Work_Orders','44386000000385265'),id=result.data?.[0]?.Territory?.id;if(!id)throw Error('Service territory not configured');return id as string}
@@ -23,6 +30,15 @@ export async function createLiveInvoice(booking:Booking){
  const c=booking.customer,listed=(await invoiceApi('contacts?email='+encodeURIComponent(c.email)+'&per_page=200')).contacts||[];
  const matches=listed.filter((contact:{email:string;contact_name:string})=>contact.email?.toLowerCase()===c.email&&!/^SAMSON TEST/i.test(contact.contact_name));if(matches.length>1)throw Error('Customer identity needs review');
  let contact=matches[0];
+ if(contact){const saved=(await invoiceApi('contacts/'+contact.contact_id)).contact,address=saved.billing_address;if(address?.address?.trim().toLowerCase()!==c.street.trim().toLowerCase()||String(address?.zip||'').slice(0,5)!==c.zip.slice(0,5))throw Error('A different billing or service address needs review before payment')}
+ // Stop a changed/ambiguous existing service address before creating a payable
+ // invoice, rather than discovering it only after the customer has paid.
+ if(booking.context.purpose==='customer'){
+  const records=await trialRead('Contacts');if(records.info?.more_records)throw Error('Customer lookup requires complete pagination');
+  const matches=(records.data||[]).filter((record:{Email?:string;First_Name?:string})=>record.Email?.toLowerCase()===c.email&&!record.First_Name?.startsWith('SAMSON TEST'));
+  if(matches.length>1)throw Error('Existing service address needs review before payment');
+  if(matches.length===1){const record=(await trialRecord('Contacts',matches[0].id)).data?.[0];if(record?.Service_Address?.Street_1?.trim().toLowerCase()!==c.street.trim().toLowerCase()||String(record?.Service_Address?.Zip_Code||'').slice(0,5)!==c.zip.slice(0,5))throw Error('Existing service address needs review before payment')}
+ }
  if(!contact){const names=c.name.split(' ');contact=(await invoiceApi('contacts','POST',{contact_name:c.name,customer_sub_type:'individual',contact_type:'customer',billing_address:{address:c.street,city:c.city,state:c.state,zip:c.zip,country:'U.S.A'},shipping_address:{address:c.street,city:c.city,state:c.state,zip:c.zip,country:'U.S.A'},contact_persons:[{first_name:names[0],last_name:names.slice(1).join(' '),email:c.email,phone:c.phone,is_primary_contact:true}]})).contact}
  if(!contact?.contact_id)throw Error('Customer not confirmed');
  const note=booking.context.purpose==='owner-verification'?'OWNER CHECKOUT VERIFICATION — real $1 payment; no cleaning service purchased.':'Residential window cleaning. Scope, square footage and any price change are confirmed before work. No automatic future card charges are authorized.';

@@ -15,7 +15,7 @@ export class LivePaymentService{
   try{
    const booking=await this.deps.booking(id);if(!booking.context||booking.paymentEnvironment!=='production'||!booking.invoice)throw Error('Live booking required');
    const prior=await this.store.read(id);if(prior){if(!sameState(prior,booking))throw Error('Payment record mismatch');return prior}
-   if(booking.phase!=='awaiting_payment'||!await this.deps.available(booking))throw Error('The selected schedule needs review before payment');
+   if(booking.phase!=='awaiting_payment'||(booking.expiresAt&&Date.parse(booking.expiresAt)<=Date.now())||!await this.deps.available(booking))throw Error('The selected schedule needs review before payment');
    const state:LivePaymentState={environment:'production',bookingId:id,invoiceId:booking.invoice.id,reference:liveReference(id),amountCents:booking.snapshot.initialTotalCents,phase:'pending',attempt:1,notice:'Payment is being checked. Do not submit a second payment.'};
    await this.store.save(id,state);
    try{

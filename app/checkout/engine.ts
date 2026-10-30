@@ -3,7 +3,9 @@ import {BookingWorkflow,type Booking,type BookingAdapter} from '../zoho-trial/bo
 import {sharedBookings,sharedDatabase,readSquareState,saveSquareState,squareStateLock} from '../zoho-trial/runtime-store';
 import {LivePaymentService,type LivePaymentState} from './payment-service';
 import {liveSquareConfig,readLivePayment,createLivePayment} from './square';
-import {invoiceApi,liveAvailability,createLiveInvoice,recordLiveReceipt,createLiveAppointment} from './zoho';
+import {invoiceApi,liveAvailability,createLiveInvoice,recordLiveReceipt,createLiveAppointment,voidUnpaidLiveInvoice} from './zoho';
+import {expireUnpaidOrders} from './expire-orders';
+import {sendConfirmationOnce} from './confirmation';
 import {approvedResidentialTerms} from './service-terms';
 import {ownerVerificationSnapshot} from './owner-verification';
 const store=()=>sharedBookings();
@@ -27,10 +29,24 @@ export function livePaymentService(){const config=liveSquareConfig();return new 
  if(email?.toLowerCase()!==booking.customer.email||invoice.reference_number!=='SAMSON-LIVE-'+booking.id||invoice.currency_code!=='USD'||invoice.status!=='sent'||Math.round(Number(invoice.total)*100)!==booking.snapshot.initialTotalCents||Math.round(Number(invoice.balance)*100)!==booking.snapshot.initialTotalCents||invoice.line_items?.length!==booking.snapshot.initialLines.length||!booking.snapshot.initialLines.every((line,i)=>Math.round(Number(invoice.line_items[i].rate)*100)===line.unitPriceCents&&Number(invoice.line_items[i].quantity)===line.quantity))return false;
  return liveAvailability(booking.visits);
 },createPayment:createLivePayment,readPayment:readLivePayment,recordReceipt:recordLiveReceipt,confirmBooking:async id=>{const booking=await readLiveBooking(id);return (booking.context!.purpose==='owner-verification'?ownerWorkflow():customerWorkflow()).reconcile(id)},locationId:config.locationId})}
-export async function publicLiveOrder(booking:Booking){const payment=await readSquareState<LivePaymentState>(booking.id,'production');return {id:booking.id,purpose:booking.context!.purpose,phase:booking.phase,invoice:booking.invoice,amountCents:booking.snapshot.initialTotalCents,visits:booking.visits,selection:booking.snapshot.selection,appointments:booking.appointments,payment:payment?{phase:payment.phase,notice:payment.notice,paymentId:payment.paymentId,receipt:payment.receipt}:null,error:booking.error,lines:booking.snapshot.initialLines}}
+export async function publicLiveOrder(booking:Booking){const payment=await readSquareState<LivePaymentState>(booking.id,'production'),sql=sharedDatabase(),emails=await sql`SELECT phase FROM samson_confirmation_email WHERE booking_id=${booking.id}`;return {id:booking.id,purpose:booking.context!.purpose,phase:booking.phase,expiresAt:booking.expiresAt,confirmationEmail:emails[0]?.phase||null,invoice:booking.invoice,amountCents:booking.snapshot.initialTotalCents,visits:booking.visits,selection:booking.snapshot.selection,appointments:booking.appointments,payment:payment?{phase:payment.phase,notice:payment.notice,paymentId:payment.paymentId,receipt:payment.receipt}:null,error:booking.error,lines:booking.snapshot.initialLines}}
+export async function expireLiveOrders(){return expireUnpaidOrders({store:store(),lockPayment:id=>squareStateLock(id,'production'),readPayment:id=>readSquareState(id,'production'),voidUnpaidInvoice:voidUnpaidLiveInvoice})}
+export async function emailConfirmedOrder(id:string){
+ const booking=await readLiveBooking(id),payment=await readSquareState<LivePaymentState>(id,'production');if(!payment||booking.phase!=='confirmed')return;
+ const sql=sharedDatabase();
+ return sendConfirmationOnce({booking,payment,claim:async()=>{
+  const rows=await sql`INSERT INTO samson_confirmation_email(booking_id,invoice_id,recipient,phase) VALUES(${id},${booking.invoice!.id},${booking.customer.email},'pending') ON CONFLICT(booking_id) DO NOTHING RETURNING booking_id`;return rows.length===1;
+ },send:async message=>{
+  const invoice=(await invoiceApi('invoices/'+booking.invoice!.id)).invoice,contact=(await invoiceApi('contacts/'+invoice.customer_id)).contact;
+  const email=contact.email||contact.contact_persons?.find((person:{is_primary_contact:boolean})=>person.is_primary_contact)?.email;
+  if(invoice.status!=='paid'||Number(invoice.balance)!==0||invoice.reference_number!=='SAMSON-LIVE-'+id||email?.toLowerCase()!==booking.customer.email)throw Error('Confirmation recipient or paid invoice mismatch');
+  await invoiceApi('invoices/'+booking.invoice!.id+'/email','POST',message);
+ },finish:async phase=>{await sql`UPDATE samson_confirmation_email SET phase=${phase},updated_at=now() WHERE booking_id=${id}`}});
+}
 export async function limitCheckout(req:Request,operation:string){
  const address=(req.headers.get('x-forwarded-for')||'unknown').split(',').at(-1)!.trim(),subject=createHash('sha256').update(operation+':'+address).digest('hex'),bucket=Math.floor(Date.now()/60000),sql=sharedDatabase();
  const [result]=await sql`INSERT INTO samson_checkout_rate(subject,bucket) VALUES(${subject},${bucket}) ON CONFLICT(subject,bucket) DO UPDATE SET attempts=samson_checkout_rate.attempts+1 RETURNING attempts`;
+ await sql`DELETE FROM samson_checkout_rate WHERE bucket<${bucket-1440}`;
  if(result.attempts>(operation==='create'?5:operation==='payment'?10:90))throw Error('Please wait a minute before trying again');
 }
 export async function processLivePaymentEvents(){
