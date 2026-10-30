@@ -52,27 +52,29 @@ export function calculateResidentialQuote(squareFeet:number,options:{interiorReq
  if(!schedule)throw new Error('Choose a valid maintenance schedule.');
  const billingMode=options.billingMode??'per-visit',prepaid=billingMode==='annual-prepay';
  if(!['per-visit','annual-prepay'].includes(billingMode)||(prepaid&&schedule.id==='once'))throw Error('Choose maintenance before paying for the year.');
- const visitCount=schedule.months?(prepaid?schedule.visits:schedule.visits+1):1;
+ const prepaidVisitCount=prepaid?schedule.visits:1;
+ const visitCount=schedule.months?(prepaid&&schedule.id!=='annual'?schedule.visits:schedule.visits+1):1;
  const addonVisits=options.addonVisits??{};
  const keys=[...residentialInteriorTypes.map(t=>t.id),'screens','interior-ladder','exterior-ladder'];
  if(!addonVisits||typeof addonVisits!=='object'||Array.isArray(addonVisits)||Object.entries(addonVisits).some(([key,visits])=>!keys.includes(key)||!Array.isArray(visits)||new Set(visits).size!==visits.length||visits.some(i=>!Number.isInteger(i)||i<0||i>=visitCount)))throw Error('Choose valid add-on visits.');
  const included=(key:string,index:number,fallback:boolean)=>addonVisits[key]===undefined?fallback:addonVisits[key].includes(index);
  const repeatExterior=Math.round(plan.price*100*(100-schedule.discount)/100)/100;
- const annualMaintenanceCents=Math.round(repeatExterior*100)*visitCount;
- const prepaidExteriorTotal=Math.round(annualMaintenanceCents*95/100),prepaidExteriorFloor=Math.floor(prepaidExteriorTotal/visitCount),prepaidRemainder=prepaidExteriorTotal%visitCount;
+ const annualMaintenanceCents=Math.round(repeatExterior*100)*(prepaid?prepaidVisitCount:visitCount);
+ const prepaidExteriorTotal=Math.round(annualMaintenanceCents*95/100),prepaidExteriorFloor=Math.floor(prepaidExteriorTotal/prepaidVisitCount),prepaidRemainder=prepaidExteriorTotal%prepaidVisitCount;
  const visitPricing=Array.from({length:visitCount},(_,index)=>{
   const interiorQuantities=quantities.map((q,i)=>options.interiorRequested&&included(residentialInteriorTypes[i].id,index,index===0)?q:0);
   const interiorCount=interiorQuantities.reduce((sum,q)=>sum+q,0),interiorGlass=interiorQuantities.reduce((sum,q,i)=>sum+q*residentialInteriorTypes[i].rate,0);
   const screenCount=included('screens',index,true)?selectedScreens:0,screenFee=screenCount*10;
   const exteriorLadderFee=options.twoStoryLadder&&included('exterior-ladder',index,true)?100:0;
   const interiorLadderFee=(interiorCount>0||screenCount>0)&&options.stepLadder&&included('interior-ladder',index,index===0||selectedScreens>0)?50:0;
-  const exteriorCents=prepaid?prepaidExteriorFloor+(index<prepaidRemainder?1:0):Math.round((index===0&&!options.upfrontDiscount?plan.price:repeatExterior)*100);
+  const prepaidVisit=prepaid&&index<prepaidVisitCount;
+  const exteriorCents=prepaidVisit?prepaidExteriorFloor+(index<prepaidRemainder?1:0):Math.round((index===0&&!options.upfrontDiscount?plan.price:repeatExterior)*100);
   const subtotalCents=exteriorCents+Math.round((interiorGlass+screenFee+exteriorLadderFee+interiorLadderFee)*100);
-  const minimumAdjustmentCents=prepaid?0:Math.max(0,59900-subtotalCents),total=(subtotalCents+minimumAdjustmentCents)/100;
-  return {index,interiorQuantities,interiorCount,interiorGlass,screenCount,screenFee,exteriorLadderFee,interiorLadderFee,exteriorCents,minimumAdjustmentCents,total};
+  const minimumAdjustmentCents=prepaidVisit?0:Math.max(0,59900-subtotalCents),total=(subtotalCents+minimumAdjustmentCents)/100;
+  return {index,includedInInitialPayment:index===0||prepaidVisit,interiorQuantities,interiorCount,interiorGlass,screenCount,screenFee,exteriorLadderFee,interiorLadderFee,exteriorCents,minimumAdjustmentCents,total};
  });
- const annualTotalCents=visitPricing.reduce((sum,v)=>sum+Math.round(v.total*100),0);
- const billing={mode:billingMode,visitsIncluded:prepaid?visitCount:1,extraDiscountPercent:prepaid?5:0,regularExteriorCents:Math.round(plan.price*100)*visitCount,maintenanceSavingsCents:Math.round(plan.price*100)*visitCount-annualMaintenanceCents,prepaySavingsCents:prepaid?annualMaintenanceCents-prepaidExteriorTotal:0,addonCents:visitPricing.reduce((sum,v)=>sum+Math.round((v.interiorGlass+v.screenFee+v.interiorLadderFee+v.exteriorLadderFee)*100),0),annualTotalCents:prepaid?annualTotalCents:0};
+ const annualTotalCents=visitPricing.filter(v=>!prepaid||v.includedInInitialPayment).reduce((sum,v)=>sum+Math.round(v.total*100),0);
+ const billing={mode:billingMode,visitsIncluded:prepaid?prepaidVisitCount:1,extraDiscountPercent:prepaid?5:0,regularExteriorCents:Math.round(plan.price*100)*(prepaid?prepaidVisitCount:visitCount),maintenanceSavingsCents:Math.round(plan.price*100)*(prepaid?prepaidVisitCount:visitCount)-annualMaintenanceCents,prepaySavingsCents:prepaid?annualMaintenanceCents-prepaidExteriorTotal:0,addonCents:visitPricing.filter(v=>!prepaid||v.includedInInitialPayment).reduce((sum,v)=>sum+Math.round((v.interiorGlass+v.screenFee+v.interiorLadderFee+v.exteriorLadderFee)*100),0),annualTotalCents:prepaid?annualTotalCents:0};
  const initial=visitPricing[0],next=visitPricing[1],knownSubtotal=prepaid?annualTotalCents/100:initial.total,workSubtotal=initial.total,minimumAdjustment=initial.minimumAdjustmentCents/100;
  const nextVisitTotal=next?.total??repeatExterior;
  return {plan,...initial,billing,visitPricing,repeatStepLadderFee:next?.interiorLadderFee??0,workSubtotal,minimumAdjustment,knownSubtotal,
