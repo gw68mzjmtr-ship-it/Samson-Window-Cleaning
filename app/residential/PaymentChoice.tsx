@@ -3,5 +3,29 @@ import {calculateResidentialQuote,type ResidentialBillingMode} from './residenti
 const usd=(c:number)=>(c/100).toLocaleString('en-US',{style:'currency',currency:'USD'});
 export default function PaymentChoice({value,onChange,quote}:{value:ResidentialBillingMode;onChange:(v:ResidentialBillingMode)=>void;quote:NonNullable<ReturnType<typeof calculateResidentialQuote>>}){
  if(quote.maintenance.id==='once')return null;
- return <section className="rhMaintenance rhYearPaymentChoice" style={{marginTop:24}}><h2>How would you like to pay?</h2><fieldset><legend>Maintenance payment option</legend><div className="rhMaintenanceGrid"><label className={value==='per-visit'?'selected':''}><input type="radio" name="residential-payment-choice" checked={value==='per-visit'} onChange={()=>onChange('per-visit')}/><strong>Pay per cleaning</strong><span>Pay for each selected visit separately.</span><small>$599 minimum per visit after discounts.</small></label><label className={value==='annual-prepay'?'selected':''}><input type="radio" name="residential-payment-choice" checked={value==='annual-prepay'} onChange={()=>onChange('annual-prepay')}/><strong>Pay for the year</strong><span>Maintenance savings + an extra 5% on exterior cleaning.</span><small>Yearly prepayment can reduce the price below $599 per visit.</small></label></div></fieldset>{value==='annual-prepay'&&<div style={{padding:20,border:'1px solid #56677b',borderRadius:12,marginTop:18}}><h3>{quote.billing.visitsIncluded} {quote.billing.visitsIncluded===1?'cleaning':'cleanings'} in your prepaid year</h3><dl><div><dt>Regular yearly exterior total</dt><dd>{usd(quote.billing.regularExteriorCents)}</dd></div><div><dt>{quote.maintenance.discount}% maintenance savings</dt><dd>−{usd(quote.billing.maintenanceSavingsCents)}</dd></div><div><dt>Extra 5% yearly prepayment savings</dt><dd>−{usd(quote.billing.prepaySavingsCents)}</dd></div><div><dt>Selected add-ons across included visits</dt><dd>{usd(quote.billing.addonCents)}</dd></div><div><dt><strong>{quote.maintenance.id==='annual'?'Due today · initial annual cleaning':'Yearly total due today'}</strong></dt><dd><strong>{usd(quote.billing.annualTotalCents)}</strong></dd></div></dl><p>{quote.maintenance.id==='annual'?'Today’s payment covers one cleaning. Choose your next annual cleaning date a year from now below. That visit is billed separately when due and is not included in today’s payment.':'The prepaid year starts with your initial cleaning and ends before its next anniversary. The anniversary visit belongs to the following year.'} Add-ons are not discounted.</p>{quote.maintenance.id==='annual'&&<p><strong>Next annual cleaning estimate: {usd(Math.round(quote.visitPricing[1].total*100))} · billed separately when due.</strong></p>}<small>There is no automatic renewal or automatic future card charge. Future-year services require separate payment.</small></div>}</section>;
+ const coverage=quote.maintenance.id==='annual'
+  ?'Includes your initial cleaning and your next annual cleaning at month 12.'
+  :quote.maintenance.id==='six-month'
+   ?'Includes your initial cleaning, your six-month cleaning and your month-12 cleaning.'
+   :'Includes your initial cleaning and repeat cleanings at months 3, 6, 9 and 12.';
+ return <section className="rhMaintenance rhYearPaymentChoice" style={{marginTop:24}}>
+  <h2>How would you like to pay?</h2>
+  <fieldset><legend>Maintenance payment option</legend><div className="rhMaintenanceGrid">
+   <label className={value==='per-visit'?'selected':''}><input type="radio" name="residential-payment-choice" checked={value==='per-visit'} onChange={()=>onChange('per-visit')}/><strong>Pay per cleaning</strong><span>Pay for each selected visit separately.</span><small>$599 minimum per visit after discounts.</small></label>
+   <label className={value==='annual-prepay'?'selected':''}><input type="radio" name="residential-payment-choice" checked={value==='annual-prepay'} onChange={()=>onChange('annual-prepay')}/><strong>Pay for the year</strong><span>Maintenance savings + an extra 5% on exterior cleaning.</span><small>Yearly prepayment can reduce the price below $599 per visit.</small></label>
+  </div></fieldset>
+  {value==='annual-prepay'&&<div style={{padding:20,border:'1px solid #56677b',borderRadius:12,marginTop:18}}>
+   <h3>{quote.billing.visitsIncluded} cleanings in your prepaid package</h3>
+   <p>{coverage} Choose a date and arrival window for every included cleaning below.</p>
+   <dl>
+    <div><dt>Regular exterior total · {quote.billing.visitsIncluded} cleanings</dt><dd>{usd(quote.billing.regularExteriorCents)}</dd></div>
+    <div><dt>{quote.maintenance.discount}% maintenance savings</dt><dd>−{usd(quote.billing.maintenanceSavingsCents)}</dd></div>
+    <div><dt>Extra 5% yearly prepayment savings</dt><dd>−{usd(quote.billing.prepaySavingsCents)}</dd></div>
+    <div><dt>Selected add-ons across included visits</dt><dd>{usd(quote.billing.addonCents)}</dd></div>
+    <div><dt><strong>Full prepaid package due today</strong></dt><dd><strong>{usd(quote.billing.annualTotalCents)}</strong></dd></div>
+   </dl>
+   <p>Today’s payment covers all {quote.billing.visitsIncluded} listed cleanings and their selected add-ons. Add-ons are not discounted.</p>
+   <small>Included visits will not be charged again. There is no automatic renewal or automatic future card charge. Services outside this package require separate payment.</small>
+  </div>}
+ </section>;
 }

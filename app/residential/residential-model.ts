@@ -41,6 +41,13 @@ export const residentialInteriorTypes=[
 ] as const;
 export type AddonVisits=Record<string,number[]>;
 export type ResidentialBillingMode='per-visit'|'annual-prepay';
+export function residentialVisitCount(maintenanceId:string,billingMode:ResidentialBillingMode='per-visit'){
+ const schedule=residentialMaintenance.find(s=>s.id===maintenanceId);
+ if(!schedule)throw Error('Choose a valid maintenance schedule.');
+ if(!schedule.months)return 1;
+ // Every maintenance schedule includes the initial and month-12 cleanings.
+ return schedule.visits+1;
+}
 export function calculateResidentialQuote(squareFeet:number,options:{interiorRequested:boolean;stepLadder:boolean;twoStoryLadder:boolean;interiorQuantities?:number[];specialtyAccess?:boolean;exteriorSpecialty?:boolean;maintenanceId?:string;screenCount?:number;addonVisits?:AddonVisits;billingMode?:ResidentialBillingMode;upfrontDiscount?:boolean}){
  const plan=residentialPlanForSize(squareFeet);
  if(!plan)return null;
@@ -52,8 +59,8 @@ export function calculateResidentialQuote(squareFeet:number,options:{interiorReq
  if(!schedule)throw new Error('Choose a valid maintenance schedule.');
  const billingMode=options.billingMode??'per-visit',prepaid=billingMode==='annual-prepay';
  if(!['per-visit','annual-prepay'].includes(billingMode)||(prepaid&&schedule.id==='once'))throw Error('Choose maintenance before paying for the year.');
- const prepaidVisitCount=prepaid?schedule.visits:1;
- const visitCount=schedule.months?(prepaid&&schedule.id!=='annual'?schedule.visits:schedule.visits+1):1;
+ const prepaidVisitCount=prepaid?residentialVisitCount(schedule.id,billingMode):1;
+ const visitCount=residentialVisitCount(schedule.id,billingMode);
  const addonVisits=options.addonVisits??{};
  const keys=[...residentialInteriorTypes.map(t=>t.id),'screens','interior-ladder','exterior-ladder'];
  if(!addonVisits||typeof addonVisits!=='object'||Array.isArray(addonVisits)||Object.entries(addonVisits).some(([key,visits])=>!keys.includes(key)||!Array.isArray(visits)||new Set(visits).size!==visits.length||visits.some(i=>!Number.isInteger(i)||i<0||i>=visitCount)))throw Error('Choose valid add-on visits.');

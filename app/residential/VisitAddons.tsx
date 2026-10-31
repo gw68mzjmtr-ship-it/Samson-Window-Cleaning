@@ -1,10 +1,10 @@
 'use client';
-import {residentialInteriorTypes,residentialMaintenance,type AddonVisits} from './residential-model';
+import {residentialInteriorTypes,residentialMaintenance,residentialVisitCount,type AddonVisits} from './residential-model';
 type Props={maintenanceId:string;billingMode?:'per-visit'|'annual-prepay';interiorRequested:boolean;interiorQuantities:number[];screenCount:number;stepLadder:boolean;twoStoryLadder:boolean;value:AddonVisits;onChange:(next:AddonVisits)=>void};
 export default function VisitAddons({maintenanceId,billingMode='per-visit',interiorRequested,interiorQuantities,screenCount,stepLadder,twoStoryLadder,value,onChange}:Props){
  const schedule=residentialMaintenance.find(s=>s.id===maintenanceId)!;
  if(!schedule.months)return null;
- const all=Array.from({length:billingMode==='annual-prepay'&&schedule.id!=='annual'?schedule.visits:schedule.visits+1},(_,i)=>i);
+ const all=Array.from({length:residentialVisitCount(maintenanceId,billingMode)},(_,i)=>i);
  const rows=[...residentialInteriorTypes.flatMap((type,i)=>interiorRequested&&interiorQuantities[i]>0?[{key:type.id,label:type.name+' · '+interiorQuantities[i]+' '+type.unit+'(s)',defaults:[0]}]:[]),...(screenCount>0?[{key:'screens',label:'Screen removal & replacement · '+screenCount+' screen(s)',defaults:all}]:[]),...(stepLadder?[{key:'interior-ladder',label:'Step ladder · one $50 fee per selected visit',defaults:screenCount>0?all:[0]}]:[]),...(twoStoryLadder?[{key:'exterior-ladder',label:'Exterior two-story ladder · one $100 fee per selected visit',defaults:all}]:[])];
  if(!rows.length)return null;
  return <section className="rhVisitAddons" aria-labelledby="rh-visit-addons-title"><h2 id="rh-visit-addons-title">Which visits need these add-ons?</h2><p>Your exterior cleaning stays on every visit. Choose when to include each window type, screen handling and ladder access. Quantities shown above apply only to the visits you select. You can also add or remove selected windows and add-ons on service day; we will confirm the updated scope and price before cleaning begins.</p>{rows.map(row=>{

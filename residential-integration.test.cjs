@@ -48,5 +48,5 @@ assert.match(lemonScentOrder.visitOrders[0].serviceNotes[0],/Lemon scent.*Free/)
 assert.equal(snapshot({...base,lemonScent:true}).selection.lemonScent,undefined);
 assert.equal(snapshot({...base,lemonScent:true,screenCount:2,interiorRequested:true}).selection.lemonScent,undefined);
 assert.throws(()=>snapshot({...base,lemonScent:'yes'}));
-assert.deepEqual(snapshot({...scented,billingMode:'annual-prepay',lemonScent:true},true).visitOrders.map(v=>v.serviceNotes.length),[1,0,1,0]);
+assert.deepEqual(snapshot({...scented,billingMode:'annual-prepay',lemonScent:true},true).visitOrders.map(v=>v.serviceNotes.length),[1,0,1,0,0]);
 console.log('PASS: optional free lemon scent preserves every price, follows interior-cleaning visits, excludes screen-only/exterior work and rejects invalid selections.');

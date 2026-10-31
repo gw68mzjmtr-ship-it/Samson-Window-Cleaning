@@ -29,7 +29,7 @@ export async function POST(req:Request){
  const created=await trialInvoiceApi('invoices','POST',{
  customer_id:contact.contact_id,reference_number:'SAMSON-CALC-'+digest,
  line_items:snapshot.initialLines.map(line=>({name:'SAMSON TEST — '+line.label,description:'Fictional calculator transfer only. No service, reservation or charge.',quantity:line.quantity,rate:line.unitPriceCents/100})),
- notes:'SAMSON TEST ONLY. Unsent draft; no payment or appointment authorized. Maintenance terms remain draft. '+(snapshot.selection.billingMode==='annual-prepay'?'All listed first-year visits are included in this draft total. Do not invoice these visits again. The next anniversary is excluded. ':'Only initial visit is invoiced. Planned future visits, billed separately: ')+snapshot.visitOrders.slice(1).map(visit=>'Repeat '+visit.index+' month '+visit.index*snapshot.maintenance.months+': '+visit.lines.map(line=>line.label+' x'+line.quantity).join('; ')+' — USD '+(visit.totalCents/100).toFixed(2)).join('\n')
+ notes:'SAMSON TEST ONLY. Unsent draft; no payment or appointment authorized. Maintenance terms remain draft. '+(snapshot.selection.billingMode==='annual-prepay'?'All listed package visits are included in this draft total, including month 12 for annual and six-month plans. Do not invoice these visits again. ':'Only initial visit is invoiced. Planned future visits, billed separately: ')+snapshot.visitOrders.slice(1).map(visit=>'Repeat '+visit.index+' month '+visit.index*snapshot.maintenance.months+': '+visit.lines.map(line=>line.label+' x'+line.quantity).join('; ')+' — USD '+(visit.totalCents/100).toFixed(2)).join('\n')
  });
  const invoice=created.invoice;
  const verified=(await trialInvoiceApi('invoices/'+invoice.invoice_id,'GET')).invoice;
