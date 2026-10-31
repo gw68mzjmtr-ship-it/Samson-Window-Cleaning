@@ -10,6 +10,6 @@ export async function middleware(req:NextRequest){
   const publicCheckout=publicHost&&publicSiteRoute(req.nextUrl.pathname);
   if(!signedPaymentHook&&!publicCheckout&&!await hostedTestAuthorized(req.headers.get('authorization')))return new NextResponse('Private Samson test. Sign in to continue.',{status:401,headers:{'WWW-Authenticate':'Basic realm="Samson private test", charset="UTF-8"','Cache-Control':'no-store','X-Robots-Tag':'noindex, nofollow'}});
  }else if(privatePath&&!testHostAllowed(req.headers.get('host')))return new NextResponse('Not found',{status:404,headers:{'Cache-Control':'no-store'}});
- const response=NextResponse.next();if(process.env.SAMSON_HOSTED_TEST==='1'||privatePath){response.headers.set('Cache-Control','no-store');response.headers.set('Referrer-Policy','no-referrer');if(!publicSiteHost(req.headers.get('host'))||!publicSiteRoute(req.nextUrl.pathname)||req.nextUrl.pathname.startsWith('/api/'))response.headers.set('X-Robots-Tag','noindex, nofollow')}return response;
+ const response=NextResponse.next();if(process.env.SAMSON_HOSTED_TEST==='1'||privatePath){response.headers.set('Cache-Control','no-store');response.headers.set('Referrer-Policy',process.env.SAMSON_HOSTED_TEST!=='1'&&req.nextUrl.pathname==='/zoho-trial'?'same-origin':'no-referrer');if(!publicSiteHost(req.headers.get('host'))||!publicSiteRoute(req.nextUrl.pathname)||req.nextUrl.pathname.startsWith('/api/'))response.headers.set('X-Robots-Tag','noindex, nofollow')}return response;
 }
 export const config={matcher:['/((?!_next/static|_next/image|favicon.ico).*)']};

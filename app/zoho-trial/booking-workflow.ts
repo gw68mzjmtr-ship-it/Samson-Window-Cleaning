@@ -5,12 +5,13 @@ import {residentialOrderSnapshot,type ResidentialSelection} from '../residential
 import {validateVisitSeries,type ResidentialVisit} from '../residential/residential-scheduling';
 import type {BookingStore} from './booking-store';
 import type {BookingSnapshot} from '../checkout/order-snapshot';
+import type {NativeInvoicePreparation} from '../checkout/native-invoice-model';
 
 export type BookingCustomer={name:string;email:string;phone:string;street:string;city:string;state:string;zip:string;businessName?:string};
-export type BookingContext={purpose:'customer'|'owner-verification';termsVersion:string;serviceKind?:'residential'|'storefront';billingPeriodId?:string;renewalOf?:string;invoiceCustomerId?:string};
-export type Booking={schedulePending?:boolean;context?:BookingContext;acceptedAt?:string;expiresAt?:string;id:string;requestKey:string;fingerprint:string;createdAt:string;updatedAt:string;phase:'reserved'|'invoice_pending'|'awaiting_payment'|'payment_verified'|'sync_pending'|'confirmed'|'review_required'|'expired';customer:BookingCustomer;snapshot:BookingSnapshot;visits:ResidentialVisit[];invoice?:{id:string;number:string;url:string;customerId?:string};appointments:{index:number;orderId:string;appointmentId:string}[];pendingVisit?:number;error?:string;paymentEnvironment?:'sandbox'|'production'};
+export type BookingContext={purpose:'customer'|'owner-verification';termsVersion:string;serviceKind?:'residential'|'storefront';billingPeriodId?:string;renewalOf?:string;invoiceCustomerId?:string;fsmContactId?:string};
+export type Booking={nativePreparation?:NativeInvoicePreparation;schedulePending?:boolean;context?:BookingContext;acceptedAt?:string;expiresAt?:string;id:string;requestKey:string;fingerprint:string;createdAt:string;updatedAt:string;phase:'reserved'|'invoice_pending'|'awaiting_payment'|'payment_verified'|'sync_pending'|'confirmed'|'review_required'|'expired';customer:BookingCustomer;snapshot:BookingSnapshot;visits:ResidentialVisit[];invoice?:{id:string;number:string;url:string;customerId?:string};appointments:{index:number;orderId:string;appointmentId:string}[];pendingVisit?:number;error?:string;paymentEnvironment?:'sandbox'|'production'};
 export type PaymentEvidence={id:string;customerEmail:string;currency:string;totalCents:number;balanceCents:number;status:string;paymentIds:string[];receivedCents:number};
-export type BookingAdapter={available:(visits:ResidentialVisit[])=>Promise<boolean>;createInvoice:(booking:Booking)=>Promise<NonNullable<Booking['invoice']>>;readPayment:(booking:Booking)=>Promise<PaymentEvidence>;createAppointment:(booking:Booking,index:number)=>Promise<{orderId:string;appointmentId:string}>};
+export type BookingAdapter={available:(visits:ResidentialVisit[])=>Promise<boolean>;createInvoice:(booking:Booking,persist?:()=>Promise<void>)=>Promise<NonNullable<Booking['invoice']>>;readPayment:(booking:Booking)=>Promise<PaymentEvidence>;createAppointment:(booking:Booking,index:number)=>Promise<{orderId:string;appointmentId:string}>};
 export function parseCustomer(input:unknown):BookingCustomer{
  if(!input||typeof input!=='object')throw Error('Enter your contact and service address.');
  const v=input as Record<string,unknown>,out={} as BookingCustomer;
@@ -49,7 +50,7 @@ export class BookingWorkflow{
   if(existing.some(b=>!['confirmed','expired'].includes(b.phase)&&b.visits.some(v=>visits.some(next=>v.date===next.date&&v.period===next.period))))throw Error('A selected service window is held by another booking. Choose another time.');
   if(!await this.adapter.available(visits))throw Error('A selected date is no longer available. Choose another time.');
   const b:Booking={id:randomBytes(24).toString('hex'),requestKey:input.requestKey,fingerprint,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString(),phase:'reserved',customer,snapshot,visits,appointments:[],...(this.options?{context:this.options.context,acceptedAt:new Date().toISOString(),paymentEnvironment:'production' as const}:{})};await this.save(b);
-  try{b.phase='invoice_pending';await this.save(b);b.invoice=await this.adapter.createInvoice(b);b.phase='awaiting_payment';if(b.context?.purpose==='customer')b.expiresAt=new Date(Date.now()+30*60000).toISOString();await this.save(b)}catch{b.phase='review_required';b.error='Invoice creation needs review. Do not create another invoice or release these dates.';await this.save(b)}
+  try{b.phase='invoice_pending';await this.save(b);b.invoice=await this.adapter.createInvoice(b,()=>this.save(b));b.phase='awaiting_payment';if(b.context?.purpose==='customer')b.expiresAt=new Date(Date.now()+30*60000).toISOString();await this.save(b)}catch{b.phase='review_required';b.error='Invoice creation needs review. Do not create another invoice or release these dates.';await this.save(b)}
   return b;
  })}
  async reconcile(id:string){return this.locked(async()=>{
@@ -73,6 +74,6 @@ export class BookingWorkflow{
   const existing=(await this.records()).find(b=>b.id===input.id);if(existing){if(existing.fingerprint!==input.fingerprint)throw Error('Renewal identity changed');return existing}
   if((await this.records()).some(b=>!b.schedulePending&&!['confirmed','expired'].includes(b.phase)&&b.visits.some(v=>input.visits.some(next=>v.date===next.date&&v.period===next.period)))||!await this.adapter.available(input.visits))throw Error('Renewal windows no longer available');
   const b=structuredClone(input);await this.save(b);b.phase='invoice_pending';await this.save(b);
-  try{b.invoice=await this.adapter.createInvoice(b);b.phase='awaiting_payment';await this.save(b)}catch{b.phase='review_required';b.error='Monthly subscription renewal: invoice creation needs review. Do not duplicate.';await this.save(b)}return b;
+  try{b.invoice=await this.adapter.createInvoice(b,()=>this.save(b));b.phase='awaiting_payment';await this.save(b)}catch{b.phase='review_required';b.error='Monthly subscription renewal: invoice creation needs review. Do not duplicate.';await this.save(b)}return b;
  })}
 }

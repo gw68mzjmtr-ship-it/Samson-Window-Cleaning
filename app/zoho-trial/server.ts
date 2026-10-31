@@ -9,19 +9,23 @@ export const bookingScopes=[...readScopes,'ZohoFSM.modules.Contacts.READ','ZohoF
 export const validationScopes=[...bookingScopes,'ZohoFSM.modules.Service_And_Parts.CREATE','ZohoFSM.modules.ScheduledMaintenances.READ','ZohoFSM.modules.ScheduledMaintenances.CREATE','ZohoFSM.modules.ScheduledMaintenances.UPDATE','ZohoFSM.modules.serviceappointments.UPDATE'];
 export const invoiceScopes=[...validationScopes,'ZohoInvoice.contacts.READ','ZohoInvoice.contacts.CREATE','ZohoInvoice.invoices.READ','ZohoInvoice.invoices.CREATE'];
 export const paymentRecordScopes=[...invoiceScopes,'ZohoInvoice.customerpayments.READ','ZohoInvoice.customerpayments.CREATE'];
+export const nativeInvoiceScopes=[...paymentRecordScopes,'ZohoFSM.modules.custom.ALL'];
+export const invoiceSettingsScopes=[...nativeInvoiceScopes,'ZohoInvoice.invoices.UPDATE'];
 export const secretDir=path.join(process.cwd(),'.local-secrets');
 export function localTrialAllowed(host:string|null){return testHostAllowed(host)}
 export async function checkLocalRequest(req:Request,post=false){if(!localTrialAllowed(req.headers.get('host'))||(post&&req.headers.get('origin')!==trialOrigin))throw Error('LOCAL_ONLY');if(process.env.SAMSON_HOSTED_TEST==='1'&&(!hostedTestRouteAllowed(new URL(req.url).pathname)||!await hostedTestAuthorized(req.headers.get('authorization'))))throw Error('PRIVATE_TEST_ONLY')}
 export async function clientConfig(){const config=process.env.SAMSON_HOSTED_TEST==='1'?{client_id:process.env.SAMSON_ZOHO_CLIENT_ID,client_secret:process.env.SAMSON_ZOHO_CLIENT_SECRET}:JSON.parse(await readFile(path.join(secretDir,'zoho-client.json'),'utf8'));if(typeof config.client_id!=='string'||typeof config.client_secret!=='string'||!config.client_id||!config.client_secret)throw Error('NOT_CONFIGURED');return config as {client_id:string;client_secret:string}}
-type Token={access_token:string;refresh_token?:string;expires_at:number;bookingApproved?:boolean;validationApproved?:boolean;invoiceApproved?:boolean;paymentRecordsApproved?:boolean};
+type Token={access_token:string;refresh_token?:string;expires_at:number;bookingApproved?:boolean;validationApproved?:boolean;invoiceApproved?:boolean;paymentRecordsApproved?:boolean;nativeInvoiceApproved?:boolean;invoiceSettingsApproved?:boolean};
 let hostedToken:Token|undefined;
 async function readToken():Promise<Token>{if(process.env.SAMSON_HOSTED_TEST==='1'){if(hostedToken)return hostedToken;const raw=process.env.SAMSON_ZOHO_TEST_TOKEN_JSON;if(!raw)throw Error('NOT_CONFIGURED');return hostedToken=JSON.parse(raw)}return JSON.parse(await readFile(path.join(secretDir,'zoho-token.json'),'utf8'))}
 export async function paymentRecordAccessApproved(){return (await readToken()).paymentRecordsApproved===true}
+export async function nativeInvoiceAccessApproved(){return (await readToken()).nativeInvoiceApproved===true}
+export async function invoiceSettingsAccessApproved(){return (await readToken()).invoiceSettingsApproved===true}
 export async function saveToken(token:Token){if(process.env.SAMSON_HOSTED_TEST==='1'){hostedToken=token;return}await mkdir(secretDir,{recursive:true});const destination=path.join(secretDir,'zoho-token.json'),temp=destination+'.'+randomBytes(6).toString('hex')+'.tmp';await writeFile(temp,JSON.stringify(token),{mode:0o600});await rename(temp,destination)}
 export async function connectionStatus(){let configured=false,connected=false,bookingApproved=false,validationApproved=false,invoiceApproved=false;try{await clientConfig();configured=true}catch{}try{const token=await readToken();connected=!!token.refresh_token||token.expires_at>Date.now();bookingApproved=connected&&token.bookingApproved===true;validationApproved=connected&&token.validationApproved===true;invoiceApproved=connected&&token.invoiceApproved===true}catch{}return {configured,connected,bookingApproved,validationApproved,invoiceApproved}}
 export async function tokenRequest(params:Record<string,string>){const response=await fetch('https://accounts.zoho.com/oauth/v2/token',{method:'POST',body:new URLSearchParams(params),cache:'no-store',signal:AbortSignal.timeout(15000)});const result=await response.json();if(!response.ok||typeof result.access_token!=='string')throw Error('TOKEN_EXCHANGE_FAILED');return {access_token:result.access_token,refresh_token:result.refresh_token as string|undefined,expires_at:Date.now()+Number(result.expires_in??3600)*1000-60000}}
 let refreshing:Promise<Token>|null=null;
-export async function accessToken(){const token=await readToken();if(token.expires_at>Date.now())return token.access_token;if(!token.refresh_token)throw Error('RECONNECT_REQUIRED');if(!refreshing){refreshing=(async()=>{const client=await clientConfig();const updated:Token=await tokenRequest({...client,grant_type:'refresh_token',refresh_token:token.refresh_token!});updated.refresh_token=updated.refresh_token||token.refresh_token;updated.bookingApproved=token.bookingApproved;updated.validationApproved=token.validationApproved;updated.invoiceApproved=token.invoiceApproved;updated.paymentRecordsApproved=token.paymentRecordsApproved;await saveToken(updated);return updated})().finally(()=>{refreshing=null})}return (await refreshing).access_token}
+export async function accessToken(){const token=await readToken();if(token.expires_at>Date.now())return token.access_token;if(!token.refresh_token)throw Error('RECONNECT_REQUIRED');if(!refreshing){refreshing=(async()=>{const client=await clientConfig();const updated:Token=await tokenRequest({...client,grant_type:'refresh_token',refresh_token:token.refresh_token!});updated.refresh_token=updated.refresh_token||token.refresh_token;updated.bookingApproved=token.bookingApproved;updated.validationApproved=token.validationApproved;updated.invoiceApproved=token.invoiceApproved;updated.paymentRecordsApproved=token.paymentRecordsApproved;updated.nativeInvoiceApproved=token.nativeInvoiceApproved;updated.invoiceSettingsApproved=token.invoiceSettingsApproved;await saveToken(updated);return updated})().finally(()=>{refreshing=null})}return (await refreshing).access_token}
 export class ZohoQueryError extends Error {constructor(public code:string){super('Zoho request failed')}}
 async function api(endpoint:string,method:'GET'|'POST'|'PUT',body?:object){
  const token=await accessToken();
@@ -71,6 +75,14 @@ export async function trialInvoiceApi(endpoint:string,method:'GET'|'POST',body?:
 }
 
 export async function trialRecord(collection:'Work_Orders'|'Contacts',id:string){if(!/^[0-9]+$/.test(id))throw Error('Invalid record');return api(collection+'/'+id,'GET')}
+
+// The provider bundles broader rights into custom.ALL. This adapter exposes
+// only invoice creation and exact invoice reads, never changes or deletion.
+export async function nativeInvoiceApi(endpoint:string,method:'GET'|'POST',body?:object){
+ if(!await nativeInvoiceAccessApproved())throw Error('NATIVE_INVOICE_PERMISSION_REQUIRED');
+ if(!(method==='POST'&&endpoint==='Invoices')&&!(method==='GET'&&/^Invoices\/[0-9]+$/.test(endpoint)))throw Error('NATIVE_INVOICE_ENDPOINT_NOT_ALLOWED');
+ return api(endpoint,method,body);
+}
 
 
 

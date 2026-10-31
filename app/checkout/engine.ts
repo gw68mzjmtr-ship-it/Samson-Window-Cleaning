@@ -13,11 +13,12 @@ import {subscriptionStore,subscriptionAccess} from './storefront-store';
 import {StorefrontSubscriptionService} from './storefront-subscription';
 import {liveStorefrontSquare} from './storefront-square';
 import {visitCovered} from './order-snapshot';
+import {invoiceLinesMatch} from './native-invoice-model';
 import {ownerVerificationSnapshot} from './owner-verification';
 const store=()=>sharedBookings();
 export async function activateStorefront(id:string){const booking=await readLiveBooking(id);if(booking.snapshot.kind!=='storefront'||booking.context?.billingPeriodId||booking.phase!=='confirmed')return;const payment=await readSquareState<LivePaymentState>(id,'production');if(payment?.phase==='completed')return new StorefrontSubscriptionService(subscriptionStore,liveStorefrontSquare()).activate(booking,payment)}
 export async function publicSubscription(id:string){const state=await subscriptionStore.read(id);return state?{phase:state.phase,monthlyCents:state.monthlyCents,nextBillingDate:state.upcomingBillingDate||state.nextBillingDate,cancelEffective:state.cancelEffective,notice:state.notice,manageAccess:subscriptionAccess(id)}:null}
-const adapter:BookingAdapter={available:liveAvailability,createInvoice:createLiveInvoice,createAppointment:createLiveAppointment,
+const adapter:BookingAdapter={available:liveAvailability,createInvoice:(b,persist)=>createLiveInvoice(b,false,persist),createAppointment:createLiveAppointment,
  async readPayment(booking){
   const state=await readSquareState<LivePaymentState>(booking.id,'production'),invoice=(await invoiceApi('invoices/'+booking.invoice!.id)).invoice;
   const contact=(await invoiceApi('contacts/'+invoice.customer_id)).contact,result=(await invoiceApi('invoices/'+booking.invoice!.id+'/payments')).payments||[];
@@ -68,8 +69,9 @@ export async function processLivePaymentEvents(){
 }
 
 export async function liveInvoicePayable(booking:Booking){
+ if(booking.nativePreparation)await (await import('./native-invoice')).readNativeBinding(booking);
  const invoice=(await invoiceApi('invoices/'+booking.invoice!.id)).invoice,contact=(await invoiceApi('contacts/'+invoice.customer_id)).contact;
  const email=contact.email||contact.contact_persons?.find((person:{is_primary_contact:boolean})=>person.is_primary_contact)?.email;
- if(email?.toLowerCase()!==booking.customer.email||invoice.reference_number!=='SAMSON-LIVE-'+booking.id||invoice.currency_code!=='USD'||invoice.status!=='sent'||Math.round(Number(invoice.total)*100)!==booking.snapshot.initialTotalCents||Math.round(Number(invoice.balance)*100)!==booking.snapshot.initialTotalCents||invoice.line_items?.length!==booking.snapshot.initialLines.length||!booking.snapshot.initialLines.every((line,i)=>Math.round(Number(invoice.line_items[i].rate)*100)===line.unitPriceCents&&Number(invoice.line_items[i].quantity)===line.quantity))return false;
+ if(email?.toLowerCase()!==booking.customer.email||invoice.reference_number!=='SAMSON-LIVE-'+booking.id||invoice.currency_code!=='USD'||invoice.status!=='sent'||Math.round(Number(invoice.total)*100)!==booking.snapshot.initialTotalCents||Math.round(Number(invoice.balance)*100)!==booking.snapshot.initialTotalCents||!invoiceLinesMatch(booking,invoice))return false;
  return liveAvailability(booking.visits);
 }

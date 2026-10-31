@@ -26,8 +26,9 @@ export async function liveAvailability(visits:Booking['visits']){
  if(!(result.data||[]).some((r:{Service_Resources?:{id:string;Time_Slots?:{start_time:string;end_time:string}[]}})=>r.Service_Resources?.id===resource()&&r.Service_Resources.Time_Slots?.some(slot=>Date.parse(slot.start_time)<=Date.parse(window.start)&&Date.parse(slot.end_time)>=Date.parse(window.end))))return false;
  }return true;
 }
-function fictionalStorefrontTest(booking:Booking,test:boolean){return test&&booking.paymentEnvironment==='sandbox'&&booking.snapshot.kind==='storefront'&&booking.customer.email.endsWith('@example.invalid')&&booking.customer.name.startsWith('SAMSON TEST')}
-export async function createLiveInvoice(booking:Booking,sandboxTest=false){
+function fictionalStorefrontTest(booking:Booking,test:boolean){return test&&booking.paymentEnvironment==='sandbox'&&(booking.snapshot.kind==='storefront'||booking.snapshot.kind==='residential'&&booking.nativePreparation?.ready===true)&&booking.customer.email.endsWith('@example.invalid')&&booking.customer.name.startsWith('SAMSON TEST')}
+export async function createLiveInvoice(booking:Booking,sandboxTest=false,persist?:()=>Promise<void>){
+ if(process.env.SAMSON_NATIVE_INVOICES_READY==='1'&&booking.context?.purpose==='customer'){if(!persist)throw Error('Durable native invoice progress required');return (await import('./native-invoice')).createNativeInvoice(booking,persist)}
  const fictional=fictionalStorefrontTest(booking,sandboxTest);if(sandboxTest&&!fictional)throw Error('Fictional storefront test required');
  if((!fictional&&booking.paymentEnvironment!=='production')||!booking.context||(!fictional&&booking.customer.email.endsWith('@example.invalid')))throw Error('Real checkout required');
  const c=booking.customer;
@@ -56,6 +57,7 @@ export async function createLiveInvoice(booking:Booking,sandboxTest=false){
 }
 export async function recordLiveReceipt(booking:Booking,state:LivePaymentState,sandboxTest=false){
  const fictional=fictionalStorefrontTest(booking,sandboxTest);if(sandboxTest&&!fictional)throw Error('Fictional storefront test required');
+ if(booking.nativePreparation)await (await import('./native-invoice')).readNativeBinding(booking);
  const invoice=(await invoiceApi('invoices/'+booking.invoice!.id)).invoice,contact=(await invoiceApi('contacts/'+invoice.customer_id)).contact;
  const email=contact.email||contact.contact_persons?.find((p:{is_primary_contact:boolean})=>p.is_primary_contact)?.email;
  if(email?.toLowerCase()!==booking.customer.email||invoice.invoice_number!==booking.invoice!.number||invoice.currency_code!=='USD'||Math.round(Number(invoice.total)*100)!==state.amountCents||Math.round(Number(invoice.balance)*100)!==state.amountCents)throw Error('Exact invoice and customer match required');
@@ -65,6 +67,7 @@ export async function recordLiveReceipt(booking:Booking,state:LivePaymentState,s
  if(record.customer_id!==invoice.customer_id||record.currency_code!=='USD'||(fictional&&record.payment_mode!=='Square Sandbox Test')||record.reference_number!==reference||Math.round(Number(record.amount)*100)!==state.amountCents||record.invoices?.length!==1||record.invoices[0].invoice_id!==invoice.invoice_id||Math.round(Number(record.invoices[0].amount_applied)*100)!==state.amountCents||updated.invoice.status!=='paid'||Number(updated.invoice.balance)!==0)throw Error('Payment receipt did not match the invoice');return record.payment_id as string;
 }
 export async function createLiveAppointment(booking:Booking,index:number,sandboxTest=false){
+ if(booking.nativePreparation&&visitCovered(booking.snapshot,index))return (await import('./native-invoice')).createNativeAppointment(booking,index);
  const fictional=fictionalStorefrontTest(booking,sandboxTest);if(sandboxTest&&!fictional)throw Error('Fictional storefront test required');
  const territoryId=await territory(),visit=booking.visits[index],window=easternServiceWindow(visit.date,visit.period),owner=fictional||booking.context?.purpose==='owner-verification';
  // Reuse an exact customer and address; ambiguous matches stop for review.
