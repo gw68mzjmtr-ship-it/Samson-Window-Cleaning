@@ -1,5 +1,5 @@
 const assert=require('node:assert/strict'),fs=require('node:fs'),ts=require('typescript'),Module=require('node:module');
-function load(file,deps={}){const m=new Module(file);m.require=id=>deps[id]||require(id);m._compile(ts.transpileModule(fs.readFileSync(file,'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022,esModuleInterop:true}}).outputText,file+'.js');return m.exports;}
+function load(file,deps={}){const m=new Module(file);m.require=id=>deps[id]||(id.startsWith('.')?require('./scripts/test-module-loader.cjs')(require('node:path').resolve(require('node:path').dirname(file),id+'.ts')):require(id));m._compile(ts.transpileModule(fs.readFileSync(file,'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022,esModuleInterop:true}}).outputText,file+'.js');return m.exports;}
 const model=load('app/residential/residential-model.ts');
 const integration=load('app/residential/residential-integration.ts',{'./residential-model':model});
 const scheduling=load('app/residential/residential-scheduling.ts',{'./residential-model':model});

@@ -1,7 +1,7 @@
 import {createHash} from 'node:crypto';
 import type {Booking} from '../zoho-trial/booking-workflow';
 export type LivePayment={id:string;status:string;source_type:string;location_id:string;reference_id:string;amount_money:{amount:number;currency:string};receipt_url?:string};
-export type LivePaymentState={environment:'production';bookingId:string;invoiceId:string;reference:string;amountCents:number;phase:'pending'|'completed'|'declined'|'review_required';attempt:number;paymentId?:string;receipt?:{phase:'pending'|'verified'|'review_required';id?:string};notice:string};
+export type LivePaymentState={paidAt?:string;recurringPayment?:{sourceBookingId:string;billingPeriodId:string};environment:'production';bookingId:string;invoiceId:string;reference:string;amountCents:number;phase:'pending'|'completed'|'declined'|'review_required';attempt:number;paymentId?:string;receipt?:{phase:'pending'|'verified'|'review_required';id?:string};notice:string};
 export type LiveStateStore={read(id:string):Promise<LivePaymentState|null>;save(id:string,state:LivePaymentState):Promise<void>;lock(id:string):Promise<()=>Promise<void>>};
 export type LivePaymentDependencies={booking(id:string):Promise<Booking>;available(booking:Booking):Promise<boolean>;createPayment(body:object):Promise<LivePayment>;readPayment(id:string):Promise<LivePayment>;recordReceipt(booking:Booking,state:LivePaymentState):Promise<string>;confirmBooking(id:string):Promise<Booking>;locationId:string};
 export const liveReference=(id:string)=>'SLIVE-'+createHash('sha256').update(id).digest('hex').slice(0,32);
@@ -13,7 +13,7 @@ export class LivePaymentService{
   if(typeof source!=='string'||!source||source.length>1000||/^(?:CASH|EXTERNAL|ccof:)/.test(source)||/^cnon:card-nonce-/.test(source))throw Error('Use the secure live card form');
   const unlock=await this.store.lock(id);
   try{
-   const booking=await this.deps.booking(id);if(!booking.context||booking.paymentEnvironment!=='production'||!booking.invoice)throw Error('Live booking required');
+   const booking=await this.deps.booking(id);if(!booking.context||booking.paymentEnvironment!=='production'||!booking.invoice||booking.context.billingPeriodId)throw Error('Live initial booking required');
    const prior=await this.store.read(id);if(prior){if(!sameState(prior,booking))throw Error('Payment record mismatch');return prior}
    if(booking.phase!=='awaiting_payment'||(booking.expiresAt&&Date.parse(booking.expiresAt)<=Date.now())||!await this.deps.available(booking))throw Error('The selected schedule needs review before payment');
    const state:LivePaymentState={environment:'production',bookingId:id,invoiceId:booking.invoice.id,reference:liveReference(id),amountCents:booking.snapshot.initialTotalCents,phase:'pending',attempt:1,notice:'Payment is being checked. Do not submit a second payment.'};
@@ -32,7 +32,7 @@ export class LivePaymentService{
  async synchronize(id:string,paymentId?:string){
   const unlock=await this.store.lock(id);let state:LivePaymentState;
   try{
-   const booking=await this.deps.booking(id),saved=await this.store.read(id);if(!saved||!sameState(saved,booking)||!booking.context||booking.paymentEnvironment!=='production')throw Error('Matching live payment record required');state=saved;
+   const booking=await this.deps.booking(id);if(booking.context?.billingPeriodId)throw Error('Monthly renewals use their own verified payment ledger');const saved=await this.store.read(id);if(!saved||!sameState(saved,booking)||!booking.context||booking.paymentEnvironment!=='production')throw Error('Matching live payment record required');state=saved;
    if(paymentId&&state.paymentId&&paymentId!==state.paymentId)throw Error('Different payment requires review');
    const key=state.paymentId||paymentId;if(!key)throw Error('Payment identification needs review');
    const proof=await this.deps.readPayment(key);if(proof.id!==key||!matchesLivePayment(proof,booking,this.deps.locationId))throw Error('Payment not independently verified');

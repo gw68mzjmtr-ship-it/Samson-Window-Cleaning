@@ -45,7 +45,7 @@ export class PostgresBookingStore implements BookingStore {
    const [state]=await tx`SELECT pg_backend_pid() AS pid, EXISTS(SELECT 1 FROM pg_locks WHERE locktype='advisory' AND pid=pg_backend_pid() AND objid=${lockKey} AND granted) AS owns_lock`;
    if(Number(state.pid)!==expectedPid||!state.owns_lock)throw Error('Booking connection changed; stop for review');
    await tx`INSERT INTO samson_bookings(id,request_key,fingerprint,record) VALUES(${booking.id},${booking.requestKey},${booking.fingerprint},${tx.json(JSON.parse(JSON.stringify(booking)))}) ON CONFLICT(id) DO UPDATE SET record=EXCLUDED.record,updated_at=now()`;
-   if(booking.phase==='confirmed'||booking.phase==='expired')await tx`DELETE FROM samson_slot_claims WHERE booking_id=${booking.id}`;
+   if(booking.phase==='confirmed'||booking.phase==='expired'||booking.schedulePending)await tx`DELETE FROM samson_slot_claims WHERE booking_id=${booking.id}`;
    else for(const visit of booking.visits){
     const rows=await tx`INSERT INTO samson_slot_claims(service_date,period,booking_id) VALUES(${visit.date},${visit.period},${booking.id}) ON CONFLICT(service_date,period) DO UPDATE SET booking_id=EXCLUDED.booking_id WHERE samson_slot_claims.booking_id=EXCLUDED.booking_id RETURNING booking_id`;
     if(rows.length!==1)throw Error('Selected service window is held by another booking');

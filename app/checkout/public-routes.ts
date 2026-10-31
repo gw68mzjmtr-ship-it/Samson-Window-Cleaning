@@ -4,7 +4,7 @@ export function publicSiteHost(host:string|null){
  try{const origin=new URL(process.env.SAMSON_CHECKOUT_ORIGIN||'');return origin.protocol==='https:'&&origin.pathname==='/'&&!origin.username&&!origin.password&&!origin.search&&!origin.hash&&host===origin.host}catch{return false}
 }
 export function publicSiteRoute(path:string){
- if(['/','/residential','/booking','/checkout','/service-terms','/privacy','/storefront-pricing','/commercial-assessment','/samson-logo.png'].includes(path))return true;
- if(/^\/api\/checkout\/(?:availability|orders|payment)$/.test(path))return true;
+ if(['/','/residential','/booking','/checkout','/service-terms','/privacy','/storefront-pricing','/commercial-assessment','/samson-logo.png','/storefront-terms','/storefront/manage'].includes(path))return true;
+ if(/^\/api\/checkout\/(?:availability|orders|payment|storefront-orders|subscription)$/.test(path))return true;
  return !path.startsWith('/api/')&&!path.startsWith('/zoho-trial')&&!path.startsWith('/checkout/')&&/\.(?:png|jpe?g|webp|svg|ico|woff2?|css|mp4)$/i.test(path);
 }

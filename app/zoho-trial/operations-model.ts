@@ -1,3 +1,4 @@
+import {visitCovered} from '../checkout/order-snapshot';
 import {createHash} from 'node:crypto';
 import type {Booking} from './booking-workflow';
 
@@ -32,7 +33,7 @@ export function operationsSnapshot(bookings:Booking[],appointments:Appointment[]
    if(localDate(start)!==visit.date||actualHour!==expectedHour||actualEndHour!==expectedEnd||Date.parse(end)-Date.parse(start)!==10800000){issue('moved-'+index,'Zoho schedule changed','The appointment no longer matches the saved customer window. Confirm the change with the customer; older reminders are suppressed.',actual.id);continue}
    const reference=b.invoice?.number||'your booking';
    const prepaid=b.snapshot.selection.billingMode==='annual-prepay';
-   const paid=index===0||(prepaid&&index<b.snapshot.billing.visitsIncluded);
+   const paid=visitCovered(b.snapshot,index);
    const payment=b.paymentEnvironment==='sandbox'?'This is a fictional sandbox demonstration. No real payment or service.':paid?'Payment for this cleaning has been verified.':'This is a scheduled maintenance visit; no automatic card charge is authorized.';
    const scope=b.snapshot.visitOrders[index].lines.map(l=>l.label+' × '+l.quantity).concat(b.snapshot.visitOrders[index].serviceNotes||[]).join('; ');
    const body=`Your Samson window cleaning is scheduled for ${dateLabel(visit.date)}, ${arrivalWindow(visit.period)}.\n\n${payment}\nInvoice reference: ${reference}.\nSelected services: ${scope}.\n\nPlease provide safe access and secure pets. Remove any exterior screens you will handle yourself. Samson handles only the screens selected for paid removal and replacement. You can discuss changes to selected add-ons on service day; any price change needs your approval before work.\n\nQuestions or a change request? Contact zach@samsonwindowcleaning.com. Schedule changes require confirmation; no new date is promised by this message.`;
