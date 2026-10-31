@@ -5,10 +5,10 @@ export const schedules = [
 ] as const;
 export const storefrontPlans = [
   {name:'Starter', panels:'1–6 panels', description:'Very small storefront', prices:[39,80,175], photo:1},
-  {name:'Small', panels:'7–12 panels', description:'Small shop or salon', prices:[59,120,260], photo:24},
-  {name:'Medium', panels:'13–16 panels', description:'Medium storefront', prices:[79,160,345], photo:47},
-  {name:'Large', panels:'17–20 panels', description:'Larger storefront', prices:[99,200,430], photo:72},
-  {name:'XL', panels:'21–24 panels', description:'Wide storefront or multiple entrances', prices:[129,260,560], photo:98},
+  {name:'Small', panels:'7–12 panels', description:'Small shop or salon', prices:[49,120,260], photo:24},
+  {name:'Medium', panels:'13–16 panels', description:'Medium storefront', prices:[59,160,345], photo:47},
+  {name:'Large', panels:'17–20 panels', description:'Larger storefront', prices:[69,200,430], photo:72},
+  {name:'XL', panels:'21–24 panels', description:'Wide storefront or multiple entrances', prices:[89,260,560], photo:98},
 ] as const;
 export const interiorPanes = [
   {name:'Small', price:10, example:'Small square window', area:'Up to 6 sq ft', width:34, height:42},
