@@ -101,31 +101,31 @@ const scrollVideos=(direction:-1|1)=>{
   rail.scrollBy({left:direction*distance,behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});
 };
 useEffect(()=>{if(!activeVideo)return;const previous=document.body.style.overflow;document.body.style.overflow='hidden';const onEscape=(event:KeyboardEvent)=>{if(event.key==='Escape')setActiveVideo(null)};window.addEventListener('keydown',onEscape);return()=>{document.body.style.overflow=previous;window.removeEventListener('keydown',onEscape)}},[activeVideo]);return <>
-<header className="mockHeader"><a className="mockLogo" href="#home"><img src="/samson-approved-logo.png" alt="Samson Professional Window Cleaning"/></a><nav className={open?'mockNav open':'mockNav'}><a className="active" href="#home" onClick={()=>setOpen(false)}>Home</a><a href="#services" onClick={()=>setOpen(false)}>Services</a><a href="/storefront-pricing" onClick={()=>setOpen(false)}>Pricing</a><a href="#commercial" onClick={()=>setOpen(false)}>Commercial</a><a href="#work" onClick={()=>setOpen(false)}>Our Work</a><a href="#about" onClick={()=>setOpen(false)}>About</a></nav><a href="/residential" className="mockRedBtn mockHeaderCta">Book Service <ArrowRight size={18}/></a><button aria-label="Toggle menu" className="mockMenu" onClick={()=>setOpen(!open)}>{open?<X/>:<Menu/>}</button></header>
+<header className="mockHeader"><a className="mockLogo" href="#home"><img src="/samson-approved-logo.png" alt="Samson Professional Window Cleaning"/></a><nav className={open?'mockNav open':'mockNav'}><a className="active" href="#home" onClick={()=>setOpen(false)}>Home</a><a href="#services" onClick={()=>setOpen(false)}>Services</a><a href="/storefront-pricing" onClick={()=>setOpen(false)}>Subscriptions</a><a href="#commercial" onClick={()=>setOpen(false)}>Commercial</a><a href="#work" onClick={()=>setOpen(false)}>Our Work</a><a href="#about" onClick={()=>setOpen(false)}>About</a></nav><a href="/residential" className="mockRedBtn mockHeaderCta">Explore Subscriptions <ArrowRight size={18}/></a><button aria-label="Toggle menu" className="mockMenu" onClick={()=>setOpen(!open)}>{open?<X/>:<Menu/>}</button></header>
 <main id="home">
 <section className="mockHero mockHeroPhoto">
   <img className="mockHeroPhotoImage" src="/Professional%20Window%20Cleaner%20at%20Work.png" alt="Samson technician cleaning commercial glass with a water-fed pole" fetchPriority="high" />
   <div className="mockHeroPhotoShade" aria-hidden="true"/>
   <div className="mockHeroContent">
-    <p className="mockEyebrow white">Residential &amp; Commercial Window Cleaning</p>
-    <h1>Clean Windows.<br/><em>Higher Standards.</em></h1>
-    <p>Professional exterior window cleaning for residential homes, storefronts, HOAs, townhomes, and commercial properties throughout the Concord and Lake Norman area.</p>
+    <p className="mockEyebrow white">Residential &amp; Commercial Window Cleaning Subscriptions</p>
+    <h1>Clean Windows.<br/><em>On Subscription.</em></h1>
+    <p>Window-cleaning subscriptions for homes and storefronts. Choose a cleaning schedule that keeps your glass looking its best in Charlotte, Concord and Lake Norman. One-time cleaning and custom commercial assessments are available, too.</p>
     <div className="mockTrust">
       <span><ShieldCheck/>15 Years<br/>In Business</span>
       <span><Gem/>Residential &amp;<br/>Commercial Experts</span>
       <span><Star/>4.9-Star<br/>Google Rating</span>
     </div>
     <div className="mockButtons">
-      <a href="/residential" className="mockRedBtn">Book Service <ArrowRight size={19}/></a>
-      <a href="#work" className="mockOutlineBtn">View Our Work <Play size={17} fill="currentColor"/></a>
+      <a href="/storefront-pricing" className="mockRedBtn">Storefront Subscriptions <ArrowRight size={19}/></a>
+      <a href="/residential" className="mockOutlineBtn">Home Subscriptions <ArrowRight size={17}/></a>
     </div>
   </div>
 </section>
 <section id="services" className="mockServices"><div className="mockHeading"><div><p className="mockEyebrow">Our Services</p><h2>Exterior Window Cleaning</h2></div><p>Streak-free results using professional water-fed pole systems.<br/>Fast, safe, and effective for residential and commercial properties.</p></div><div className="mockServiceGrid">{services.map(s=><article key={s.name}><img src={s.img} alt={s.name}/><h3>{s.name}</h3><p>{s.desc}</p>{s.name==='Residential Homes'&&<a href="/residential" className="mockTextLink">Explore residential plans →</a>}</article>)}</div></section>
 <PricingOverview/>
-<section className="rhHomeOverview" id="residential"><div><p className="poEyebrow">FOR YOUR HOME</p><h2>Your windows. Your plan. Your day.</h2><p>Explore exterior cleaning plans based on your home size, choose your dates and pay securely in one place. We verify square footage and scope before work begins.</p><small>Residential exterior cleaning from $599. Maintenance and yearly prepayment options available.</small></div><a href="/residential">Explore Residential Plans <ArrowRight size={18}/></a></section>
+<section className="rhHomeOverview" id="residential"><div><p className="poEyebrow">FOR YOUR HOME</p><h2>Your home. Your cleaning subscription.</h2><p>Choose one cleaning or a residential maintenance subscription. Build your services, select your dates and pay in one place. We verify square footage and scope before work begins.</p><small>Residential exterior cleaning from $599. Maintenance subscriptions and yearly prepayment options available.</small></div><a href="/residential">Explore Residential Subscriptions <ArrowRight size={18}/></a></section>
 
-<section id="commercial" className="mockCommercial"><div className="mockCommercialIntro"><p className="mockEyebrow">Commercial Focus</p><h2>Built for<br/>Business</h2><p>Routine care for accessible commercial properties, including larger single-story facilities and HOA common areas. Start with a remote project review; we arrange a walkthrough when needed.</p><a href="/commercial-assessment" className="mockRedBtn">Request an Assessment <ArrowRight size={17}/></a></div><div className="mockCommercialPic"/><div className="mockBenefits">{['Recurring service schedules','Competitive commercial pricing','Minimal disruption to your business','Professional and insured','Lake Norman / Concord area'].map(s=><p key={s}><Check size={17}/>{s}</p>)}</div></section>
+<section id="commercial" className="mockCommercial"><div className="mockCommercialIntro"><p className="mockEyebrow">Commercial Focus</p><h2>Built for<br/>Business</h2><p>Storefront cleaning subscriptions make routine glass care part of your business schedule. Larger single-story properties and HOA common areas start with a project assessment; we arrange a walkthrough when needed.</p><a href="/commercial-assessment" className="mockRedBtn">Request an Assessment <ArrowRight size={17}/></a></div><div className="mockCommercialPic"/><div className="mockBenefits">{['Recurring cleaning subscriptions','Competitive commercial pricing','Minimal disruption to your business','Professional and insured','Lake Norman / Concord area'].map(s=><p key={s}><Check size={17}/>{s}</p>)}</div></section>
 <section className="mockFleet" aria-labelledby="samson-fleet-heading">
   <div className="mockFleetCopy">
     <p className="mockEyebrow">The Samson Vision</p>
