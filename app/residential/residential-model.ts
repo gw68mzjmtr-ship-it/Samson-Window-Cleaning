@@ -7,8 +7,8 @@ export const residentialPlans=[
 ] as const;
 export const residentialPlanGroups=[
  {name:'Premium',minSqft:1,maxSqft:2500,minPrice:599,maxPrice:599,image:'standard',description:'Well-appointed homes'},
- {name:'Executive',minSqft:2501,maxSqft:4500,minPrice:599.10,maxPrice:799,image:'premium',description:'Large homes'},
- {name:'Elite',minSqft:4501,maxSqft:10000,minPrice:799.10,maxPrice:1349,image:'executive',description:'Estate homes'},
+ {name:'Executive',minSqft:2501,maxSqft:4500,minPrice:599,maxPrice:799,image:'premium',description:'Large homes'},
+ {name:'Elite',minSqft:4501,maxSqft:10000,minPrice:799,maxPrice:1349,image:'executive',description:'Estate homes'},
 ] as const;
 export function residentialPlanForSize(squareFeet:number){
  if(!Number.isInteger(squareFeet)||squareFeet<1||squareFeet>10000)return null;
