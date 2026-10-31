@@ -1,0 +1,11 @@
+.rhSqftFinder{margin:16px 0 24px;padding:18px 20px;border:1px solid #64758a;border-radius:8px;background:#19232d;color:#edf3f7}
+.rhSqftFinder summary{cursor:pointer;font-size:14px;font-weight:700;line-height:1.7}
+.rhSqftFinder p{max-width:780px;margin:14px 0;font-size:12px;line-height:1.8;color:#c5d1dc}
+.rhSqftFinder form>label{display:block;margin-bottom:9px;font-size:12px;font-weight:600}
+.rhSqftSearchRow{display:flex;gap:12px;max-width:780px}
+.rhSqftSearchRow input{flex:1;min-width:0;min-height:46px;padding:12px;border:1px solid #728397;border-radius:5px;background:#10171d;color:#fff;font:inherit;font-size:14px}
+.rhSqftSearchRow button{min-height:46px;padding:12px 18px;border:1px solid #ec5465;border-radius:5px;background:#b91e34;color:white;font:inherit;font-size:13px;font-weight:700;cursor:pointer}
+.rhSqftSearchRow button:disabled{opacity:.5;cursor:default}
+.rhSqftFinder small{display:block;margin-top:11px;font-size:11px;line-height:1.7;color:#bacbd9}
+.rhUncertainOptions{margin:0 0 22px;padding:14px 16px;border-left:3px solid #e6ba64;border-radius:4px;background:#222c34;font-size:12px;line-height:1.8;color:#d2dce5}
+@media(max-width:600px){.rhSqftFinder{padding:16px}.rhSqftSearchRow{flex-direction:column}.rhSqftSearchRow button{width:100%}}
