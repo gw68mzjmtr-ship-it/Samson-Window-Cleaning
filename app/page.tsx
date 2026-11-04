@@ -199,6 +199,21 @@ useEffect(()=>{if(!activeVideo)return;const previous=document.body.style.overflo
     <a className="mockRedBtn mockAboutCta" href="#contact">Work With Samson <ArrowRight size={17}/></a>
   </div>
 </section>
-<section className="mockClose" id="contact"><div><h2>Ready for Cleaner Windows?</h2><p>Professional. Reliable. High-End Results.</p></div><button className="mockRedBtn" onClick={()=>contact()}>Book Your Service <ArrowRight size={19}/></button></section>
+<section className="mockClose mockBookingSplit" id="contact" aria-labelledby="book-service-heading">
+  <div>
+    <h2 id="book-service-heading">Book Your Service</h2>
+    <p>Choose the type of property you’d like us to clean.</p>
+  </div>
+  <div className="mockBookingOptions">
+    <a className="mockBookingOption" href="/residential">
+      <h3>Residential <ArrowRight size={19} aria-hidden="true"/></h3>
+      <p>Build a cleaning plan for your home.</p>
+    </a>
+    <a className="mockBookingOption" href="/storefront-pricing">
+      <h3>Commercial <ArrowRight size={19} aria-hidden="true"/></h3>
+      <p>Explore storefront plans or request a commercial assessment.</p>
+    </a>
+  </div>
+</section>
 </main><footer className="mockFooter"><div className="mockFooterBrand"><img src="/samson-approved-logo.png" alt="Samson Professional Window Cleaning"/></div><div><a href="https://www.instagram.com/samsoncleans/" target="_blank" rel="noopener noreferrer">Instagram</a><a href="https://www.youtube.com/@samsoncleans" target="_blank" rel="noopener noreferrer">YouTube</a><a href={'mailto:'+email}>Contact</a><a href="/service-terms">Service terms</a><a href="/privacy">Privacy</a></div></footer>
 </>}

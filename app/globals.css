@@ -1466,3 +1466,24 @@ body{font-family:var(--samson-body-font)}
   .mockHeader .mockLogo img{height:63px;max-height:none}
   .mockFooter .mockFooterBrand img{height:73px;max-height:none}
 }
+
+.mockBookingOptions{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:12px;
+  width:min(100%,590px);
+}
+.mockBookingOption{
+  display:block;
+  padding:16px;
+  background:#111;
+  border:1px solid #ed2534;
+  border-radius:5px;
+  color:#fff;
+  text-decoration:none;
+}
+.mockBookingOption:hover{background:#301217}
+.mockBookingOption:focus-visible{outline:2px solid #fff;outline-offset:3px}
+.mockBookingOption h3{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0;font-size:18px}
+.mockBookingOption p{line-height:1.5}
+@media(max-width:480px){.mockBookingOptions{grid-template-columns:1fr}}
