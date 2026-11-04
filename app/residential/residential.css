@@ -11,3 +11,11 @@
 
 
 .rhPlanSizeSlider{margin:6px 0 20px;padding-top:12px;border-top:1px solid #43515f}.rhPlanSizeSlider label{display:flex;justify-content:space-between;gap:8px;font-size:12px;line-height:1.7}.rhPlanSizeSlider input{width:100%;height:36px;accent-color:#ed263a;cursor:pointer}.rhPlanSizeSlider>div{display:flex;justify-content:space-between;font-size:10px;color:#b4c5d0}.rhPlanSizeSlider small{margin:12px 0 0;font-size:10px;line-height:1.7}.rhSelectedExteriorPrice{color:#fff!important;font-size:13px!important;margin:14px 0!important}.rhPlanGrid article{display:flex;flex-direction:column}.rhPlanGrid article>button{margin-top:auto}
+.rhBookingGuide{margin:24px 0 35px}
+.rhBookingGuide h2{margin:0 0 14px;font-size:clamp(21px,3vw,28px)}
+.rhBookingGuide ol{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:0;padding:0;list-style:none;counter-reset:booking-step}
+.rhBookingGuide li{position:relative;padding:16px 16px 16px 52px;border:1px solid #46505b;border-radius:8px;background:#15191e;counter-increment:booking-step}
+.rhBookingGuide li::before{content:counter(booking-step);position:absolute;left:14px;top:14px;display:grid;place-items:center;width:27px;height:27px;border-radius:50%;background:#b51d30;color:#fff;font-weight:800}
+.rhBookingGuide strong,.rhBookingGuide span{display:block}
+.rhBookingGuide span{margin-top:5px;color:#c5cfd8;font-size:13px;line-height:1.55}
+@media(max-width:700px){.rhBookingGuide ol{grid-template-columns:1fr}}
