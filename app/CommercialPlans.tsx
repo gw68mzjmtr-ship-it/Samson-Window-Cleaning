@@ -29,6 +29,12 @@ export default function CommercialPlans({checkoutMode=false}:{checkoutMode?:bool
     <p className="cpHint">All prices below are monthly bills. Exterior glass only. Entry-door glass counts toward your panel total.</p>
     <div className="cpPlanGrid" role="group" aria-label="Storefront size plans">{storefrontPlans.map((p,i)=><article key={p.name} className={`cpPlan ${plan===i?'selected':''}`}>
       <div className="cpStorePhoto" style={{backgroundPosition:`${p.photo}% 19.2%`}} role="img" aria-label={`${p.description} illustration`}/>
+      {p.name === 'XL' && <div className="cpXlMobilePhoto">
+        <svg viewBox="1220 158 302 207" preserveAspectRatio="xMidYMid slice" role="img" aria-label={`${p.description} illustration`}>
+          <image href="/storefront-plans-reference.png" width="1536" height="1024"/>
+        </svg>
+        <span aria-hidden="true">{money(p.prices[schedule])} / month</span>
+      </div>}
       <div className="cpPlanBody"><div className="cpPlanTitle"><h3>{p.name}</h3>{plan===i&&<span><Check size={13}/> Selected</span>}</div><p>{p.description}</p><strong className="cpPanelCount">{p.panels}</strong><p className="cpPrice"><b>{money(p.prices[schedule])}</b><span>/ month</span></p><p className="cpVisitCount">{schedule===2?'Weekly cleaning · 4–5 visits per service month':schedules[schedule].detail+' · '+schedules[schedule].visits+' visits/year'}</p>
       <ul><li><Check/>Exterior storefront glass</li><li><Check/>Normal maintenance cleaning</li><li><Check/>On eligible service routes</li></ul><button type="button" aria-pressed={plan===i} onClick={()=>selectPlan(i)}>{plan===i?`${p.name} selected`:`Select ${p.name}`}<ArrowRight size={16}/></button></div></article>)}</div>
     <p className="cpScopeNote">Starting rates for accessible, ground-floor glass in maintenance condition. Standard panel: one separately framed piece up to approximately 3 × 7 ft. Oversize glass, heavy buildup, specialty access or more than 24 panels? <a href="/#contact">Request a custom quote <ArrowRight size={13}/></a></p>
