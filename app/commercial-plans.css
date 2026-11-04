@@ -10,6 +10,6 @@
 .cpXlMobilePhoto{display:none}
 @media(max-width:600px){
   .cpXlMobilePhoto{display:block}
-  .cpXlMobilePhoto svg{display:block;width:100%;height:auto;aspect-ratio:302 / 207;overflow:hidden}
+  .cpXlMobilePhoto img{display:block;width:100%;height:auto}
   .cpXlMobilePhoto span{display:block;padding:9px 4px;background:#b61926;color:#fff;text-align:center;font-weight:800;font-size:13px}
 }

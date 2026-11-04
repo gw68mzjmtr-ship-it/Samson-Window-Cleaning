@@ -44,9 +44,7 @@ export default function CommercialPlans({checkoutMode=false}:{checkoutMode?:bool
     <div className="cpPlanGrid" role="group" aria-label="Storefront size plans">{storefrontPlans.map((p,i)=><article key={p.name} className={`cpPlan ${plan===i?'selected':''}`}>
       <div className="cpStorePhoto" style={{backgroundPosition:`${p.photo}% 19.2%`}} role="img" aria-label={`${p.description} illustration`}/>
       {p.name === 'XL' && <div className="cpXlMobilePhoto">
-        <svg viewBox="1220 158 302 207" preserveAspectRatio="xMidYMid slice" role="img" aria-label={`${p.description} illustration`}>
-          <image href="/storefront-plans-reference.png" width="1536" height="1024"/>
-        </svg>
+        <img src="/storefront-xl-hd.webp" width={1515} height={1038} alt={`${p.description} illustration`} loading="lazy" decoding="async"/>
         <span aria-hidden="true">{money(p.prices[schedule])} / month</span>
       </div>}
       <div className="cpPlanBody"><div className="cpPlanTitle"><h3>{p.name}</h3>{plan===i&&<span><Check size={13}/> Selected</span>}</div><p>{p.description}</p><strong className="cpPanelCount">{p.panels}</strong><p className="cpPrice"><b>{money(p.prices[schedule])}</b><span>/ month</span></p><p className="cpVisitCount">{schedule===2?'Weekly cleaning · 4–5 visits per service month':schedules[schedule].detail+' · '+schedules[schedule].visits+' visits/year'}</p>
