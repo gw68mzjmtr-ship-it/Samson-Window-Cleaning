@@ -42,7 +42,7 @@ export default function CommercialPlans({checkoutMode=false}:{checkoutMode?:bool
     <div className="cpSelectionBar"><div><span className="cpStep">01</span><h3>Choose your exterior subscription</h3></div><fieldset className="cpFrequency"><legend className="cpSrOnly">Exterior cleaning frequency</legend>{schedules.map((s,i)=><label key={s.id} className={schedule===i?'active':''}><input type="radio" name="exterior-frequency" checked={schedule===i} onChange={()=>{setSchedule(i);setRequestReady(false)}}/>{s.label}</label>)}</fieldset></div>
     <p className="cpHint">All prices below are monthly bills. Exterior glass only. Entry-door glass counts toward your panel total.</p>
     <div className="cpPlanGrid" role="group" aria-label="Storefront size plans">{storefrontPlans.map((p,i)=><article key={p.name} className={`cpPlan ${plan===i?'selected':''}`}>
-      <div className="cpStorePhoto" style={{backgroundPosition:`${p.photo}% 19.2%`}} role="img" aria-label={`${p.description} illustration`}/>
+      <div className="cpStorePhoto" data-plan={p.name.toLowerCase()} style={{backgroundPosition:`${p.photo}% 19.2%`}} role="img" aria-label={`${p.description} illustration`}/>
       {p.name === 'XL' && <div className="cpXlMobilePhoto">
         <img src="/storefront-xl-hd.webp" width={1515} height={1038} alt={`${p.description} illustration`} loading="lazy" decoding="async"/>
         <span aria-hidden="true">{money(p.prices[schedule])} / month</span>

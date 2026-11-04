@@ -13,3 +13,14 @@
   .cpXlMobilePhoto img{display:block;width:100%;height:auto}
   .cpXlMobilePhoto span{display:block;padding:9px 4px;background:#b61926;color:#fff;text-align:center;font-weight:800;font-size:13px}
 }
+
+@media(max-width:600px){
+  .cpStorePhoto[data-plan]:not([data-plan="xl"]){
+    background-size:cover;
+    background-position:center!important;
+  }
+  .cpStorePhoto[data-plan="starter"]{background-image:url('/storefront-starter-hd.webp')}
+  .cpStorePhoto[data-plan="small"]{background-image:url('/storefront-small-hd.webp')}
+  .cpStorePhoto[data-plan="medium"]{background-image:url('/storefront-medium-hd.webp')}
+  .cpStorePhoto[data-plan="large"]{background-image:url('/storefront-large-hd.webp')}
+}
