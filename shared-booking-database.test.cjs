@@ -14,13 +14,13 @@ const input={customer,selection,requestKey:'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa
  assert.throws(()=>bookingDatabaseConnection(url));assert.throws(()=>bookingDatabaseConnection('postgres://a:b@test-pooler.example/db'));
  let created=0,appointments=0,paid=false,conflict=false,paused,release;
  const reached=new Promise(resolve=>paused=resolve),wait=new Promise(resolve=>release=resolve);
- const adapter={available:async()=>!conflict,createInvoice:async()=>{created++;paused();await wait;return {id:'invoice-test',number:'DB-TEST',url:'https://invoice.zoho.com/test'}},readPayment:async booking=>({id:booking.invoice.id,customerEmail:customer.email,currency:'USD',totalCents:booking.snapshot.initialTotalCents,balanceCents:paid?0:59900,status:paid?'paid':'sent',paymentIds:paid?['payment-test']:[],receivedCents:paid?59900:0}),createAppointment:async()=>{appointments++;return {orderId:'order-test',appointmentId:'appointment-test'}}};
+ const adapter={available:async()=>!conflict,createInvoice:async()=>{created++;paused();await wait;return {id:'invoice-test',number:'DB-TEST',url:'https://invoice.zoho.com/test'}},readPayment:async booking=>({id:booking.invoice.id,customerEmail:customer.email,currency:'USD',totalCents:booking.snapshot.initialTotalCents,balanceCents:paid?0:35000,status:paid?'paid':'sent',paymentIds:paid?['payment-test']:[],receivedCents:paid?35000:0}),createAppointment:async()=>{appointments++;return {orderId:'order-test',appointmentId:'appointment-test'}}};
  const firstStore=new PostgresBookingStore(a),otherStore=new PostgresBookingStore(b),first=new BookingWorkflow('',adapter,firstStore),other=new BookingWorkflow('',adapter,otherStore);
  const pending=first.create(input,'2026-10-29');await reached;
  // Another database connection sees the committed ambiguity marker BEFORE the remote operation ends.
  const inFlight=await b`SELECT record FROM samson_bookings`;assert.equal(inFlight[0].record.phase,'invoice_pending');
  await assert.rejects(other.create({...input,requestKey:'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb'},'2026-10-29'),/Another booking/);
- release();const booking=await pending;assert.equal(booking.phase,'awaiting_payment');assert.equal(created,1);assert.equal(booking.snapshot.initialTotalCents,59900);
+ release();const booking=await pending;assert.equal(booking.phase,'awaiting_payment');assert.equal(created,1);assert.equal(booking.snapshot.initialTotalCents,35000);
  assert.equal((await other.create(input,'2026-10-29')).id,booking.id);assert.equal(created,1);
  await assert.rejects(other.create({...input,customer:{...customer,name:'Another Customer'},requestKey:'cccccccc-cccc-cccc-cccc-cccccccccccc'},'2026-10-29'));assert.equal(created,1);
  const [claims]=await b`SELECT count(*)::int AS count FROM samson_slot_claims`;assert.equal(claims.count,1);
@@ -36,5 +36,5 @@ const input={customer,selection,requestKey:'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa
  const failedInput={...input,requestKey:'dddddddd-dddd-dddd-dddd-dddddddddddd',visits:[{date:'2026-11-05',period:'afternoon'}]};
  const failed=await first.create(failedInput,'2026-10-29');assert.equal(failed.phase,'review_required');assert.equal((await other.create(failedInput,'2026-10-29')).id,failed.id);assert.equal(created,2);
  await assert.rejects(firstStore.save({...failed,id:'f'.repeat(48)}),/shared lock/);
- console.log('PASS: actual PostgreSQL two-connection contention; durable pending phase before remote call; one invoice per request; occupied-window rejection; $599 exact totals; restart persistence; exact paid-booking confirmation once; claim release only after confirmation; duplicate Square events queued once; ambiguous remote outcome retained. No real customer, Square or Zoho requests.');
+ console.log('PASS: actual PostgreSQL two-connection contention; durable pending phase before remote call; one invoice per request; occupied-window rejection; $350 exact totals; restart persistence; exact paid-booking confirmation once; claim release only after confirmation; duplicate Square events queued once; ambiguous remote outcome retained. No real customer, Square or Zoho requests.');
 })().catch(error=>{console.error('Database test failed:',error.message);process.exitCode=1}).finally(async()=>{await Promise.all([a.end({timeout:3}),b.end({timeout:3})])});

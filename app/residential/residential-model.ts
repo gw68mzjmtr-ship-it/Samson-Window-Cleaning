@@ -1,21 +1,25 @@
+export const residentialMinimum=350;
+const exteriorPrice=(squareFeet:number)=>(residentialMinimum*100+Math.max(0,squareFeet-2500)*10)/100;
+const residentialSizeBands=[
+ {name:'Premium',minSqft:1,maxSqft:2500,image:'standard',description:'Well-appointed homes'},
+ {name:'Executive',minSqft:2501,maxSqft:4500,image:'premium',description:'Large homes'},
+ {name:'Elite',minSqft:4501,maxSqft:10000,image:'executive',description:'Estate homes'},
+] as const;
+export const residentialPlanGroups=residentialSizeBands.map(plan=>({
+ ...plan,minPrice:exteriorPrice(plan.minSqft),maxPrice:exteriorPrice(plan.maxSqft),
+}));
 export const residentialPlans=[
- {name:'Premium',minSqft:1,maxSqft:2500,price:599,image:'standard',description:'Well-appointed homes'},
- {name:'Executive',minSqft:2501,maxSqft:3500,price:699,image:'premium',description:'Spacious homes'},
- {name:'Executive',minSqft:3501,maxSqft:4500,price:799,image:'premium',description:'Large homes'},
- {name:'Elite',minSqft:4501,maxSqft:5500,price:899,image:'executive',description:'Expansive homes'},
- {name:'Elite',minSqft:5501,maxSqft:10000,price:999,image:'executive',description:'Estate homes'},
-] as const;
-export const residentialPlanGroups=[
- {name:'Premium',minSqft:1,maxSqft:2500,minPrice:599,maxPrice:599,image:'standard',description:'Well-appointed homes'},
- {name:'Executive',minSqft:2501,maxSqft:4500,minPrice:599,maxPrice:799,image:'premium',description:'Large homes'},
- {name:'Elite',minSqft:4501,maxSqft:10000,minPrice:799,maxPrice:1349,image:'executive',description:'Estate homes'},
-] as const;
+ residentialSizeBands[0],
+ {...residentialSizeBands[1],maxSqft:3500,description:'Spacious homes'},
+ {...residentialSizeBands[1],minSqft:3501},
+ {...residentialSizeBands[2],maxSqft:5500,description:'Expansive homes'},
+ {...residentialSizeBands[2],minSqft:5501},
+].map(plan=>({...plan,price:exteriorPrice(plan.maxSqft)}));
 export function residentialPlanForSize(squareFeet:number){
  if(!Number.isInteger(squareFeet)||squareFeet<1||squareFeet>10000)return null;
  const plan=residentialPlans.find(plan=>squareFeet>=plan.minSqft&&squareFeet<=plan.maxSqft);
- return plan?{...plan,price:(59900+Math.max(0,squareFeet-2500)*10)/100}:null;
+ return plan?{...plan,price:exteriorPrice(squareFeet)}:null;
 }
-export const residentialMinimum=599;
 export const residentialMaintenance=[
  {id:'once',label:'One-time cleaning',visits:1,months:0,discount:0},
  {id:'annual',label:'Annual maintenance',visits:1,months:12,discount:3},
@@ -77,7 +81,7 @@ export function calculateResidentialQuote(squareFeet:number,options:{interiorReq
   const prepaidVisit=prepaid&&index<prepaidVisitCount;
   const exteriorCents=prepaidVisit?prepaidExteriorFloor+(index<prepaidRemainder?1:0):Math.round((index===0&&!options.upfrontDiscount?plan.price:repeatExterior)*100);
   const subtotalCents=exteriorCents+Math.round((interiorGlass+screenFee+exteriorLadderFee+interiorLadderFee)*100);
-  const minimumAdjustmentCents=prepaidVisit?0:Math.max(0,59900-subtotalCents),total=(subtotalCents+minimumAdjustmentCents)/100;
+  const minimumAdjustmentCents=prepaidVisit?0:Math.max(0,residentialMinimum*100-subtotalCents),total=(subtotalCents+minimumAdjustmentCents)/100;
   return {index,includedInInitialPayment:index===0||prepaidVisit,interiorQuantities,interiorCount,interiorGlass,screenCount,screenFee,exteriorLadderFee,interiorLadderFee,exteriorCents,minimumAdjustmentCents,total};
  });
  const annualTotalCents=visitPricing.filter(v=>!prepaid||v.includedInInitialPayment).reduce((sum,v)=>sum+Math.round(v.total*100),0);

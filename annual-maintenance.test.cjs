@@ -8,9 +8,9 @@ const {confirmationMessage}=load('app/checkout/confirmation.ts');
 const base={homeSize:2500,maintenanceId:'annual',billingMode:'annual-prepay',interiorRequested:false,interiorQuantities:Array(8).fill(0),screenCount:0,stepLadder:false,twoStoryLadder:false,specialtyAccess:false,exteriorSpecialty:false};
 const visit=date=>({date,period:'morning'});
 const cases=[
- {id:'annual',months:[0,12],visits:['2026-11-04','2027-11-04'].map(visit),total:110396},
- {id:'six-month',months:[0,6,12],visits:['2026-11-04','2027-05-04','2027-11-04'].map(visit),total:162179},
- {id:'quarterly',months:[0,3,6,9,12],visits:['2026-11-04','2027-02-04','2027-05-04','2027-08-04','2027-11-04'].map(visit),total:256073}
+ {id:'annual',months:[0,12],visits:['2026-11-04','2027-11-04'].map(visit),total:64505},
+ {id:'six-month',months:[0,6,12],visits:['2026-11-04','2027-05-04','2027-11-04'].map(visit),total:94763},
+ {id:'quarterly',months:[0,3,6,9,12],visits:['2026-11-04','2027-02-04','2027-05-04','2027-08-04','2027-11-04'].map(visit),total:149625}
 ];
 async function run(test){
  const selection={...base,maintenanceId:test.id},snapshot=integration.residentialOrderSnapshot(selection,true),count=test.visits.length;
@@ -28,7 +28,7 @@ async function run(test){
  const each=integration.residentialOrderSnapshot({...selection,screenCount:1,stepLadder:true},true);
  assert.equal(each.billing.addonCents,count*6000);assert.equal(each.initialTotalCents,test.total+count*6000);
  const perVisit=integration.residentialOrderSnapshot({...selection,billingMode:'per-visit'},true);
- assert.equal(perVisit.initialTotalCents,59900);assert.equal(perVisit.billing.visitsIncluded,1);
+ assert.equal(perVisit.initialTotalCents,35000);assert.equal(perVisit.billing.visitsIncluded,1);
  assert(perVisit.visitOrders.slice(1).every(v=>!v.includedInInitialPayment));
  const records=new Map(),appointments=[];let received=false;
  const store={locked:fn=>fn(),records:async()=>[...records.values()],read:async id=>records.get(id),save:async b=>records.set(b.id,structuredClone(b))};

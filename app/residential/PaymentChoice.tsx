@@ -11,8 +11,8 @@ export default function PaymentChoice({value,onChange,quote}:{value:ResidentialB
  return <section className="rhMaintenance rhYearPaymentChoice" style={{marginTop:24}}>
   <h2>How would you like to pay?</h2>
   <fieldset><legend>Maintenance payment option</legend><div className="rhMaintenanceGrid">
-   <label className={value==='per-visit'?'selected':''}><input type="radio" name="residential-payment-choice" checked={value==='per-visit'} onChange={()=>onChange('per-visit')}/><strong>Pay per cleaning</strong><span>Pay for each selected visit separately.</span><small>$599 minimum per visit after discounts.</small></label>
-   <label className={value==='annual-prepay'?'selected':''}><input type="radio" name="residential-payment-choice" checked={value==='annual-prepay'} onChange={()=>onChange('annual-prepay')}/><strong>Pay for the year</strong><span>Maintenance savings + an extra 5% on exterior cleaning.</span><small>Yearly prepayment can reduce the price below $599 per visit.</small></label>
+   <label className={value==='per-visit'?'selected':''}><input type="radio" name="residential-payment-choice" checked={value==='per-visit'} onChange={()=>onChange('per-visit')}/><strong>Pay per cleaning</strong><span>Pay for each selected visit separately.</span><small>$350 minimum per visit after discounts.</small></label>
+   <label className={value==='annual-prepay'?'selected':''}><input type="radio" name="residential-payment-choice" checked={value==='annual-prepay'} onChange={()=>onChange('annual-prepay')}/><strong>Pay for the year</strong><span>Maintenance savings + an extra 5% on exterior cleaning.</span><small>Yearly prepayment can reduce the price below $350 per visit.</small></label>
   </div></fieldset>
   {value==='annual-prepay'&&<div style={{padding:20,border:'1px solid #56677b',borderRadius:12,marginTop:18}}>
    <h3>{quote.billing.visitsIncluded} cleanings in your prepaid package</h3>

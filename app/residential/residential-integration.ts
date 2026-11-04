@@ -28,13 +28,13 @@ export function residentialOrderSnapshot(value:unknown,upfrontDiscountPreview=fa
  if(visit.screenCount)lines.push({key:'screens',label:'Screen removal and replacement',quantity:visit.screenCount,unitPriceCents:1000,amountCents:visit.screenCount*1000});
  if(visit.interiorLadderFee)lines.push({key:'interior-ladder',label:'Step ladder · selected windows and screens · all setups for this visit',quantity:1,unitPriceCents:5000,amountCents:5000});
  if(visit.exteriorLadderFee)lines.push({key:'exterior-ladder',label:'Exterior two-story ladder · all setups for this visit',quantity:1,unitPriceCents:10000,amountCents:10000});
- if(visit.minimumAdjustmentCents)lines.push({key:'visit-minimum',label:'$599 minimum per cleaning visit',quantity:1,unitPriceCents:visit.minimumAdjustmentCents,amountCents:visit.minimumAdjustmentCents});
+ if(visit.minimumAdjustmentCents)lines.push({key:'visit-minimum',label:'$350 minimum per cleaning visit',quantity:1,unitPriceCents:visit.minimumAdjustmentCents,amountCents:visit.minimumAdjustmentCents});
  const serviceNotes=selection.lemonScent&&visit.interiorCount>0?['Lemon scent · Free · selected interior glass only']:[];
  return {index,includedInInitialPayment:visit.includedInInitialPayment,lines,serviceNotes,totalCents:lines.reduce((sum,line)=>sum+line.amountCents,0)};
  });
  const prepaid=selection.billingMode==='annual-prepay';
  const initialLines=prepaid?visitOrders.filter(visit=>visit.includedInInitialPayment).flatMap(visit=>visit.lines.map(line=>({...line,key:'visit-'+visit.index+'-'+line.key,label:(visit.index===0?'Initial cleaning':'Repeat '+visit.index)+' · '+line.label}))):visitOrders[0].lines,repeatLines=visitOrders.find(visit=>!visit.includedInInitialPayment)?.lines??[];
- return {version:'residential-sqft-599-prepaid-packages-2026-10-30',currency:'USD',selection,plan:quote.plan.name,billing:quote.billing,initialLines,initialTotalCents:initialLines.reduce((sum,l)=>sum+l.amountCents,0),repeatLines,repeatTotalCents:visitOrders.find(visit=>!visit.includedInInitialPayment)?.totalCents??0,visitOrders,maintenance:{id:quote.maintenance.id,label:quote.maintenance.label,months:quote.maintenance.months,discountPercent:quote.maintenance.discount,initialDiscountCents,maximumInitialDiscountReversalCents:prepaid?0:initialDiscountCents},upfrontDiscountPreview,termsDraft:true,paymentEnabled:false};
+ return {version:'residential-sqft-350-prepaid-packages-2026-11-03',currency:'USD',selection,plan:quote.plan.name,billing:quote.billing,initialLines,initialTotalCents:initialLines.reduce((sum,l)=>sum+l.amountCents,0),repeatLines,repeatTotalCents:visitOrders.find(visit=>!visit.includedInInitialPayment)?.totalCents??0,visitOrders,maintenance:{id:quote.maintenance.id,label:quote.maintenance.label,months:quote.maintenance.months,discountPercent:quote.maintenance.discount,initialDiscountCents,maximumInitialDiscountReversalCents:prepaid?0:initialDiscountCents},upfrontDiscountPreview,termsDraft:true,paymentEnabled:false};
 }
 export function easternServiceWindow(date:string,period:string){
  if(!/^\d{4}-\d{2}-\d{2}$/.test(date)||isServiceClosureDay(date))throw Error('Choose an available weekday outside holidays.');
