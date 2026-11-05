@@ -1,0 +1,22 @@
+.bwPrimary {
+  background: #efb64c;
+  color: #17130a;
+  border: 0;
+  border-radius: 8px;
+  padding: 14px 20px;
+  font-weight: 800;
+  font-size: 14px;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+.bwPrimary:disabled {
+  opacity: .4;
+  cursor: not-allowed;
+}
+
+.rhLiveCheckout .bwPrimary {
+  font: inherit;
+  min-block-size: 44px;
+  max-inline-size: 100%;
+}

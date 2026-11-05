@@ -3,6 +3,7 @@ import Link from 'next/link';
 import ResidentialBuilder from './ResidentialBuilder';
 import {approvedResidentialTerms} from '../checkout/service-terms';
 import {publicSiteReady} from '../checkout/public-routes';
+import '../checkout/primary-button.css';
 import '../pricing-overview.css';
 import './residential.css';
 export const metadata:Metadata={title:'Home Window Cleaning Subscriptions | Samson',description:'Build your home window cleaning subscription, choose available dates and pay securely. One-time cleaning and maintenance options available.'};
