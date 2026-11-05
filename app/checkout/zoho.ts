@@ -20,11 +20,21 @@ export async function voidUnpaidLiveInvoice(booking:Booking){
 }
 const resource=()=>process.env.SAMSON_LIVE_RESOURCE_ID||'44386000000385209';
 async function territory(){const result=await trialRecord('Work_Orders','44386000000385265'),id=result.data?.[0]?.Territory?.id;if(!id)throw Error('Service territory not configured');return id as string}
-export async function liveAvailability(visits:Booking['visits']){
+export async function readAvailabilityContext(){
  const [territoryId,appointments]=await Promise.all([territory(),trialAppointments()]);
- for(const visit of visits){if(importedWindowBlocked(appointments,visit.date,visit.period))return false;const window=easternServiceWindow(visit.date,visit.period),result=await trialRead('Service_Resources/Available_TimeSlots',{date_time_range:window,service_resource_filter:{type:'Agent',sr_ids:[resource()]},territory:{id:territoryId},time_slot:{duration:180}});
- if(!(result.data||[]).some((r:{Service_Resources?:{id:string;Time_Slots?:{start_time:string;end_time:string}[]}})=>r.Service_Resources?.id===resource()&&r.Service_Resources.Time_Slots?.some(slot=>Date.parse(slot.start_time)<=Date.parse(window.start)&&Date.parse(slot.end_time)>=Date.parse(window.end))))return false;
- }return true;
+ return {territoryId,appointments,resourceId:resource()};
+}
+type AvailabilityContext=Awaited<ReturnType<typeof readAvailabilityContext>>;
+export async function checkAvailabilityWindow(visit:Booking['visits'][number],context:AvailabilityContext){
+ if(importedWindowBlocked(context.appointments,visit.date,visit.period))return false;
+ const window=easternServiceWindow(visit.date,visit.period);
+ const result=await trialRead('Service_Resources/Available_TimeSlots',{date_time_range:window,service_resource_filter:{type:'Agent',sr_ids:[context.resourceId]},territory:{id:context.territoryId},time_slot:{duration:180}});
+ return (result.data||[]).some((r:{Service_Resources?:{id:string;Time_Slots?:{start_time:string;end_time:string}[]}})=>r.Service_Resources?.id===context.resourceId&&r.Service_Resources.Time_Slots?.some(slot=>Date.parse(slot.start_time)<=Date.parse(window.start)&&Date.parse(slot.end_time)>=Date.parse(window.end)));
+}
+export async function liveAvailability(visits:Booking['visits']){
+ const context=await readAvailabilityContext();
+ for(const visit of visits)if(!await checkAvailabilityWindow(visit,context))return false;
+ return true;
 }
 function fictionalStorefrontTest(booking:Booking,test:boolean){return test&&booking.paymentEnvironment==='sandbox'&&(booking.snapshot.kind==='storefront'||booking.snapshot.kind==='residential'&&booking.nativePreparation?.ready===true)&&booking.customer.email.endsWith('@example.invalid')&&booking.customer.name.startsWith('SAMSON TEST')}
 export async function createLiveInvoice(booking:Booking,sandboxTest=false,persist?:()=>Promise<void>){
