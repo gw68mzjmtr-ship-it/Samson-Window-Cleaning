@@ -4,8 +4,10 @@ import {previewAvailability} from '../../../checkout/calendar-preview';
 import {sharedBookings} from '../../../zoho-trial/runtime-store';
 import {isServiceClosureDay} from '../../../residential/residential-model';
 import {withCalendarRead} from '../../../checkout/calendar-read-queue';
+import {newOrderCutoverResponse} from '../../../booking/provider';
 export const runtime='nodejs';
 export async function POST(req:Request){
+ const cutover=newOrderCutoverResponse();if(cutover)return cutover;
  try{await guardCheckout(req,true);await limitCheckout(req,'availability');const {date}=await checkoutJson(req);if(typeof date!=='string'||!/^\d{4}-\d{2}-\d{2}$/.test(date)||!Number.isFinite(Date.parse(date+'T12:00:00Z'))||Date.parse(date+'T12:00:00Z')<Date.now()-86400000||Date.parse(date+'T12:00:00Z')>Date.now()+400*86400000)throw Error();
  return await withCalendarRead(async()=>{
  const holds=await sharedBookings().records(),closed=isServiceClosureDay(date),windows=[];

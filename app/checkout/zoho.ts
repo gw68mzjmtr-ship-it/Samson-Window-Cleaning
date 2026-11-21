@@ -1,17 +1,18 @@
 import {accessToken,paymentRecordAccessApproved,trialRecord,trialRead,trialCreate,trialAppointments} from '../zoho-trial/server';
+import {assertLegacyWritesAllowed} from '../booking/provider';
 import {easternServiceWindow} from '../residential/residential-integration';
 import {importedWindowBlocked} from '../residential/imported-capacity';
 import {visitCovered} from './order-snapshot';
 import type {Booking} from '../zoho-trial/booking-workflow';
 import type {LivePaymentState} from './payment-service';
-export async function invoiceApi(endpoint:string,method:'GET'|'POST'='GET',body?:object){
+export async function invoiceApi(endpoint:string,method:'GET'|'POST'='GET',body?:object){if(method!=='GET')assertLegacyWritesAllowed();
  const allowed=method==='GET'&&/^(?:contacts\?email=[^&]+&per_page=200|contacts\/[0-9]+|invoices\/[0-9]+(?:\/payments|\/email)?|customerpayments\/[0-9]+)$/.test(endpoint)||method==='POST'&&/^(?:contacts|invoices|customerpayments|invoices\/[0-9]+\/(?:status\/sent|status\/void|email))$/.test(endpoint);
  if(!allowed)throw Error('Invoice operation not allowed');
  if(endpoint==='customerpayments'&&!await paymentRecordAccessApproved())throw Error('Payment recording permission is not approved');
  const response=await fetch('https://www.zohoapis.com/invoice/v3/'+endpoint,{method,headers:{Authorization:'Zoho-oauthtoken '+await accessToken(),'X-com-zoho-invoice-organizationid':'944362366','Content-Type':'application/json'},body:body?JSON.stringify(body):undefined,cache:'no-store',signal:AbortSignal.timeout(25000)});
  const value=await response.json();if(!response.ok||value.code!==0)throw Error('Zoho invoice update could not be confirmed');return value;
 }
-export async function voidUnpaidLiveInvoice(booking:Booking){
+export async function voidUnpaidLiveInvoice(booking:Booking){assertLegacyWritesAllowed();
  if(!booking.invoice||booking.context?.purpose!=='customer'||booking.appointments.length)throw Error('Only an unpaid customer checkout may expire');
  const invoice=(await invoiceApi('invoices/'+booking.invoice.id)).invoice,payments=(await invoiceApi('invoices/'+booking.invoice.id+'/payments')).payments||[];
  if(invoice.reference_number!=='SAMSON-LIVE-'+booking.id||invoice.status!=='sent'||invoice.currency_code!=='USD'||Math.round(Number(invoice.total)*100)!==booking.snapshot.initialTotalCents||Math.round(Number(invoice.balance)*100)!==booking.snapshot.initialTotalCents||payments.length||invoice.payment_options?.payment_gateways?.some((gateway:{configured?:boolean})=>gateway.configured))throw Error('Invoice cannot be safely expired');
@@ -37,7 +38,7 @@ export async function liveAvailability(visits:Booking['visits']){
  return true;
 }
 function fictionalStorefrontTest(booking:Booking,test:boolean){return test&&booking.paymentEnvironment==='sandbox'&&(booking.snapshot.kind==='storefront'||booking.snapshot.kind==='residential'&&booking.nativePreparation?.ready===true)&&booking.customer.email.endsWith('@example.invalid')&&booking.customer.name.startsWith('SAMSON TEST')}
-export async function createLiveInvoice(booking:Booking,sandboxTest=false,persist?:()=>Promise<void>){
+export async function createLiveInvoice(booking:Booking,sandboxTest=false,persist?:()=>Promise<void>){assertLegacyWritesAllowed();
  if(process.env.SAMSON_NATIVE_INVOICES_READY==='1'&&booking.context?.purpose==='customer'){if(!persist)throw Error('Durable native invoice progress required');return (await import('./native-invoice')).createNativeInvoice(booking,persist)}
  const fictional=fictionalStorefrontTest(booking,sandboxTest);if(sandboxTest&&!fictional)throw Error('Fictional storefront test required');
  if((!fictional&&booking.paymentEnvironment!=='production')||!booking.context||(!fictional&&booking.customer.email.endsWith('@example.invalid')))throw Error('Real checkout required');
@@ -65,7 +66,7 @@ export async function createLiveInvoice(booking:Booking,sandboxTest=false,persis
  const url=new URL(invoice.invoice_url);if(url.protocol!=='https:'||!['invoice.zoho.com','zohoinvoicepay.com'].includes(url.hostname))throw Error('Invoice link not verified');
  return {id:invoice.invoice_id,number:invoice.invoice_number,url:invoice.invoice_url.trim(),customerId:contact.contact_id};
 }
-export async function recordLiveReceipt(booking:Booking,state:LivePaymentState,sandboxTest=false){
+export async function recordLiveReceipt(booking:Booking,state:LivePaymentState,sandboxTest=false){assertLegacyWritesAllowed();
  const fictional=fictionalStorefrontTest(booking,sandboxTest);if(sandboxTest&&!fictional)throw Error('Fictional storefront test required');
  if(booking.nativePreparation)await (await import('./native-invoice')).readNativeBinding(booking);
  const invoice=(await invoiceApi('invoices/'+booking.invoice!.id)).invoice,contact=(await invoiceApi('contacts/'+invoice.customer_id)).contact;
@@ -76,7 +77,7 @@ export async function recordLiveReceipt(booking:Booking,state:LivePaymentState,s
  const [receipt,updated]=await Promise.all([invoiceApi('customerpayments/'+payment?.payment_id),invoiceApi('invoices/'+invoice.invoice_id)]),record=receipt.payment;
  if(record.customer_id!==invoice.customer_id||record.currency_code!=='USD'||(fictional&&record.payment_mode!=='Square Sandbox Test')||record.reference_number!==reference||Math.round(Number(record.amount)*100)!==state.amountCents||record.invoices?.length!==1||record.invoices[0].invoice_id!==invoice.invoice_id||Math.round(Number(record.invoices[0].amount_applied)*100)!==state.amountCents||updated.invoice.status!=='paid'||Number(updated.invoice.balance)!==0)throw Error('Payment receipt did not match the invoice');return record.payment_id as string;
 }
-export async function createLiveAppointment(booking:Booking,index:number,sandboxTest=false){
+export async function createLiveAppointment(booking:Booking,index:number,sandboxTest=false){assertLegacyWritesAllowed();
  if(booking.nativePreparation&&visitCovered(booking.snapshot,index))return (await import('./native-invoice')).createNativeAppointment(booking,index);
  const fictional=fictionalStorefrontTest(booking,sandboxTest);if(sandboxTest&&!fictional)throw Error('Fictional storefront test required');
  const territoryId=await territory(),visit=booking.visits[index],window=easternServiceWindow(visit.date,visit.period),owner=fictional||booking.context?.purpose==='owner-verification';

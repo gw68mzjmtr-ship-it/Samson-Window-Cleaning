@@ -1,4 +1,5 @@
 import {open,writeFile,rename,unlink} from 'node:fs/promises';
+import {assertLegacyWritesAllowed} from '../booking/provider';
 import path from 'node:path';
 import {randomBytes} from 'node:crypto';
 import {saveSquareState,squareStateLock} from './runtime-store';
@@ -7,7 +8,7 @@ import {bookingWorkflow,publicBooking} from './booking-adapter';
 import {squareSandboxConfig,sandboxPaymentResult,validSandboxPayment,type SandboxResult} from './square-sandbox';
 // Sandbox payments are fictional. This explicit, separately approved step creates clearly
 // labelled TEST accounting records; it must never represent a real receipt of funds.
-export async function synchronizeSandboxTest(id:string){
+export async function synchronizeSandboxTest(id:string){assertLegacyWritesAllowed();
  if(!await paymentRecordAccessApproved())return {permissionRequired:true,notice:'Additional Zoho permission is required to create the fictional test receipt. No record changed.'};
  const workflow=bookingWorkflow(),b=await workflow.read(id),state=await sandboxPaymentResult(id);
  if(!b.invoice||!b.customer.email.endsWith('@example.invalid')||state?.phase!=='completed'||state.environment!=='sandbox'||state.bookingId!==b.id||state.invoiceId!==b.invoice.id||state.amountCents!==b.snapshot.initialTotalCents||!state.paymentId)throw Error('Matching sandbox payment required');

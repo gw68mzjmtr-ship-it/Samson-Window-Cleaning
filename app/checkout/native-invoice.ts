@@ -1,4 +1,5 @@
 import {accessToken,nativeInvoiceApi,nativeInvoiceAccessApproved,invoiceSettingsAccessApproved,trialRead,trialRecord,trialCreate,trialValidationApi} from '../zoho-trial/server';
+import {assertLegacyWritesAllowed} from '../booking/provider';
 import type {Booking} from '../zoho-trial/booking-workflow';
 import {invoiceApi} from './zoho';
 import {nativeSummary,nativeVisitLines,nativeLineContent,verifyNativeBinding} from './native-invoice-model';
@@ -15,7 +16,7 @@ export async function readNativeBinding(b:Booking){
 // No arbitrary edit API is exposed. The provider requires unchanged customer
 // and lines to be echoed with these two approved settings. Verify them again
 // after the write, including native work-order identity and all scope/rates.
-export async function configureNativeInvoice(b:Booking){
+export async function configureNativeInvoice(b:Booking){assertLegacyWritesAllowed();
  if(!await invoiceSettingsAccessApproved())throw Error('Limited invoice settings permission required');
  const {invoice,native,order}=await readNativeBinding(b),reference='SAMSON-LIVE-'+b.id;
  const [customer,result]=await Promise.all([invoiceApi('contacts/'+invoice.customer_id),invoiceApi('invoices/'+invoice.invoice_id+'/payments')]);
@@ -29,7 +30,7 @@ export async function configureNativeInvoice(b:Booking){
  if(nativeLineContent(updated.invoice)!==before||updated.invoice.reference_number!==reference||updated.invoice.payment_options?.payment_gateways?.some((g:any)=>g.configured))throw Error('Invoice settings or unchanged amounts could not be verified');
  return updated.invoice;
 }
-export async function createNativeInvoice(b:Booking,persist:()=>Promise<void>){
+export async function createNativeInvoice(b:Booking,persist:()=>Promise<void>){assertLegacyWritesAllowed();
  if(b.nativePreparation)throw Error('Earlier native invoice creation needs review; do not replay');
  if(!await nativeInvoiceAccessApproved()||!await invoiceSettingsAccessApproved()||b.context?.purpose!=='customer'||!/^[a-f0-9]{48}$/.test(b.id))throw Error('Approved native customer invoice connection required');
  const fictional=b.paymentEnvironment==='sandbox'&&b.customer.name.startsWith('SAMSON TEST')&&b.customer.email.endsWith('@example.invalid');
@@ -69,7 +70,7 @@ export async function createNativeInvoice(b:Booking,persist:()=>Promise<void>){
  const url=new URL(checked.invoice_url);if(url.protocol!=='https:'||!['invoice.zoho.com','zohoinvoicepay.com'].includes(url.hostname))throw Error('Invoice link not verified');
  delete p.pending;p.ready=true;await persist();return {id:checked.invoice_id,number:checked.invoice_number,url:checked.invoice_url.trim(),customerId:checked.customer_id};
 }
-export async function createNativeAppointment(b:Booking,index:number){
+export async function createNativeAppointment(b:Booking,index:number){assertLegacyWritesAllowed();
  const p=b.nativePreparation,visit=b.visits[index];if(!p?.ready||p.pending||!b.invoice||!visit)throw Error('Native paid booking preparation required');
  const {invoice,native}=await readNativeBinding(b),line=p.visitLines?.find(l=>l.index===index);
  if(!line||invoice.invoice_id!==b.invoice.id||invoice.invoice_number!==b.invoice.number||invoice.reference_number!=='SAMSON-LIVE-'+b.id||invoice.status!=='paid'||Number(invoice.balance)!==0||native.Status!=='paid')throw Error('Exact paid native invoice required before scheduling');

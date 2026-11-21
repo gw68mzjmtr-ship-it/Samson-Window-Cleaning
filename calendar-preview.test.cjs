@@ -28,6 +28,7 @@ function fixture(t) {
   const source = { appointments: [], slotAvailable: true, holds: [], slotError: null, contextError: null };
   const calls = { territory: 0, appointments: 0, slots: [], holds: 0 };
   const zoho = load('app/checkout/zoho.ts', {
+    '../booking/provider': require('./scripts/test-module-loader.cjs')('app/booking/provider.ts'),
     '../residential/residential-integration': integration,
     '../residential/imported-capacity': imported,
     './order-snapshot': {},
@@ -58,6 +59,7 @@ function fixture(t) {
   });
   const preview = load('app/checkout/calendar-preview.ts', { './zoho': zoho });
   const route = load('app/api/checkout/availability/route.ts', {
+    '../../../booking/provider': require('./scripts/test-module-loader.cjs')('app/booking/provider.ts'),
     '../../../checkout/security': {
       guardCheckout: async () => {},
       checkoutJson: req => req.json(),

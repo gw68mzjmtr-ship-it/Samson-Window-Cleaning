@@ -205,11 +205,11 @@ useEffect(()=>{if(!activeVideo)return;const previous=document.body.style.overflo
     <p>Choose the type of property you’d like us to clean.</p>
   </div>
   <div className="mockBookingOptions">
-    <a className="mockBookingOption" href="/residential">
+    <a className="mockBookingOption" href="/booking">
       <h3>Residential <ArrowRight size={19} aria-hidden="true"/></h3>
       <p>Build a cleaning plan for your home.</p>
     </a>
-    <a className="mockBookingOption" href="/storefront-pricing">
+    <a className="mockBookingOption" href="/booking?service=storefront">
       <h3>Commercial <ArrowRight size={19} aria-hidden="true"/></h3>
       <p>Explore storefront plans or request a commercial assessment.</p>
     </a>
