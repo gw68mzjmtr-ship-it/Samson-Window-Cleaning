@@ -1,10 +1,10 @@
-// The hosted trial uses durable shared records; live checkout remains disabled.
-export async function register(){
+import {housecallCutoverEnabled} from './app/booking/provider';
+export async function register(){if(housecallCutoverEnabled())return;
  if(process.env.NEXT_RUNTIME==='nodejs'){
  if(process.env.SAMSON_ZOHO_TRIAL!=='1'&&process.env.SAMSON_HOSTED_TEST!=='1')return;
  const {bookingWorkflow}=await import('./app/zoho-trial/booking-adapter');
  let running=false;const lastChecked=new Map<string,number>();
- const timer=setInterval(async()=>{
+ const timer=setInterval(async()=>{if(housecallCutoverEnabled())return;
   if(running)return;running=true;
   try{
    if(process.env.SAMSON_LIVE_CHECKOUT_MODE){const {processLivePaymentEvents,expireLiveOrders,emailConfirmedOrder,activateStorefront}=await import('./app/checkout/engine');await processLivePaymentEvents();await expireLiveOrders();const {sharedBookings}=await import('./app/zoho-trial/runtime-store');for(const booking of await sharedBookings().records())if(booking.paymentEnvironment==='production'&&booking.phase==='confirmed')try{await activateStorefront(booking.id);await emailConfirmedOrder(booking.id)}catch{console.warn('A booking confirmation email needs review.')}}

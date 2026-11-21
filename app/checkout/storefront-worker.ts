@@ -1,4 +1,5 @@
 import {sharedDatabase,sharedBookings,readSquareState,saveSquareState,squareStateLock} from '../zoho-trial/runtime-store';
+import {housecallCutoverEnabled} from '../booking/provider';
 import {subscriptionStore} from './storefront-store';
 import {StorefrontRenewalService,nextStorefrontBill} from './storefront-renewal';
 import {liveStorefrontSquare} from './storefront-square';
@@ -6,7 +7,7 @@ import {customerWorkflow,readLiveBooking,emailConfirmedOrder,liveInvoicePayable}
 import {liveAvailability,recordLiveReceipt} from './zoho';
 import type {LivePaymentState} from './payment-service';
 let checkedAt=0;
-export async function processStorefrontRenewals(){
+export async function processStorefrontRenewals(){if(housecallCutoverEnabled())return;
  if(Date.now()-checkedAt<60000)return;checkedAt=Date.now();const sql=sharedDatabase(),today=new Intl.DateTimeFormat('en-CA',{timeZone:'America/New_York',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date()),rows=await sql`SELECT booking_id FROM samson_storefront_subscriptions WHERE record->>'phase'='active' AND COALESCE(record->>'upcomingBillingDate',record->>'nextBillingDate')<=${today} ORDER BY updated_at LIMIT 100`,provider=liveStorefrontSquare();
  for(const row of rows)try{await subscriptionStore.locked(row.booking_id,async()=>{
   const state=await subscriptionStore.read(row.booking_id);if(!state)return;if(state.phase!=='active'||state.cancelRequestedAt){if(state.cancelRequestedAt){state.phase='canceled';await subscriptionStore.save(state.bookingId,state)}return}

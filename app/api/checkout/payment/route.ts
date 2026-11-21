@@ -2,9 +2,10 @@ import {guardCheckout,checkoutJson,validBookingAccess,privateHeaders} from '../.
 import {readLiveBooking,publicLiveOrder,livePaymentService,limitCheckout,emailConfirmedOrder,activateStorefront} from '../../../checkout/engine';
 import {liveSquareConfig} from '../../../checkout/square';
 import {squareBillingContact} from '../../../zoho-trial/square-sandbox';
+import {newOrderCutoverResponse} from '../../../booking/provider';
 export const runtime='nodejs';
-export async function GET(req:Request){try{await guardCheckout(req);const id=new URL(req.url).searchParams.get('id')||'';if(!validBookingAccess(id,req.headers.get('x-samson-booking-access')))throw Error();const booking=await readLiveBooking(id),config=liveSquareConfig();return Response.json({applicationId:config.applicationId,locationId:config.locationId,amountCents:booking.snapshot.initialTotalCents,billingContact:squareBillingContact(booking.customer),order:await publicLiveOrder(booking)},{headers:privateHeaders})}catch{return Response.json({error:'The secure payment form is not ready. No payment was submitted.'},{status:503,headers:privateHeaders})}}
-export async function POST(req:Request){
+export async function GET(req:Request){const cutover=newOrderCutoverResponse();if(cutover)return cutover;try{await guardCheckout(req);const id=new URL(req.url).searchParams.get('id')||'';if(!validBookingAccess(id,req.headers.get('x-samson-booking-access')))throw Error();const booking=await readLiveBooking(id),config=liveSquareConfig();return Response.json({applicationId:config.applicationId,locationId:config.locationId,amountCents:booking.snapshot.initialTotalCents,billingContact:squareBillingContact(booking.customer),order:await publicLiveOrder(booking)},{headers:privateHeaders})}catch{return Response.json({error:'The secure payment form is not ready. No payment was submitted.'},{status:503,headers:privateHeaders})}}
+export async function POST(req:Request){const cutover=newOrderCutoverResponse();if(cutover)return cutover;
  try{await guardCheckout(req,true);await limitCheckout(req,'payment');const body=await checkoutJson(req);if(!validBookingAccess(body.id,req.headers.get('x-samson-booking-access')))throw Error('Order access required');
  const service=livePaymentService();let payment;
  if(body.action==='check'){const result=await service.synchronize(body.id);await activateStorefront(body.id);await emailConfirmedOrder(body.id);return Response.json(await publicLiveOrder(result.booking),{headers:privateHeaders})}

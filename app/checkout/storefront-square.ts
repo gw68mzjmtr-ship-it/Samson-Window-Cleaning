@@ -1,11 +1,12 @@
 import {createHash} from 'node:crypto';
+import {assertLegacyWritesAllowed} from '../booking/provider';
 import {liveSquareConfig} from './square';
 export type SubscriptionConfig={accessToken:string;locationId:string;merchantId:string;sandbox?:boolean};
 export const subscriptionKey=(kind:string,id:string)=>createHash('sha256').update('samson-storefront-v1:'+kind+':'+id).digest('hex').slice(0,40);
 const safeId=(id:string)=>{if(!/^[A-Za-z0-9_:\-]{1,200}$/.test(id))throw Error('Invalid Square reference');return encodeURIComponent(id)};
 export class StorefrontSquare{
  constructor(readonly config:SubscriptionConfig,private transport:typeof fetch=fetch){}
- async request(endpoint:string,body?:object){
+ async request(endpoint:string,body?:object){if(body)assertLegacyWritesAllowed();
   if(!(body?['customers','cards','payments'].includes(endpoint):/^(?:customers|cards|payments)\/[A-Za-z0-9_%:\-]+$/.test(endpoint))||!this.config.accessToken||!this.config.locationId||!this.config.merchantId)throw Error('Subscription operation not permitted');
   const response=await this.transport((this.config.sandbox?'https://connect.squareupsandbox.com':'https://connect.squareup.com')+'/v2/'+endpoint,{method:body?'POST':'GET',headers:{Authorization:'Bearer '+this.config.accessToken,'Square-Version':'2026-09-16','Content-Type':'application/json'},body:body?JSON.stringify(body):undefined,cache:'no-store',signal:AbortSignal.timeout(25000)}),value=await response.json();
   if(!response.ok||value.errors?.length)throw Error('Square update needs review');return value;

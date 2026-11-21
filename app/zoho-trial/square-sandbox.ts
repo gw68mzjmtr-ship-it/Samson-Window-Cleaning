@@ -1,4 +1,5 @@
 import {createHash,randomBytes} from 'node:crypto';
+import {assertLegacyWritesAllowed} from '../booking/provider';
 import {readFile,writeFile,mkdir,rename,open,unlink} from 'node:fs/promises';
 import path from 'node:path';
 import {secretDir} from './server';
@@ -16,7 +17,7 @@ type SandboxPayment={id:string;status:string;source_type:string;location_id:stri
 export function validSandboxPayment(p:SandboxPayment,bookingId:string,cents:number,locationId:string){return !!p?.id&&p.status==='COMPLETED'&&p.source_type==='CARD'&&p.reference_id===squareBookingReference(bookingId)&&p.location_id===locationId&&p.amount_money?.currency==='USD'&&p.amount_money.amount===cents}
 export type SandboxResult={environment:'sandbox';phase:'pending'|'completed'|'review_required';bookingId:string;invoiceId:string;amountCents:number;paymentId?:string;notice:string;zoho?:{phase:'pending'|'verified'|'review_required';paymentId?:string;notice:string}};
 export async function sandboxPaymentResult(id:string):Promise<SandboxResult|null>{return readSquareState<SandboxResult>(id)}
-export async function createSandboxPayment(id:string,sourceId:unknown){
+export async function createSandboxPayment(id:string,sourceId:unknown){assertLegacyWritesAllowed();
  if(typeof sourceId!=='string'||!sourceId||sourceId.length>1000||['CASH','EXTERNAL'].includes(sourceId))throw Error('Use a token from the Square test card form');
  const config=await squareSandboxConfig(),b=await bookingWorkflow().read(id);
  if(!b.customer.email.endsWith('@example.invalid')||b.phase!=='awaiting_payment'||!b.invoice)throw Error('Choose a fictional unpaid checkout');

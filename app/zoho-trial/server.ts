@@ -1,4 +1,5 @@
 import {readFile,writeFile,mkdir,rename} from 'node:fs/promises';
+import {assertLegacyWritesAllowed} from '../booking/provider';
 import path from 'node:path';
 import {randomBytes} from 'node:crypto';
 import {testHostAllowed,testOrigin,hostedTestAuthorized,hostedTestRouteAllowed} from './test-host';
@@ -27,7 +28,7 @@ export async function tokenRequest(params:Record<string,string>){const response=
 let refreshing:Promise<Token>|null=null;
 export async function accessToken(){const token=await readToken();if(token.expires_at>Date.now())return token.access_token;if(!token.refresh_token)throw Error('RECONNECT_REQUIRED');if(!refreshing){refreshing=(async()=>{const client=await clientConfig();const updated:Token=await tokenRequest({...client,grant_type:'refresh_token',refresh_token:token.refresh_token!});updated.refresh_token=updated.refresh_token||token.refresh_token;updated.bookingApproved=token.bookingApproved;updated.validationApproved=token.validationApproved;updated.invoiceApproved=token.invoiceApproved;updated.paymentRecordsApproved=token.paymentRecordsApproved;updated.nativeInvoiceApproved=token.nativeInvoiceApproved;updated.invoiceSettingsApproved=token.invoiceSettingsApproved;await saveToken(updated);return updated})().finally(()=>{refreshing=null})}return (await refreshing).access_token}
 export class ZohoQueryError extends Error {constructor(public code:string){super('Zoho request failed')}}
-async function api(endpoint:string,method:'GET'|'POST'|'PUT',body?:object){
+async function api(endpoint:string,method:'GET'|'POST'|'PUT',body?:object){if(method!=='GET')assertLegacyWritesAllowed();
  const token=await accessToken();
  const response=await fetch('https://fsm.zoho.com/fsm/v1/'+endpoint,{method,headers:{Authorization:'Zoho-oauthtoken '+token,'Content-Type':'application/json'},body:body?JSON.stringify(body):undefined,cache:'no-store',signal:AbortSignal.timeout(20000)});
  if(response.status===204)return {};
@@ -39,14 +40,14 @@ type ReadEndpoint='users'|'Contacts'|'Service_And_Parts'|'Work_Orders'|'Service_
 // Only fixed collection reads, plus the availability query, are exposed.
 export async function trialRead(endpoint:ReadEndpoint,body?:object){return api(endpoint,body?'POST':'GET',body)}
 // The isolated fictional-booking test is the only caller; no arbitrary endpoint or update access.
-export async function trialCreate(endpoint:'Contacts'|'Work_Orders'|'Service_Appointments',body:object){
+export async function trialCreate(endpoint:'Contacts'|'Work_Orders'|'Service_Appointments',body:object){assertLegacyWritesAllowed();
  if(!(await connectionStatus()).bookingApproved)throw Error('BOOKING_PERMISSION_REQUIRED');
  return api(endpoint,'POST',body);
 }
 
 
 
-export async function trialValidationApi(endpoint:string,method:'GET'|'POST'|'PUT',body?:object){
+export async function trialValidationApi(endpoint:string,method:'GET'|'POST'|'PUT',body?:object){if(method!=='GET')assertLegacyWritesAllowed();
  if(!(await connectionStatus()).validationApproved)throw Error('VALIDATION_PERMISSION_REQUIRED');
  const collection=endpoint==='Scheduled_Maintenances'||endpoint==='Service_And_Parts';
  const appointmentAction=/^Service_Appointments\/[0-9]+\/actions\/blueprint(?:\/transitions)?$/.test(endpoint);
@@ -60,7 +61,7 @@ export async function trialValidationApi(endpoint:string,method:'GET'|'POST'|'PU
 export async function trialAppointments(){const records=[];for(let page=1;page<=5;page++){const result=await api('Service_Appointments?page='+page+'&per_page=200','GET');records.push(...(result.data||[]));if(!result.info?.more_records)return records;}throw Error('Appointment pagination limit reached');}
 
 // Fixed organization and narrow endpoints: no manual payments, refunds, email or deletion.
-export async function trialInvoiceApi(endpoint:string,method:'GET'|'POST',body?:object){
+export async function trialInvoiceApi(endpoint:string,method:'GET'|'POST',body?:object){if(method!=='GET')assertLegacyWritesAllowed();
  if(!(await connectionStatus()).invoiceApproved)throw Error('INVOICE_PERMISSION_REQUIRED');
  const read=method==='GET'&&/^(?:contacts\/[0-9]+|invoices\/[0-9]+(?:\/payments)?)$/.test(endpoint);
  const markSent=method==='POST'&&/^invoices\/[0-9]+\/status\/sent$/.test(endpoint);
@@ -78,7 +79,7 @@ export async function trialRecord(collection:'Work_Orders'|'Contacts',id:string)
 
 // The provider bundles broader rights into custom.ALL. This adapter exposes
 // only invoice creation and exact invoice reads, never changes or deletion.
-export async function nativeInvoiceApi(endpoint:string,method:'GET'|'POST',body?:object){
+export async function nativeInvoiceApi(endpoint:string,method:'GET'|'POST',body?:object){if(method!=='GET')assertLegacyWritesAllowed();
  if(!await nativeInvoiceAccessApproved())throw Error('NATIVE_INVOICE_PERMISSION_REQUIRED');
  if(!(method==='POST'&&endpoint==='Invoices')&&!(method==='GET'&&/^Invoices\/[0-9]+$/.test(endpoint)))throw Error('NATIVE_INVOICE_ENDPOINT_NOT_ALLOWED');
  return api(endpoint,method,body);

@@ -1,11 +1,12 @@
 import {checkLocalRequest} from '../../../zoho-trial/server';
+import {newOrderCutoverResponse} from '../../../booking/provider';
 import {bookingWorkflow,publicBooking} from '../../../zoho-trial/booking-adapter';
 export const runtime='nodejs';
 const headers={'Cache-Control':'no-store'};
 export async function GET(req:Request){
  try{await checkLocalRequest(req);const id=new URL(req.url).searchParams.get('id')||'';return Response.json(publicBooking(await bookingWorkflow().read(id)),{headers})}catch{return Response.json({error:'The saved booking could not be read.'},{status:404,headers})}
 }
-export async function POST(req:Request){
+export async function POST(req:Request){const cutover=newOrderCutoverResponse();if(cutover)return cutover;
  try{await checkLocalRequest(req,true)}catch{return Response.json({error:'Private local test only.'},{status:403,headers})}
  try{
   const input=await req.json();
